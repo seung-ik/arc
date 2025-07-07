@@ -26,7 +26,7 @@ const TabItem = styled.li`
   flex: 1;
 `;
 
-const TabLink = styled(Link)<{ $isActive: boolean }>`
+const TabLink = styled.div<{ $isActive: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,6 +41,7 @@ const TabLink = styled(Link)<{ $isActive: boolean }>`
       : props.theme.typography.fontWeights.normal};
   transition: color 0.2s;
   min-height: 60px;
+  cursor: pointer;
 
   &:hover {
     color: ${(props) => props.theme.colors.primary};
@@ -79,10 +80,12 @@ export default function BottomNavigation() {
 
           return (
             <TabItem key={tab.path}>
-              <TabLink href={tab.path} $isActive={isActive}>
-                <TabIcon>{tab.icon}</TabIcon>
-                <TabLabel>{tab.label}</TabLabel>
-              </TabLink>
+              <Link href={tab.path}>
+                <TabLink $isActive={isActive}>
+                  <TabIcon>{tab.icon}</TabIcon>
+                  <TabLabel>{tab.label}</TabLabel>
+                </TabLink>
+              </Link>
             </TabItem>
           );
         })}

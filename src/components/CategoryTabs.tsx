@@ -34,7 +34,7 @@ const TabItem = styled.li`
   margin: 0 4px;
 `;
 
-const TabLink = styled(Link)<{ $isActive: boolean }>`
+const TabLink = styled.div<{ $isActive: boolean }>`
   display: block;
   padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
   text-decoration: none;
@@ -50,6 +50,7 @@ const TabLink = styled(Link)<{ $isActive: boolean }>`
   white-space: nowrap;
   text-align: center;
   min-width: 70px;
+  cursor: pointer;
 
   &:hover {
     color: ${(props) => props.theme.colors.primary};
@@ -75,9 +76,9 @@ export default function CategoryTabs() {
       <TabList>
         {categories.map((category) => (
           <TabItem key={category.id}>
-            <TabLink href={category.path} $isActive={currentCategory === category.id}>
-              {category.label}
-            </TabLink>
+            <Link href={category.path}>
+              <TabLink $isActive={currentCategory === category.id}>{category.label}</TabLink>
+            </Link>
           </TabItem>
         ))}
       </TabList>
