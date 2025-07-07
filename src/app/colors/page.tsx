@@ -1,6 +1,9 @@
 'use client';
 
 import styled from 'styled-components';
+import { useModal } from '@/hooks/useModal';
+import OneButtonModal from '@/components/OneButtonModal';
+import TwoButtonModal from '@/components/TwoButtonModal';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -42,7 +45,43 @@ const ColorBox = styled.div<{ bgColor: string; textColor: string }>`
   text-align: center;
 `;
 
+const ModalExample = styled.div`
+  display: flex;
+  gap: ${(props) => props.theme.spacing.md};
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+const ModalButton = styled.button`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.textWhite};
+  border: none;
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: ${(props) => props.theme.spacing.md} ${(props) => props.theme.spacing.lg};
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.primaryHover};
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`;
+
 export default function ColorsPage() {
+  const oneButtonModal = useModal();
+  const twoButtonModal = useModal();
+
+  const handleTwoButtonSubmit = () => {
+    // 실제 제출 로직을 여기에 구현
+    console.log('Two button modal submitted!');
+    twoButtonModal.closeModal();
+  };
+
   return (
     <Container>
       <Title>Colors Page</Title>
@@ -67,6 +106,30 @@ export default function ColorsPage() {
           Border
         </ColorBox>
       </ColorExample>
+
+      <Subtitle>모달 예시</Subtitle>
+      <ModalExample>
+        <ModalButton onClick={oneButtonModal.openModal}>One Button Modal</ModalButton>
+        <ModalButton onClick={twoButtonModal.openModal}>Two Button Modal</ModalButton>
+      </ModalExample>
+
+      <OneButtonModal
+        isOpen={oneButtonModal.isOpen}
+        onClose={oneButtonModal.closeModal}
+        title="One Button Modal"
+        content="이것은 하나의 버튼만 있는 모달입니다. 확인 버튼을 누르면 모달이 닫힙니다."
+        confirmText="확인"
+      />
+
+      <TwoButtonModal
+        isOpen={twoButtonModal.isOpen}
+        onClose={twoButtonModal.closeModal}
+        title="Two Button Modal"
+        content="이것은 두 개의 버튼이 있는 모달입니다. 취소 버튼을 누르면 모달이 닫히고, 확인 버튼을 누르면 제출 핸들러가 실행됩니다."
+        cancelText="취소"
+        confirmText="확인"
+        onSubmit={handleTwoButtonSubmit}
+      />
     </Container>
   );
 }
