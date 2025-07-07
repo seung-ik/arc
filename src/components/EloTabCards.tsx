@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useRouter, usePathname } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const TabContainer = styled.div`
   display: flex;
@@ -72,16 +73,16 @@ export default function EloTabCards() {
       label: '매치관리',
       icon: '🏓',
       desc: '신청받은 매치 승인/거절',
-      href: '/elo/management',
-      active: pathname === '/elo/management',
+      href: ROUTES.elo.management,
+      active: pathname === ROUTES.elo.management,
     },
     {
       key: 'history',
       label: '매치 히스토리',
       icon: '📊',
       desc: '과거 기록과 Elo 점수 변화',
-      href: '/elo/history',
-      active: pathname === '/elo/history',
+      href: ROUTES.elo.history,
+      active: pathname === ROUTES.elo.history,
     },
   ];
 

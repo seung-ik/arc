@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const NavigationContainer = styled.nav`
   position: fixed;
@@ -66,9 +67,9 @@ export default function BottomNavigation() {
   const pathname = usePathname();
 
   const tabs = [
-    { path: '/elo/management', label: 'Elo', icon: '🏆' },
-    { path: '/profile', label: 'Profile', icon: '👤' },
-    { path: '/community', label: 'Community', icon: '💬' },
+    { path: ROUTES.elo.management, label: 'Elo', icon: '🏆' },
+    { path: ROUTES.profile, label: 'Profile', icon: '👤' },
+    { path: ROUTES.community.root, label: 'Community', icon: '💬' },
   ];
 
   return (
@@ -83,7 +84,7 @@ export default function BottomNavigation() {
               : pathname === tab.path;
 
           return (
-            <TabItem key={tab.path}>
+            <TabItem key={tab.label}>
               <Link href={tab.path}>
                 <TabLink $isActive={isActive}>
                   <TabIcon>{tab.icon}</TabIcon>
