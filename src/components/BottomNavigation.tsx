@@ -66,7 +66,7 @@ export default function BottomNavigation() {
   const pathname = usePathname();
 
   const tabs = [
-    { path: '/elo', label: 'Elo', icon: '🏆' },
+    { path: '/elo/management', label: 'Elo', icon: '🏆' },
     { path: '/profile', label: 'Profile', icon: '👤' },
     { path: '/community', label: 'Community', icon: '💬' },
   ];
@@ -76,7 +76,11 @@ export default function BottomNavigation() {
       <TabList>
         {tabs.map((tab) => {
           const isActive =
-            tab.path === '/community' ? pathname.startsWith('/community') : pathname === tab.path;
+            tab.path === '/community'
+              ? pathname.startsWith('/community')
+              : tab.path === '/elo/management'
+              ? pathname.startsWith('/elo')
+              : pathname === tab.path;
 
           return (
             <TabItem key={tab.path}>

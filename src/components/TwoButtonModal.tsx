@@ -59,7 +59,7 @@ interface TwoButtonModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  content: string;
+  content: string | React.ReactNode;
   cancelText?: string;
   confirmText?: string;
   onSubmit: () => void;
