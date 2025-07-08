@@ -14,8 +14,8 @@ interface ProfilePost {
   viewCount: number;
   commentCount: number;
   showInProfile: boolean;
-  likeCount: number;
-  enableHarvest: boolean | null;
+  likeCount?: number;
+  enableHarvest?: boolean | null;
 }
 
 interface ProfilePostListProps {

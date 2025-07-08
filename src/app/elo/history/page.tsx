@@ -18,6 +18,7 @@ const Container = styled.div`
   position: relative;
   align-items: center;
   padding: ${(props) => props.theme.spacing.md};
+  padding-bottom: 80px;
 `;
 
 const ContentContainer = styled.div`

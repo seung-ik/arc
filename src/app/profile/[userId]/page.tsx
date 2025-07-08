@@ -15,6 +15,7 @@ const Container = styled.div`
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
   padding-bottom: 80px;
+  margin-top: ${(props) => props.theme.spacing.xl};
 `;
 
 const Content = styled.div`

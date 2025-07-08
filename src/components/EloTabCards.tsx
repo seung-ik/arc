@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { ROUTES } from '@/constants/routes';
 
 const TabContainer = styled.div`
@@ -122,6 +123,11 @@ const TabDesc = styled.div`
 export default function EloTabCards() {
   const router = useRouter();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const tabs = [
     {
@@ -130,7 +136,7 @@ export default function EloTabCards() {
       icon: '🏓',
       desc: '신청받은 매치 승인/거절',
       href: ROUTES.elo.management,
-      active: pathname === ROUTES.elo.management,
+      active: mounted && pathname === ROUTES.elo.management,
     },
     {
       key: 'history',
@@ -138,7 +144,7 @@ export default function EloTabCards() {
       icon: '📊',
       desc: '과거 기록과 Elo 점수 변화',
       href: ROUTES.elo.history,
-      active: pathname === ROUTES.elo.history,
+      active: mounted && pathname === ROUTES.elo.history,
     },
   ];
 
