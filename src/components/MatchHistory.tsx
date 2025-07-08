@@ -1,6 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
+import { useRouter } from 'next/navigation';
 
 interface HistoryMatch {
   id: number;
@@ -44,9 +45,20 @@ const OpponentInfo = styled.div`
   gap: ${(props) => props.theme.spacing.sm};
 `;
 
-const OpponentId = styled.span`
+const OpponentId = styled.button`
   font-weight: 600;
-  color: ${(props) => props.theme.colors.textBlack};
+  color: ${(props) => props.theme.colors.primary};
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  text-decoration: underline;
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.primaryHover};
+  }
 `;
 
 const SportBadge = styled.span`
@@ -112,6 +124,12 @@ const EloInfo = styled.div`
 `;
 
 export default function MatchHistory({ matches }: MatchHistoryProps) {
+  const router = useRouter();
+
+  const handleOpponentClick = (opponentId: string) => {
+    router.push(`/profile/${opponentId}`);
+  };
+
   return (
     <MatchList>
       {matches.length > 0 ? (
@@ -119,7 +137,9 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
           <MatchCard key={match.id}>
             <MatchHeader>
               <OpponentInfo>
-                <OpponentId>{match.opponentId}</OpponentId>
+                <OpponentId onClick={() => handleOpponentClick(match.opponentId)}>
+                  {match.opponentId}
+                </OpponentId>
                 <SportBadge>{match.sport}</SportBadge>
               </OpponentInfo>
             </MatchHeader>

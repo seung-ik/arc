@@ -68,7 +68,7 @@ export default function BottomNavigation() {
 
   const tabs = [
     { path: ROUTES.elo.management, label: 'Elo', icon: '🏆' },
-    { path: ROUTES.profile, label: 'Profile', icon: '👤' },
+    { path: ROUTES.profile.root, label: 'Profile', icon: '👤' },
     { path: ROUTES.community.root, label: 'Community', icon: '💬' },
   ];
 
@@ -81,6 +81,8 @@ export default function BottomNavigation() {
               ? pathname.startsWith('/community')
               : tab.path === '/elo/management'
               ? pathname.startsWith('/elo')
+              : tab.path === '/profile'
+              ? pathname.startsWith('/profile')
               : pathname === tab.path;
 
           return (

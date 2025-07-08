@@ -4,7 +4,10 @@ export const ROUTES = {
     management: '/elo/management',
     history: '/elo/history',
   },
-  profile: '/profile',
+  profile: {
+    root: '/profile',
+    user: (userId: string) => `/profile/${userId}`,
+  },
   community: {
     root: '/community',
     free: '/community/free',

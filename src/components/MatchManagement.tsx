@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import TwoButtonModal from '@/components/TwoButtonModal';
 
 interface Match {
@@ -48,9 +49,20 @@ const OpponentInfo = styled.div`
   gap: ${(props) => props.theme.spacing.sm};
 `;
 
-const OpponentId = styled.span`
+const OpponentId = styled.button`
   font-weight: 600;
-  color: ${(props) => props.theme.colors.textBlack};
+  color: ${(props) => props.theme.colors.primary};
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  text-decoration: underline;
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.primaryHover};
+  }
 `;
 
 const SportBadge = styled.span`
@@ -132,10 +144,15 @@ const EloInfo = styled.div`
 `;
 
 export default function MatchManagement({ matches, onAccept, onReject }: MatchManagementProps) {
+  const router = useRouter();
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
   const [rejectReason, setRejectReason] = useState('');
+
+  const handleOpponentClick = (opponentId: string) => {
+    router.push(`/profile/${opponentId}`);
+  };
 
   // Accept 버튼 클릭
   const handleAcceptClick = (matchId: number) => {
@@ -174,7 +191,9 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
             <MatchCard key={match.id}>
               <MatchHeader>
                 <OpponentInfo>
-                  <OpponentId>{match.opponentId}</OpponentId>
+                  <OpponentId onClick={() => handleOpponentClick(match.opponentId)}>
+                    {match.opponentId}
+                  </OpponentId>
                   <SportBadge>{match.sport}</SportBadge>
                 </OpponentInfo>
               </MatchHeader>
@@ -199,49 +218,48 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
           ))
         ) : (
           <EmptyState>
-            <EmptyIcon>🏓</EmptyIcon>
-            <p>신청받은 매치가 없습니다</p>
+            <EmptyIcon>📋</EmptyIcon>
+            <p>처리할 매치가 없습니다</p>
           </EmptyState>
         )}
       </MatchList>
-      {/* Accept 확인 모달 */}
+
       <TwoButtonModal
         isOpen={acceptModalOpen}
         onClose={() => setAcceptModalOpen(false)}
-        onSubmit={handleAcceptConfirm}
-        title="매치 결과 수락"
-        content="정말로 이 매치 결과를 수락하시겠습니까?"
-        confirmText="수락"
+        title="매치 승인"
+        content="이 매치 결과를 승인하시겠습니까?"
         cancelText="취소"
+        confirmText="승인"
+        onSubmit={handleAcceptConfirm}
       />
-      {/* Reject 사유 입력 모달 */}
+
       <TwoButtonModal
         isOpen={rejectModalOpen}
         onClose={() => setRejectModalOpen(false)}
-        onSubmit={handleRejectConfirm}
-        title="매치 결과 거절"
+        title="매치 거부"
         content={
-          <>
-            <div>거절 사유를 입력하세요.</div>
+          <div>
+            <p>이 매치 결과를 거부하시겠습니까?</p>
             <textarea
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="거부 사유를 입력하세요 (선택사항)"
               style={{
                 width: '100%',
-                minHeight: 60,
-                marginTop: 12,
-                borderRadius: 6,
+                minHeight: '80px',
+                marginTop: '8px',
+                padding: '8px',
                 border: '1px solid #ddd',
-                padding: 8,
-                fontSize: 14,
+                borderRadius: '4px',
+                resize: 'vertical',
               }}
-              placeholder="거절 사유를 입력하세요"
             />
-          </>
+          </div>
         }
-        confirmText="거절"
         cancelText="취소"
-        isLoading={false}
+        confirmText="거부"
+        onSubmit={handleRejectConfirm}
       />
     </>
   );

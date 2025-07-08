@@ -2,9 +2,9 @@
 
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 import ProfileHeader from '@/components/ProfileHeader';
-import TokenDisplay from '@/components/TokenDisplay';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
@@ -14,7 +14,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px; /* 하단 네비게이션 높이만큼 패딩 */
+  padding-bottom: 80px;
 `;
 
 const Content = styled.div`
@@ -22,101 +22,90 @@ const Content = styled.div`
 `;
 
 // 임시 데이터 - 실제로는 API에서 가져올 예정
-const mockUserProfile: UserProfile = {
-  id: '1',
-  name: '김철수',
-  tokens: 1250,
+const mockOtherUserProfile: UserProfile = {
+  id: '2',
+  name: '이영희',
   gameStats: {
     [GAME_TYPES.BILLIARDS]: {
-      elo: 1250,
-      percentile: 15,
-      isActive: true,
-      gamesPlayed: 25,
-    },
-    [GAME_TYPES.TABLE_TENNIS]: {
-      elo: 1180,
-      percentile: 25,
-      isActive: true,
-      gamesPlayed: 18,
-    },
-    [GAME_TYPES.BADMINTON]: {
-      elo: 1320,
+      elo: 1350,
       percentile: 8,
       isActive: true,
-      gamesPlayed: 32,
+      gamesPlayed: 42,
+    },
+    [GAME_TYPES.TABLE_TENNIS]: {
+      elo: 1280,
+      percentile: 12,
+      isActive: true,
+      gamesPlayed: 28,
+    },
+    [GAME_TYPES.BADMINTON]: {
+      elo: 1420,
+      percentile: 5,
+      isActive: true,
+      gamesPlayed: 38,
     },
     [GAME_TYPES.CHESS]: {
-      elo: 1450,
-      percentile: 3,
+      elo: 1550,
+      percentile: 1,
       isActive: true,
-      gamesPlayed: 45,
+      gamesPlayed: 67,
     },
     [GAME_TYPES.GO]: {
-      elo: 1100,
-      percentile: 30,
-      isActive: true,
-      gamesPlayed: 12,
-    },
-    [GAME_TYPES.TENNIS]: {
       elo: 0,
       percentile: 0,
       isActive: false,
       gamesPlayed: 0,
     },
+    [GAME_TYPES.TENNIS]: {
+      elo: 1200,
+      percentile: 20,
+      isActive: true,
+      gamesPlayed: 15,
+    },
   },
 };
 
-// 임시 글 데이터 (기본값: 숨김)
-const initialMockPosts = [
+// 임시 글 데이터 (다른 유저의 글) - 기본값: 숨김
+const mockOtherUserPosts = [
   {
     id: 1,
-    title: '탁구 동호회 모집합니다!',
+    title: '테니스 라켓 구매 후기',
     content:
-      '매주 토요일 오후에 탁구를 치는 동호회를 만들려고 합니다. 초보자도 환영하고, 실력 향상을 목표로 하는 분들 모집합니다.',
-    category: '모집',
+      '최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.',
+    category: '후기',
     date: '2024-01-15',
-    viewCount: 45,
-    commentCount: 8,
+    viewCount: 89,
+    commentCount: 31,
     showInProfile: false, // 기본값: 숨김
   },
   {
     id: 2,
-    title: '체스 전략 공유',
+    title: '바둑 기보 분석',
     content:
-      '오늘 상대방과 체스 대결에서 사용한 전략을 공유합니다. 킹스 인디언 어택을 사용했는데, 상대방이 예상보다 잘 막아내서 고전했습니다.',
-    category: '전략',
+      '오늘 프로 기사와의 대국에서 배운 수를 분석해보았습니다. 특히 중반전에서의 포석이 인상적이었어요.',
+    category: '분석',
     date: '2024-01-14',
-    viewCount: 32,
-    commentCount: 12,
+    viewCount: 56,
+    commentCount: 18,
     showInProfile: false, // 기본값: 숨김
   },
   {
     id: 3,
-    title: '배드민턴 코트 추천',
+    title: '당구 동호회 모집',
     content:
-      '서울 강남 지역에서 배드민턴을 칠 수 있는 좋은 코트를 찾고 있습니다. 주차가 편하고, 시설이 깨끗한 곳을 추천해주세요.',
-    category: '추천',
+      '서울 강북 지역에서 당구를 치는 동호회를 만들려고 합니다. 실력에 관계없이 즐겁게 치실 분들 모집합니다.',
+    category: '모집',
     date: '2024-01-13',
-    viewCount: 28,
-    commentCount: 15,
-    showInProfile: false, // 기본값: 숨김
-  },
-  {
-    id: 4,
-    title: '당구 실력 향상 팁',
-    content:
-      '당구를 시작한 지 3개월이 되었는데, 실력 향상이 더뎌서 고민입니다. 특히 큐 각도 잡는 법과 파워 조절에 어려움을 겪고 있어요.',
-    category: '질문',
-    date: '2024-01-12',
-    viewCount: 67,
-    commentCount: 23,
+    viewCount: 34,
+    commentCount: 12,
     showInProfile: false, // 기본값: 숨김
   },
 ];
 
-export default function ProfilePage() {
+export default function UserProfilePage() {
+  const params = useParams();
+  const userId = params.userId as string;
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [posts, setPosts] = useState(initialMockPosts);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -125,7 +114,7 @@ export default function ProfilePage() {
       try {
         // API 호출 시뮬레이션
         await new Promise((resolve) => setTimeout(resolve, 500));
-        setUserProfile(mockUserProfile);
+        setUserProfile(mockOtherUserProfile);
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
       } finally {
@@ -134,22 +123,7 @@ export default function ProfilePage() {
     };
 
     fetchUserProfile();
-  }, []);
-
-  const handleToggleVisibility = (postId: number, showInProfile: boolean) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) => (post.id === postId ? { ...post, showInProfile } : post)),
-    );
-
-    // 실제로는 API 호출하여 서버에 저장
-    console.log(`Post ${postId} visibility changed to: ${showInProfile}`);
-
-    // 토큰 소각 처리 (showInProfile이 true일 때)
-    if (showInProfile && userProfile) {
-      setUserProfile((prev) => (prev ? { ...prev, tokens: (prev.tokens || 0) - 1 } : null));
-      console.log('1 토큰이 소각되었습니다.');
-    }
-  };
+  }, [userId]);
 
   if (loading) {
     return (
@@ -187,7 +161,7 @@ export default function ProfilePage() {
               color: '#666',
             }}
           >
-            프로필을 불러올 수 없습니다.
+            사용자를 찾을 수 없습니다.
           </div>
         </Content>
         <BottomNavigation />
@@ -201,18 +175,12 @@ export default function ProfilePage() {
         <ProfileHeader
           name={userProfile.name}
           profileImage={userProfile.profileImage}
-          isMyProfile={true}
+          isMyProfile={false}
         />
-
-        {userProfile.tokens !== undefined && <TokenDisplay tokens={userProfile.tokens} />}
 
         <GameStatsGrid gameStats={userProfile.gameStats} />
 
-        <ProfilePostList
-          posts={posts}
-          isMyProfile={true}
-          onToggleVisibility={handleToggleVisibility}
-        />
+        <ProfilePostList posts={mockOtherUserPosts} isMyProfile={false} />
       </Content>
       <BottomNavigation />
     </Container>
