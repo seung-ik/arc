@@ -95,6 +95,7 @@ const ErrorMessage = styled.div`
 interface MatchRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmit?: (matchData: { sport: string; opponentId: string; result: '승' | '패' }) => void;
 }
 
 const SPORTS = [
@@ -106,7 +107,11 @@ const SPORTS = [
   { value: 'chess', label: '체스', icon: '♟️' },
 ];
 
-export default function MatchRegistrationModal({ isOpen, onClose }: MatchRegistrationModalProps) {
+export default function MatchRegistrationModal({
+  isOpen,
+  onClose,
+  onSubmit,
+}: MatchRegistrationModalProps) {
   const [sport, setSport] = useState('');
   const [opponentId, setOpponentId] = useState('');
   const [result, setResult] = useState<'승' | '패' | null>(null);
@@ -137,6 +142,16 @@ export default function MatchRegistrationModal({ isOpen, onClose }: MatchRegistr
     if (validateForm()) {
       // 실제 제출 로직
       console.log('Match registration:', { sport, opponentId, result });
+
+      // onSubmit 콜백 호출
+      if (onSubmit && result) {
+        // sport 값을 한글 label로 변환
+        const selectedSport = SPORTS.find((s) => s.value === sport);
+        const sportLabel = selectedSport ? selectedSport.label : sport;
+
+        onSubmit({ sport: sportLabel, opponentId, result });
+      }
+
       onClose();
 
       // 폼 초기화
