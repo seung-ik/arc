@@ -10,8 +10,12 @@ export const ROUTES = {
   },
   community: {
     root: '/community',
-    free: '/community/free',
-    qna: '/community/qna',
-    review: '/community/review',
+    tennis: '/community/tennis',
+    badminton: '/community/badminton',
+    go: '/community/go',
+    tableTennis: '/community/table-tennis',
+    chess: '/community/chess',
+    billiards: '/community/billiards',
+    notice: '/community/notice',
   },
 };
