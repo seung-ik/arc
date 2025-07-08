@@ -52,12 +52,9 @@ const TabCard = styled.button<{ $active: boolean }>`
     min-width: 200px;
   }
 
-  /* 화면 작을 때: 최소 너비로 컴팩트하게 */
   @media (max-width: 767px) {
-    flex: 0 0 auto;
+    flex: 1 1 50%;
     padding: ${(props) => props.theme.spacing.sm};
-    min-width: 120px;
-    max-width: 140px;
   }
 `;
 

@@ -78,6 +78,8 @@ const initialMockPosts = [
     viewCount: 45,
     commentCount: 8,
     showInProfile: false, // 기본값: 숨김
+    likeCount: 17,
+    enableHarvest: false, // 10일 안된 글(수확 불가)
   },
   {
     id: 2,
@@ -89,6 +91,8 @@ const initialMockPosts = [
     viewCount: 32,
     commentCount: 12,
     showInProfile: false, // 기본값: 숨김
+    likeCount: 8,
+    enableHarvest: true, // 수확 가능
   },
   {
     id: 3,
@@ -100,6 +104,8 @@ const initialMockPosts = [
     viewCount: 28,
     commentCount: 15,
     showInProfile: false, // 기본값: 숨김
+    likeCount: 23,
+    enableHarvest: true, // 수확 가능
   },
   {
     id: 4,
@@ -111,6 +117,8 @@ const initialMockPosts = [
     viewCount: 67,
     commentCount: 23,
     showInProfile: false, // 기본값: 숨김
+    likeCount: 5,
+    enableHarvest: null, // 수확 완료(어두운색)
   },
 ];
 
@@ -118,6 +126,7 @@ export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState(initialMockPosts);
   const [loading, setLoading] = useState(true);
+  const [harvestableTokens, setHarvestableTokens] = useState(0);
 
   useEffect(() => {
     // 실제로는 API 호출을 여기서 할 예정
@@ -148,6 +157,26 @@ export default function ProfilePage() {
     if (showInProfile && userProfile) {
       setUserProfile((prev) => (prev ? { ...prev, tokens: (prev.tokens || 0) - 1 } : null));
       console.log('1 토큰이 소각되었습니다.');
+    }
+  };
+
+  const handleHarvest = (postId: number) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => (post.id === postId ? { ...post, enableHarvest: null } : post)),
+    );
+    const post = posts.find((p) => p.id === postId);
+    if (post && post.enableHarvest) {
+      setHarvestableTokens((prev) => prev + post.likeCount);
+    }
+  };
+
+  const handleHarvestAll = () => {
+    // 실제로는 Web3 트랜잭션 처리
+    if (harvestableTokens > 0 && userProfile) {
+      setUserProfile((prev) =>
+        prev ? { ...prev, tokens: (prev.tokens || 0) + harvestableTokens } : null,
+      );
+      setHarvestableTokens(0);
     }
   };
 
@@ -198,13 +227,56 @@ export default function ProfilePage() {
   return (
     <Container>
       <Content>
-        <ProfileHeader
-          name={userProfile.name}
-          profileImage={userProfile.profileImage}
-          isMyProfile={true}
-        />
+        <div
+          style={{
+            display: 'flex',
+            gap: '32px',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            padding: '32px 16px 0 16px',
+            flexWrap: 'wrap',
+            maxWidth: '600px',
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              minWidth: 180,
+              maxWidth: 220,
+              flex: '0 0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+          >
+            <ProfileHeader
+              name={userProfile.name}
+              profileImage={userProfile.profileImage}
+              isMyProfile={true}
+            />
+          </div>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 240,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 16,
+              justifyContent: 'center',
+            }}
+          >
+            <TokenDisplay
+              tokens={userProfile.tokens ?? 0}
+              harvestableTokens={harvestableTokens}
+              onHarvestAll={handleHarvestAll}
+              harvestButtonText="수확하기"
+            />
+          </div>
+        </div>
 
-        {userProfile.tokens !== undefined && <TokenDisplay tokens={userProfile.tokens} />}
+        <div style={{ marginTop: 32, borderTop: '1px solid #eee', paddingTop: 24 }} />
 
         <GameStatsGrid gameStats={userProfile.gameStats} />
 
@@ -212,6 +284,7 @@ export default function ProfilePage() {
           posts={posts}
           isMyProfile={true}
           onToggleVisibility={handleToggleVisibility}
+          onHarvest={handleHarvest}
         />
       </Content>
       <BottomNavigation />

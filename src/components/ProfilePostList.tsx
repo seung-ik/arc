@@ -14,12 +14,15 @@ interface ProfilePost {
   viewCount: number;
   commentCount: number;
   showInProfile: boolean;
+  likeCount: number;
+  enableHarvest: boolean | null;
 }
 
 interface ProfilePostListProps {
   posts: ProfilePost[];
   isMyProfile: boolean;
   onToggleVisibility?: (postId: number, showInProfile: boolean) => void;
+  onHarvest?: (postId: number) => void;
 }
 
 const PostListContainer = styled.div`
@@ -107,23 +110,77 @@ const PostDate = styled.span`
 
 const PostStats = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
-`;
-
-const StatItem = styled.span`
-  display: flex;
   align-items: center;
   gap: 4px;
 `;
 
+const HarvestButton = styled.button<{ $canHarvest: boolean; $isHarvested: boolean }>`
+  background-color: ${(props) =>
+    props.$isHarvested
+      ? '#444' // 수확완료: 딥그레이
+      : props.$canHarvest
+      ? props.theme.colors.success // 수확가능: 초록
+      : '#fff'}; // 수확불가: 흰색
+  color: ${(props) =>
+    props.$isHarvested
+      ? 'white' // 수확완료: 흰색
+      : props.$canHarvest
+      ? 'white' // 수확가능: 흰색
+      : props.theme.colors.textGray}; // 수확불가: 회색
+  border: ${(props) =>
+    props.$isHarvested
+      ? 'none' // 수확완료: 테두리 없음
+      : props.$canHarvest
+      ? 'none' // 수확가능: 테두리 없음
+      : `1.5px solid ${props.theme.colors.textLightGray}`}; // 수확불가: 회색 테두리
+  border-radius: ${(props) => props.theme.borderRadius.sm};
+  padding: 4px 10px;
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  cursor: ${(props) =>
+    props.$isHarvested
+      ? 'not-allowed' // 수확완료: 클릭 불가
+      : props.$canHarvest
+      ? 'pointer' // 수확가능: 클릭 가능
+      : 'default'}; // 수확불가: 클릭 불가
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: center;
+
+  &:hover {
+    background-color: ${(props) =>
+      props.$isHarvested
+        ? '#444' // 수확완료: 그대로
+        : props.$canHarvest
+        ? props.theme.colors.success // 수확가능: 그대로
+        : '#fff'}; // 수확불가: 그대로
+  }
+
+  &:active {
+    transform: ${(props) =>
+      props.$isHarvested
+        ? 'none' // 수확완료: 변형 없음
+        : props.$canHarvest
+        ? 'translateY(1px)' // 수확가능: 클릭 효과
+        : 'none'}; // 수확불가: 변형 없음
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
 const ToggleSwitch = styled.button<{ $isOn: boolean }>`
   position: relative;
-  width: 44px;
-  height: 24px;
+  width: 32px;
+  height: 18px;
   background-color: ${(props) =>
     props.$isOn ? props.theme.colors.success : props.theme.colors.textLightGray};
   border: none;
-  border-radius: 12px;
+  border-radius: 9px;
   cursor: pointer;
   transition: all 0.3s ease;
   outline: none;
@@ -132,14 +189,14 @@ const ToggleSwitch = styled.button<{ $isOn: boolean }>`
   &::after {
     content: '';
     position: absolute;
-    top: 2px;
-    left: ${(props) => (props.$isOn ? '22px' : '2px')};
-    width: 20px;
-    height: 20px;
+    top: 1px;
+    left: ${(props) => (props.$isOn ? '15px' : '1px')};
+    width: 16px;
+    height: 16px;
     background-color: white;
     border-radius: 50%;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   &:hover {
@@ -147,7 +204,7 @@ const ToggleSwitch = styled.button<{ $isOn: boolean }>`
   }
 
   &:active::after {
-    width: 22px;
+    width: 18px;
   }
 `;
 
@@ -170,6 +227,7 @@ export default function ProfilePostList({
   posts,
   isMyProfile,
   onToggleVisibility,
+  onHarvest,
 }: ProfilePostListProps) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
@@ -205,6 +263,11 @@ export default function ProfilePostList({
   const handleModalCancel = () => {
     setModalOpen(false);
     setSelectedPostId(null);
+  };
+
+  const handleHarvest = (e: React.MouseEvent, postId: number) => {
+    e.stopPropagation();
+    onHarvest?.(postId);
   };
 
   const getModalContent = () => {
@@ -259,27 +322,29 @@ export default function ProfilePostList({
           <PostCard key={post.id} onClick={handlePostClick}>
             <PostHeader>
               <PostTitleSection>
-                <PostTitle>{post.title}</PostTitle>
                 <CategoryBadge>{post.category}</CategoryBadge>
+                <PostTitle>{post.title}</PostTitle>
+                <PostStats>[{post.commentCount}]</PostStats>
               </PostTitleSection>
 
-              {isMyProfile && (
-                <ToggleSwitch
-                  $isOn={post.showInProfile}
-                  onClick={(e) => handleToggleVisibility(e, post.id, post.showInProfile)}
-                />
-              )}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                {isMyProfile && (
+                  <HarvestButton
+                    $canHarvest={post.enableHarvest === true}
+                    $isHarvested={post.enableHarvest === null}
+                    onClick={(e) => handleHarvest(e, post.id)}
+                    disabled={post.enableHarvest !== true}
+                  >
+                    좋아요 {post.likeCount}
+                  </HarvestButton>
+                )}
+              </div>
             </PostHeader>
 
             <PostContent>{post.content}</PostContent>
 
             <PostFooter>
               <PostDate>{post.date}</PostDate>
-
-              <PostStats>
-                <StatItem>👁️ {post.viewCount}</StatItem>
-                <StatItem>💬 {post.commentCount}</StatItem>
-              </PostStats>
             </PostFooter>
           </PostCard>
         ))}

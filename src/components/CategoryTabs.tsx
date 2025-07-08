@@ -96,7 +96,7 @@ export default function CategoryTabs() {
   useEffect(() => {
     const fetchCategories = async () => {
       const mockCategories: Category[] = [
-        { id: 'trending', label: '인기글', path: '/community', order: 1 },
+        { id: 'trending', label: '자유글', path: '/community', order: 1 },
         { id: 'tennis', label: '테니스', path: '/community/tennis', order: 2 },
         { id: 'badminton', label: '배드민턴', path: '/community/badminton', order: 3 },
         { id: 'table-tennis', label: '탁구', path: '/community/table-tennis', order: 4 },

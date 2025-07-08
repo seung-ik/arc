@@ -9,12 +9,10 @@ interface ProfileHeaderProps {
 }
 
 const HeaderContainer = styled.div`
-  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: ${(props) => props.theme.colors.background};
-  border-bottom: 1px solid ${(props) => props.theme.colors.borderLight};
 `;
 
 const ProfileImage = styled.div`

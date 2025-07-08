@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px;
+  padding-bottom: 100px;
   position: relative;
   align-items: center;
   padding: ${(props) => props.theme.spacing.md};
@@ -24,6 +24,7 @@ const Header = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: ${(props) => props.theme.spacing.lg};
 `;
 
 const RegisterButton = styled.button`
@@ -36,7 +37,7 @@ const RegisterButton = styled.button`
   font-weight: ${(props) => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background 0.2s;
-  min-width: 200px;
+  min-width: 280px;
 
   &:hover {
     background: #222;
@@ -50,6 +51,8 @@ const RegisterButton = styled.button`
 const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
+  overflow-y: auto;
+  padding-bottom: ${(props) => props.theme.spacing.lg};
 
   @media (min-width: 1200px) {
     min-width: 1100px;
@@ -265,6 +268,7 @@ export default function ManagementPage() {
     sport: string;
     opponentId: string;
     result: '승' | '패';
+    isHandicap: boolean;
   }) => {
     // 새로운 대기 중인 매치 추가
     const newPendingMatch: PendingMatch = {

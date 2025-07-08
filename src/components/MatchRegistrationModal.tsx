@@ -7,13 +7,13 @@ import TwoButtonModal from './TwoButtonModal';
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.lg};
+  gap: ${(props) => props.theme.spacing.md};
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${(props) => props.theme.spacing.xs};
 `;
 
 const Label = styled.label`
@@ -23,7 +23,7 @@ const Label = styled.label`
 `;
 
 const Select = styled.select`
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.sm};
   border: 1px solid ${(props) => props.theme.colors.border};
   border-radius: ${(props) => props.theme.borderRadius.md};
   font-size: ${(props) => props.theme.typography.fontSizes.base};
@@ -38,7 +38,7 @@ const Select = styled.select`
 `;
 
 const Input = styled.input`
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.sm};
   border: 1px solid ${(props) => props.theme.colors.border};
   border-radius: ${(props) => props.theme.borderRadius.md};
   font-size: ${(props) => props.theme.typography.fontSizes.base};
@@ -56,9 +56,31 @@ const ResultGroup = styled.div`
   gap: ${(props) => props.theme.spacing.md};
 `;
 
+const HandicapGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.sm};
+  margin-top: ${(props) => props.theme.spacing.xs};
+`;
+
+const Checkbox = styled.input`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+const CheckboxLabel = styled.label`
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${(props) => props.theme.colors.textGray};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.xs};
+`;
+
 const ResultButton = styled.button<{ $isSelected: boolean; $isWin: boolean }>`
   flex: 1;
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
   border: 2px solid
     ${(props) =>
       props.$isSelected
@@ -95,7 +117,12 @@ const ErrorMessage = styled.div`
 interface MatchRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (matchData: { sport: string; opponentId: string; result: '승' | '패' }) => void;
+  onSubmit?: (matchData: {
+    sport: string;
+    opponentId: string;
+    result: '승' | '패';
+    isHandicap: boolean;
+  }) => void;
 }
 
 const SPORTS = [
@@ -115,6 +142,7 @@ export default function MatchRegistrationModal({
   const [sport, setSport] = useState('');
   const [opponentId, setOpponentId] = useState('');
   const [result, setResult] = useState<'승' | '패' | null>(null);
+  const [isHandicap, setIsHandicap] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
@@ -149,7 +177,7 @@ export default function MatchRegistrationModal({
         const selectedSport = SPORTS.find((s) => s.value === sport);
         const sportLabel = selectedSport ? selectedSport.label : sport;
 
-        onSubmit({ sport: sportLabel, opponentId, result });
+        onSubmit({ sport: sportLabel, opponentId, result, isHandicap });
       }
 
       onClose();
@@ -168,6 +196,7 @@ export default function MatchRegistrationModal({
     setSport('');
     setOpponentId('');
     setResult(null);
+    setIsHandicap(false);
     setErrors({});
   };
 
@@ -211,6 +240,15 @@ export default function MatchRegistrationModal({
             패
           </ResultButton>
         </ResultGroup>
+        <HandicapGroup>
+          <Checkbox
+            type="checkbox"
+            id="handicap"
+            checked={isHandicap}
+            onChange={(e) => setIsHandicap(e.target.checked)}
+          />
+          <CheckboxLabel htmlFor="handicap">핸디캡 매치</CheckboxLabel>
+        </HandicapGroup>
         {errors.result && <ErrorMessage>{errors.result}</ErrorMessage>}
       </FormGroup>
     </FormContainer>

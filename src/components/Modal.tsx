@@ -21,7 +21,7 @@ const ModalContainer = styled.div`
   background-color: ${(props) => props.theme.colors.background};
   border-radius: ${(props) => props.theme.borderRadius.lg};
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
+  max-width: 320px;
   width: 100%;
   max-height: 80vh;
   overflow: hidden;
@@ -40,7 +40,7 @@ const ModalContainer = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  padding: ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.md};
   border-bottom: 1px solid ${(props) => props.theme.colors.border};
 `;
 
@@ -52,14 +52,14 @@ const ModalTitle = styled.h2`
 `;
 
 const ModalContent = styled.div`
-  padding: ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.md};
   color: ${(props) => props.theme.colors.textGray};
   font-size: ${(props) => props.theme.typography.fontSizes.base};
   line-height: 1.6;
 `;
 
 const ModalFooter = styled.div`
-  padding: ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.md};
   border-top: 1px solid ${(props) => props.theme.colors.border};
   display: flex;
   gap: ${(props) => props.theme.spacing.md};

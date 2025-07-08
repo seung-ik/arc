@@ -36,7 +36,7 @@ const NoResults = styled.div`
   font-size: ${(props) => props.theme.typography.fontSizes.base};
 `;
 
-// 인기글 임시 데이터 (모든 스포츠의 인기 게시글들)
+// 자유글 임시 데이터 (모든 스포츠의 자유 게시글들)
 const mockPosts = [
   {
     id: 1,
