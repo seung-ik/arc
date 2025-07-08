@@ -244,36 +244,6 @@ export default function ManagementPage() {
       myElo: 1310,
       opponentElo: 1350,
     },
-    {
-      id: 3,
-      opponentId: 'user789',
-      sport: '배드민턴',
-      result: '승',
-      date: '2024-01-13',
-      isWin: true,
-      myElo: 1335,
-      opponentElo: 1300,
-    },
-    {
-      id: 4,
-      opponentId: 'user202',
-      sport: '테니스',
-      result: '패',
-      date: '2024-01-12',
-      isWin: false,
-      myElo: 1290,
-      opponentElo: 1325,
-    },
-    {
-      id: 5,
-      opponentId: 'user303',
-      sport: '당구',
-      result: '승',
-      date: '2024-01-11',
-      isWin: true,
-      myElo: 1340,
-      opponentElo: 1295,
-    },
   ];
 
   const handleAccept = (matchId: number) => {
