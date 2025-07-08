@@ -36,6 +36,25 @@ const NoResults = styled.div`
   font-size: ${(props) => props.theme.typography.fontSizes.base};
 `;
 
+const WriteButton = styled.button`
+  position: fixed;
+  right: 24px;
+  bottom: 75px;
+  z-index: 100;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #007aff;
+  color: #fff;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 // 자유글 임시 데이터 (모든 스포츠의 자유 게시글들)
 const mockPosts = [
   {
@@ -283,6 +302,7 @@ export default function CommunityPage() {
           />
         </Content>
       </CommunityLayout>
+      <WriteButton title="글쓰기">＋</WriteButton>
       <BottomNavigation />
     </Container>
   );
