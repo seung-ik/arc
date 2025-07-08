@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -89,9 +90,15 @@ const mockPosts = [
 ];
 
 export default function CommunityPage() {
+  const handleAdClick = () => {
+    console.log('광고 배너 클릭됨');
+    // 실제로는 광고 링크로 이동하거나 모달을 열 수 있음
+  };
+
   return (
     <Container>
       <CategoryTabs />
+      <AdBanner onClick={handleAdClick} />
       <Content>
         <PostList>
           {mockPosts.map((post) => (

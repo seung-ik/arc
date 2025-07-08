@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -65,9 +66,18 @@ const mockPosts = [
 ];
 
 export default function BilliardsPage() {
+  const handleAdClick = () => {
+    console.log('당구 광고 배너 클릭됨');
+  };
+
   return (
     <Container>
       <CategoryTabs />
+      <AdBanner
+        title="🎱 당구 대회 참가 신청"
+        description="당구 종목 대회에 참가하고 상금을 받아보세요!"
+        onClick={handleAdClick}
+      />
       <Content>
         <PostList>
           {mockPosts.map((post) => (

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -77,9 +78,18 @@ const mockPosts = [
 ];
 
 export default function TennisPage() {
+  const handleAdClick = () => {
+    console.log('테니스 광고 배너 클릭됨');
+  };
+
   return (
     <Container>
       <CategoryTabs />
+      <AdBanner
+        title="🎾 테니스 대회 참가 신청"
+        description="테니스 종목 대회에 참가하고 상금을 받아보세요!"
+        onClick={handleAdClick}
+      />
       <Content>
         <PostList>
           {mockPosts.map((post) => (
