@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 const CategoryContainer = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -26,15 +26,27 @@ const TabList = styled.ul`
   justify-content: flex-start;
   align-items: center;
   gap: 4px;
+  flex-wrap: wrap;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  /* 태블릿 이상에서는 중앙 정렬 */
+  @media (min-width: 768px) {
+    justify-content: center;
   }
 `;
 
 const TabItem = styled.li`
   flex-shrink: 0;
   margin: 0;
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+
+  /* 태블릿 이상에서는 구분선 숨김 */
+  @media (min-width: 768px) {
+    border-bottom: none;
+  }
 `;
 
 const TabLink = styled.div<{ $isActive: boolean }>`
@@ -66,60 +78,6 @@ const TabLink = styled.div<{ $isActive: boolean }>`
   }
 `;
 
-const MoreButton = styled.div`
-  position: relative;
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  cursor: pointer;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-
-  &:hover {
-    color: ${(props) => props.theme.colors.primary};
-  }
-`;
-
-const DropdownMenu = styled.div<{ $isVisible: boolean }>`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 120px;
-  z-index: 1001;
-  opacity: ${(props) => (props.$isVisible ? 1 : 0)};
-  visibility: ${(props) => (props.$isVisible ? 'visible' : 'hidden')};
-  transform: ${(props) => (props.$isVisible ? 'translateY(0)' : 'translateY(-10px)')};
-  transition: all 0.2s ease;
-`;
-
-const DropdownItem = styled.div<{ $isActive: boolean }>`
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
-  color: ${(props) =>
-    props.$isActive ? props.theme.colors.primary : props.theme.colors.textBlack};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.backgroundGray};
-  }
-
-  &:first-child {
-    border-radius: ${(props) => props.theme.borderRadius.md}
-      ${(props) => props.theme.borderRadius.md} 0 0;
-  }
-
-  &:last-child {
-    border-radius: 0 0 ${(props) => props.theme.borderRadius.md}
-      ${(props) => props.theme.borderRadius.md};
-  }
-`;
-
 interface Category {
   id: string;
   label: string;
@@ -141,10 +99,10 @@ export default function CategoryTabs() {
         { id: 'trending', label: '인기글', path: '/community', order: 1 },
         { id: 'tennis', label: '테니스', path: '/community/tennis', order: 2 },
         { id: 'badminton', label: '배드민턴', path: '/community/badminton', order: 3 },
-        { id: 'go', label: '바둑', path: '/community/go', order: 4 },
-        { id: 'table-tennis', label: '탁구', path: '/community/table-tennis', order: 5 },
-        { id: 'chess', label: '체스', path: '/community/chess', order: 6 },
-        { id: 'billiards', label: '당구', path: '/community/billiards', order: 7 },
+        { id: 'table-tennis', label: '탁구', path: '/community/table-tennis', order: 4 },
+        { id: 'billiards', label: '당구', path: '/community/billiards', order: 5 },
+        { id: 'go', label: '바둑', path: '/community/go', order: 6 },
+        { id: 'chess', label: '체스', path: '/community/chess', order: 7 },
         { id: 'notice', label: '공지사항', path: '/community/notice', order: 8 },
       ];
 

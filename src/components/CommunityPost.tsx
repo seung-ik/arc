@@ -62,29 +62,33 @@ const CategoryBadge = styled.span`
   flex-shrink: 0;
 `;
 
-const PostContent = styled.p`
+const PostContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: ${(props) => props.theme.spacing.md};
+`;
+
+const ContentText = styled.p`
   color: ${(props) => props.theme.colors.textGray};
   font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  margin: 0 0 ${(props) => props.theme.spacing.sm} 0;
+  margin: 0;
   line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 `;
 
 const PostFooter = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  color: ${(props) => props.theme.colors.textLightGray};
-`;
-
-const AuthorInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
+  flex-direction: column;
+  align-items: flex-end;
+  gap: ${(props) => props.theme.spacing.xs};
+  flex-shrink: 0;
+  min-width: 180px;
 `;
 
 const AuthorId = styled.button`
@@ -106,15 +110,12 @@ const PostDate = styled.span`
   color: ${(props) => props.theme.colors.textLightGray};
 `;
 
-const PostStats = styled.div`
-  display: flex;
-  gap: ${(props) => props.theme.spacing.md};
-`;
-
-const StatItem = styled.span`
+const DateAuthorInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: ${(props) => props.theme.spacing.sm};
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  color: ${(props) => props.theme.colors.textLightGray};
 `;
 
 export default function CommunityPost({ post }: CommunityPostProps) {
@@ -137,21 +138,17 @@ export default function CommunityPost({ post }: CommunityPostProps) {
         <CategoryBadge>{post.category}</CategoryBadge>
       </PostHeader>
 
-      <PostContent>{post.content}</PostContent>
+      <PostContent>
+        <ContentText>{post.content}</ContentText>
 
-      <PostFooter>
-        <AuthorInfo>
-          <AuthorId onClick={handleAuthorClick}>
-            {post.authorName} ({post.authorId})
-          </AuthorId>
-          <PostDate>{post.date}</PostDate>
-        </AuthorInfo>
-
-        <PostStats>
-          <StatItem>👁️ {post.viewCount}</StatItem>
-          <StatItem>💬 {post.commentCount}</StatItem>
-        </PostStats>
-      </PostFooter>
+        <PostFooter>
+          <DateAuthorInfo>
+            <PostDate>{post.date}</PostDate>
+            <span>/</span>
+            <AuthorId onClick={handleAuthorClick}>{post.authorName}</AuthorId>
+          </DateAuthorInfo>
+        </PostFooter>
+      </PostContent>
     </PostCard>
   );
 }

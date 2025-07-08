@@ -7,6 +7,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import MatchHistory from '@/components/MatchHistory';
 import MatchManagement from '@/components/MatchManagement';
 import EloTabCards from '@/components/EloTabCards';
+import CommunityLayout from '@/components/CommunityLayout';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -18,9 +19,8 @@ const Container = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
   flex: 1;
-  overflow-y: auto;
+  width: 100%;
 `;
 
 const TabContainer = styled.div`
@@ -145,9 +145,11 @@ export default function HistoryPage() {
   return (
     <Container>
       <EloTabCards />
-      <ContentContainer>
-        <MatchHistory matches={historyMatches} />
-      </ContentContainer>
+      <CommunityLayout>
+        <ContentContainer>
+          <MatchHistory matches={historyMatches} />
+        </ContentContainer>
+      </CommunityLayout>
       <BottomNavigation />
     </Container>
   );

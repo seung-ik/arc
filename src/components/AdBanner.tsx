@@ -4,7 +4,8 @@ import styled from 'styled-components';
 
 const BannerContainer = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: ${(props) => props.theme.spacing.md};
+  margin-top: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
   border-radius: ${(props) => props.theme.borderRadius.md};
   padding: ${(props) => props.theme.spacing.md};
   color: white;
@@ -12,6 +13,7 @@ const BannerContainer = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease;
+  flex: 1;
 
   &:hover {
     transform: translateY(-2px);

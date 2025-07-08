@@ -1,10 +1,14 @@
 'use client';
 
 import styled from 'styled-components';
+import { useState, useMemo } from 'react';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import AdBanner from '@/components/AdBanner';
+import SearchInput from '@/components/SearchInput';
+import Pagination from '@/components/Pagination';
+import CommunityLayout from '@/components/CommunityLayout';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -17,12 +21,19 @@ const Container = styled.div`
 
 const Content = styled.div`
   flex: 1;
-  padding: ${(props) => props.theme.spacing.md};
+  width: 100%;
 `;
 
 const PostList = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const NoResults = styled.div`
+  text-align: center;
+  padding: ${(props) => props.theme.spacing.xl};
+  color: ${(props) => props.theme.colors.textGray};
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
 `;
 
 // 당구 관련 임시 게시글 데이터
@@ -65,7 +76,43 @@ const mockPosts = [
   },
 ];
 
+const POSTS_PER_PAGE = 12;
+
 export default function BilliardsPage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // 검색 필터링
+  const filteredPosts = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return mockPosts;
+    }
+
+    const query = searchQuery.toLowerCase();
+    return mockPosts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(query) ||
+        post.content.toLowerCase().includes(query) ||
+        post.authorName.toLowerCase().includes(query) ||
+        post.category.toLowerCase().includes(query),
+    );
+  }, [searchQuery]);
+
+  // 페이지네이션
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const endIndex = startIndex + POSTS_PER_PAGE;
+  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const handleAdClick = () => {
     console.log('당구 광고 배너 클릭됨');
   };
@@ -73,18 +120,28 @@ export default function BilliardsPage() {
   return (
     <Container>
       <CategoryTabs />
-      <AdBanner
-        title="🎱 당구 대회 참가 신청"
-        description="당구 종목 대회에 참가하고 상금을 받아보세요!"
-        onClick={handleAdClick}
-      />
-      <Content>
-        <PostList>
-          {mockPosts.map((post) => (
-            <CommunityPost key={post.id} post={post} />
-          ))}
-        </PostList>
-      </Content>
+      <CommunityLayout>
+        <AdBanner
+          title="🎱 당구 대회 참가 신청"
+          description="당구 종목 대회에 참가하고 상금을 받아보세요!"
+          onClick={handleAdClick}
+        />
+        <Content>
+          <SearchInput onSearch={handleSearch} placeholder="당구 게시글 검색..." />
+          <PostList>
+            {currentPosts.length > 0 ? (
+              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+            ) : (
+              <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
+            )}
+          </PostList>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </Content>
+      </CommunityLayout>
       <BottomNavigation />
     </Container>
   );

@@ -1,9 +1,14 @@
 'use client';
 
 import styled from 'styled-components';
+import { useState, useMemo } from 'react';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import SearchInput from '@/components/SearchInput';
+import Pagination from '@/components/Pagination';
+import CommunityLayout from '@/components/CommunityLayout';
+import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -16,12 +21,19 @@ const Container = styled.div`
 
 const Content = styled.div`
   flex: 1;
-  padding: ${(props) => props.theme.spacing.md};
+  width: 100%;
 `;
 
 const PostList = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const NoResults = styled.div`
+  text-align: center;
+  padding: ${(props) => props.theme.spacing.xl};
+  color: ${(props) => props.theme.colors.textGray};
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
 `;
 
 // 공지사항 임시 데이터
@@ -88,17 +100,72 @@ const mockPosts = [
   },
 ];
 
+const POSTS_PER_PAGE = 12;
+
 export default function NoticePage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // 검색 필터링
+  const filteredPosts = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return mockPosts;
+    }
+
+    const query = searchQuery.toLowerCase();
+    return mockPosts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(query) ||
+        post.content.toLowerCase().includes(query) ||
+        post.authorName.toLowerCase().includes(query) ||
+        post.category.toLowerCase().includes(query),
+    );
+  }, [searchQuery]);
+
+  // 페이지네이션
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const endIndex = startIndex + POSTS_PER_PAGE;
+  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleAdClick = () => {
+    // Implementation of handleAdClick
+  };
+
   return (
     <Container>
       <CategoryTabs />
-      <Content>
-        <PostList>
-          {mockPosts.map((post) => (
-            <CommunityPost key={post.id} post={post} />
-          ))}
-        </PostList>
-      </Content>
+      <CommunityLayout>
+        <AdBanner
+          title="📢 공지사항"
+          description="중요한 공지사항을 확인하세요!"
+          onClick={handleAdClick}
+        />
+        <Content>
+          <SearchInput onSearch={handleSearch} placeholder="공지사항 검색..." />
+          <PostList>
+            {currentPosts.length > 0 ? (
+              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+            ) : (
+              <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
+            )}
+          </PostList>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </Content>
+      </CommunityLayout>
       <BottomNavigation />
     </Container>
   );

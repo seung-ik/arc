@@ -46,9 +46,9 @@ const RegisterButton = styled.button`
 `;
 
 const ContentContainer = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
   flex: 1;
-  overflow-y: auto;
+  width: 100%;
+  padding: 0 ${(props) => props.theme.spacing.lg};
 `;
 
 const TabContainer = styled.div`
