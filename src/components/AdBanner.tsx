@@ -14,6 +14,12 @@ const BannerContainer = styled.div`
   cursor: pointer;
   transition: transform 0.2s ease;
   flex: 1;
+  width: 100%;
+
+  /* 태블릿 이상에서 표시 (768px 이상) */
+  @media (min-width: 768px) {
+    display: block;
+  }
 
   &:hover {
     transform: translateY(-2px);

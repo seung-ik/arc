@@ -15,6 +15,8 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
+  align-items: center;
+  padding: ${(props) => props.theme.spacing.md};
 `;
 
 const Header = styled.div`
@@ -48,7 +50,12 @@ const RegisterButton = styled.button`
 const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
-  padding: 0 ${(props) => props.theme.spacing.lg};
+
+  @media (min-width: 1200px) {
+    min-width: 1100px;
+    max-width: 1100px;
+    padding-top: ${(props) => props.theme.spacing.md};
+  }
 `;
 
 const TabContainer = styled.div`

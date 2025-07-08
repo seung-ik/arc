@@ -7,8 +7,8 @@ import { ROUTES } from '@/constants/routes';
 const TabContainer = styled.div`
   display: flex;
   gap: ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.md};
   background: ${(props) => props.theme.colors.background};
+  width: 100%;
 
   /* 화면 넓을 때: 반반씩 꽉 채우기 */
   @media (min-width: 768px) {
@@ -16,10 +16,10 @@ const TabContainer = styled.div`
     overflow-x: visible;
   }
 
-  /* 화면 작을 때: 가로 스크롤 */
-  @media (max-width: 767px) {
-    flex-wrap: nowrap;
-    overflow-x: auto;
+  @media (min-width: 1200px) {
+    width: 1100px;
+    padding: 0;
+    padding-top: ${(props) => props.theme.spacing.md};
   }
 `;
 

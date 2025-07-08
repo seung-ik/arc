@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 import MatchHistory from '@/components/MatchHistory';
-import MatchManagement from '@/components/MatchManagement';
 import EloTabCards from '@/components/EloTabCards';
 import CommunityLayout from '@/components/CommunityLayout';
+import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -16,54 +16,23 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
+  align-items: center;
+  padding: ${(props) => props.theme.spacing.md};
 `;
 
 const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
-`;
+  padding-top: ${(props) => props.theme.spacing.lg};
 
-const TabContainer = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
-  padding: ${(props) => props.theme.spacing.md} 0;
-`;
-
-const TabList = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: ${(props) => props.theme.spacing.md};
-`;
-
-const TabItem = styled.div`
-  flex: 1;
-  max-width: 200px;
-`;
-
-const TabButton = styled.button<{ $isActive: boolean }>`
-  width: 100%;
-  background-color: ${(props) => (props.$isActive ? props.theme.colors.primary : 'transparent')};
-  color: ${(props) =>
-    props.$isActive ? props.theme.colors.textWhite : props.theme.colors.textBlack};
-  border: 1px solid
-    ${(props) => (props.$isActive ? props.theme.colors.primary : props.theme.colors.border)};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${(props) =>
-      props.$isActive ? props.theme.colors.primaryHover : props.theme.colors.background};
+  @media (min-width: 1200px) {
+    width: 1100px;
+    padding: 0;
+    padding-top: ${(props) => props.theme.spacing.md};
   }
 `;
 
 export default function HistoryPage() {
-  const [activeTab, setActiveTab] = useState<'management' | 'history'>('history');
-  const router = useRouter();
-
   // 목업 데이터
   const historyMatches = [
     {
@@ -108,48 +77,22 @@ export default function HistoryPage() {
     },
   ];
 
-  const receivedMatches = [
-    {
-      id: 1,
-      opponentId: 'user123',
-      sport: '탁구',
-      result: '승',
-      date: '2024-01-15',
-      isWin: true,
-    },
-    {
-      id: 2,
-      opponentId: 'user456',
-      sport: '체스',
-      result: '패',
-      date: '2024-01-14',
-      isWin: false,
-    },
-  ];
-
-  const handleAccept = (matchId: number) => {
-    console.log('Accept match:', matchId);
-  };
-
-  const handleReject = (matchId: number) => {
-    console.log('Reject match:', matchId);
-  };
-
-  const handleTabChange = (tab: 'management' | 'history') => {
-    setActiveTab(tab);
-    if (tab === 'management') {
-      router.push('/elo/management');
-    }
+  const handleAdClick = () => {
+    console.log('광고 배너 클릭됨');
+    // 실제로는 광고 링크로 이동하거나 모달을 열 수 있음
   };
 
   return (
     <Container>
       <EloTabCards />
-      <CommunityLayout>
-        <ContentContainer>
-          <MatchHistory matches={historyMatches} />
-        </ContentContainer>
-      </CommunityLayout>
+      <ContentContainer>
+        <AdBanner
+          title="♟️ 체스 대회 참가 신청"
+          description="체스 종목 대회에 참가하고 상금을 받아보세요!"
+          onClick={handleAdClick}
+        />
+        <MatchHistory matches={historyMatches} />
+      </ContentContainer>
       <BottomNavigation />
     </Container>
   );
