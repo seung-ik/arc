@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
@@ -241,7 +241,7 @@ const CATEGORIES = [
   { value: 'chess', label: '체스' },
 ];
 
-export default function WritePostPage() {
+function WritePostForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultCategory = searchParams.get('category') || '';
@@ -411,5 +411,13 @@ export default function WritePostPage() {
 
       <BottomNavigation />
     </Container>
+  );
+}
+
+export default function WritePostPage() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <WritePostForm />
+    </Suspense>
   );
 }
