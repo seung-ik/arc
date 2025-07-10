@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 interface Post {
   id: number;
@@ -49,6 +50,12 @@ const PostTitle = styled.h3`
   margin: 0;
   flex: 1;
   line-height: 1.4;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 const CategoryBadge = styled.span`
@@ -123,18 +130,23 @@ export default function CommunityPost({ post }: CommunityPostProps) {
 
   const handleAuthorClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 게시글 클릭 이벤트와 충돌 방지
-    router.push(`/profile/${post.authorId}`);
+    router.push(`${ROUTES.profile.user(post.authorId)}`);
+  };
+
+  const handleTitleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 게시글 클릭 이벤트와 충돌 방지
+    router.push(`${ROUTES.community.post(post.id.toString())}`);
   };
 
   const handlePostClick = () => {
-    // 게시글 상세 페이지로 이동 (나중에 구현)
-    console.log('Post clicked:', post.id);
+    // 게시글 상세 페이지로 이동
+    router.push(`${ROUTES.community.post(post.id.toString())}`);
   };
 
   return (
     <PostCard onClick={handlePostClick}>
       <PostHeader>
-        <PostTitle>{post.title}</PostTitle>
+        <PostTitle onClick={handleTitleClick}>{post.title}</PostTitle>
         <CategoryBadge>{post.category}</CategoryBadge>
       </PostHeader>
 

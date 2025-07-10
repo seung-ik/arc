@@ -11,6 +11,7 @@ export const ROUTES = {
   community: {
     root: '/community',
     write: '/community/write',
+    post: (postId: string) => `/community/post/${postId}`,
     tennis: '/community/tennis',
     badminton: '/community/badminton',
     go: '/community/go',
