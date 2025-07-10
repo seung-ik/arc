@@ -9,6 +9,9 @@ import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
+import WriteButton from '@/components/WriteButton';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -34,25 +37,6 @@ const NoResults = styled.div`
   padding: ${(props) => props.theme.spacing.xl};
   color: ${(props) => props.theme.colors.textGray};
   font-size: ${(props) => props.theme.typography.fontSizes.base};
-`;
-
-const WriteButton = styled.button`
-  position: fixed;
-  right: 24px;
-  bottom: 75px;
-  z-index: 100;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #007aff;
-  color: #fff;
-  font-size: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 // 자유글 임시 데이터 (모든 스포츠의 자유 게시글들)
@@ -244,6 +228,7 @@ const POSTS_PER_PAGE = 12;
 export default function CommunityPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   // 검색 필터링
   const filteredPosts = useMemo(() => {
@@ -281,6 +266,11 @@ export default function CommunityPage() {
     // 실제로는 광고 링크로 이동하거나 모달을 열 수 있음
   };
 
+  const handleWriteClick = () => {
+    console.log('자유글 글쓰기 버튼 클릭됨');
+    router.push(ROUTES.community.write);
+  };
+
   return (
     <Container>
       <CategoryTabs />
@@ -302,7 +292,7 @@ export default function CommunityPage() {
           />
         </Content>
       </CommunityLayout>
-      <WriteButton title="글쓰기">＋</WriteButton>
+      <WriteButton onClick={handleWriteClick} />
       <BottomNavigation />
     </Container>
   );

@@ -9,6 +9,9 @@ import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
+import WriteButton from '@/components/WriteButton';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -260,6 +263,7 @@ const POSTS_PER_PAGE = 12;
 export default function BadmintonPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   // 검색 필터링
   const filteredPosts = useMemo(() => {
@@ -296,6 +300,11 @@ export default function BadmintonPage() {
     console.log('배드민턴 광고 배너 클릭됨');
   };
 
+  const handleWriteClick = () => {
+    console.log('배드민턴 글쓰기 버튼 클릭됨');
+    router.push(`${ROUTES.community.write}?category=badminton`);
+  };
+
   return (
     <Container>
       <CategoryTabs />
@@ -321,6 +330,7 @@ export default function BadmintonPage() {
           />
         </Content>
       </CommunityLayout>
+      <WriteButton onClick={handleWriteClick} />
       <BottomNavigation />
     </Container>
   );

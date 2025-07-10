@@ -10,6 +10,7 @@ export const ROUTES = {
   },
   community: {
     root: '/community',
+    write: '/community/write',
     tennis: '/community/tennis',
     badminton: '/community/badminton',
     go: '/community/go',

@@ -9,6 +9,9 @@ import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
+import WriteButton from '@/components/WriteButton';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -81,6 +84,7 @@ const POSTS_PER_PAGE = 12;
 export default function GoPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   // 검색 필터링
   const filteredPosts = useMemo(() => {
@@ -117,12 +121,17 @@ export default function GoPage() {
     console.log('바둑 광고 배너 클릭됨');
   };
 
+  const handleWriteClick = () => {
+    console.log('바둑 글쓰기 버튼 클릭됨');
+    router.push(`${ROUTES.community.write}?category=go`);
+  };
+
   return (
     <Container>
       <CategoryTabs />
       <CommunityLayout>
         <AdBanner
-          title="🏁 바둑 대회 참가 신청"
+          title="⚫ 바둑 대회 참가 신청"
           description="바둑 종목 대회에 참가하고 상금을 받아보세요!"
           onClick={handleAdClick}
         />
@@ -142,6 +151,7 @@ export default function GoPage() {
           />
         </Content>
       </CommunityLayout>
+      <WriteButton onClick={handleWriteClick} />
       <BottomNavigation />
     </Container>
   );

@@ -11,6 +11,10 @@ const ContentWrapper = styled.div`
     min-width: 1100px;
     max-width: 1100px;
   }
+
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
 `;
 
 interface CommunityLayoutProps {
