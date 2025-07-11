@@ -13,7 +13,7 @@ interface Post {
   date: string;
   category: string;
   viewCount: number;
-  commentCount: number;
+  commentCount?: number;
 }
 
 interface CommunityPostProps {
@@ -80,7 +80,7 @@ const ContentText = styled.p`
   color: ${(props) => props.theme.colors.textGray};
   font-size: ${(props) => props.theme.typography.fontSizes.sm};
   margin: 0;
-  line-height: 1.5;
+
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
@@ -152,11 +152,10 @@ export default function CommunityPost({ post }: CommunityPostProps) {
 
       <PostContent>
         <ContentText>{post.content}</ContentText>
-
         <PostFooter>
           <DateAuthorInfo>
             <PostDate>{post.date}</PostDate>
-            <span>/</span>
+            <span>•</span>
             <AuthorId onClick={handleAuthorClick}>{post.authorName}</AuthorId>
           </DateAuthorInfo>
         </PostFooter>

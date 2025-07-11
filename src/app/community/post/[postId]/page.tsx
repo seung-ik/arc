@@ -37,6 +37,24 @@ const PostTitle = styled.h1`
   line-height: 1.4;
 `;
 
+const PostTitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: ${(props) => props.theme.spacing.sm};
+`;
+
+const PostTitleContainer = styled.div`
+  flex: 1;
+`;
+
+const ViewCount = styled.span`
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${(props) => props.theme.colors.textGray};
+  flex-shrink: 0;
+  margin-left: ${(props) => props.theme.spacing.md};
+`;
+
 const PostMeta = styled.div`
   display: flex;
   align-items: center;
@@ -95,10 +113,9 @@ const PostContent = styled.div`
 
 const PostActions = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${(props) => props.theme.spacing.md} 0;
-  border-top: 1px solid ${(props) => props.theme.colors.border};
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.lg} 0;
   border-bottom: 1px solid ${(props) => props.theme.colors.border};
   margin-bottom: ${(props) => props.theme.spacing.lg};
 `;
@@ -106,34 +123,54 @@ const PostActions = styled.div`
 const ActionButtons = styled.div`
   display: flex;
   gap: ${(props) => props.theme.spacing.md};
+  justify-content: center;
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.button<{ $isActive: boolean; $variant: 'like' | 'dislike' }>`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.xs};
-  background: none;
-  border: none;
-  color: ${(props) => props.theme.colors.textGray};
+  background: ${(props) =>
+    props.$isActive ? (props.$variant === 'like' ? '#fdf2f2' : '#f8f9fa') : 'white'};
+  border: 1px solid
+    ${(props) =>
+      props.$isActive
+        ? props.$variant === 'like'
+          ? '#e74c3c'
+          : '#6c757d'
+        : props.theme.colors.border};
+  color: ${(props) =>
+    props.$isActive
+      ? props.$variant === 'like'
+        ? '#e74c3c'
+        : '#6c757d'
+      : props.theme.colors.textGray};
   font-size: ${(props) => props.theme.typography.fontSizes.sm};
   cursor: pointer;
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
-  border-radius: ${(props) => props.theme.borderRadius.sm};
+  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
+  border-radius: ${(props) => props.theme.borderRadius.md};
   transition: all 0.2s;
+  min-width: 80px;
+  justify-content: center;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.background};
-    color: ${(props) => props.theme.colors.textBlack};
+    background-color: ${(props) =>
+      props.$isActive ? (props.$variant === 'like' ? '#fdf2f2' : '#f8f9fa') : '#f8f9fa'};
+    transform: translateY(-1px);
   }
 
-  &.liked {
-    color: #e74c3c;
+  &:active {
+    transform: translateY(0);
   }
 `;
 
-const ViewCount = styled.span`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  color: ${(props) => props.theme.colors.textGray};
+const ButtonText = styled.span`
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+`;
+
+const ButtonCount = styled.span`
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  color: ${(props) => props.theme.colors.textLightGray};
 `;
 
 const CommentsSection = styled.div`
@@ -488,8 +525,10 @@ interface Post {
   postType: string;
   viewCount: number;
   likeCount: number;
+  dislikeCount: number;
   commentCount: number;
   isLiked: boolean;
+  isDisliked: boolean;
 }
 
 interface Comment {
@@ -524,8 +563,10 @@ const mockPost: Post = {
   postType: '후기',
   viewCount: 89,
   likeCount: 31,
+  dislikeCount: 5,
   commentCount: 8,
   isLiked: false,
+  isDisliked: false,
 };
 
 // 카테고리 한글 이름 매핑
@@ -632,6 +673,20 @@ export default function PostDetailPage() {
             ...prev,
             isLiked: !prev.isLiked,
             likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
+          }
+        : null,
+    );
+  };
+
+  const handleDislike = () => {
+    if (!post) return;
+
+    setPost((prev) =>
+      prev
+        ? {
+            ...prev,
+            isDisliked: !prev.isDisliked,
+            dislikeCount: prev.isDisliked ? prev.dislikeCount - 1 : prev.dislikeCount + 1,
           }
         : null,
     );
@@ -766,7 +821,12 @@ export default function PostDetailPage() {
       <CommunityLayout>
         <Content>
           <PostHeader>
-            <PostTitle>{post.title}</PostTitle>
+            <PostTitleRow>
+              <PostTitleContainer>
+                <PostTitle>{post.title}</PostTitle>
+              </PostTitleContainer>
+              <ViewCount>조회 {post.viewCount}</ViewCount>
+            </PostTitleRow>
             <PostMeta>
               <AuthorInfo>
                 <AuthorName onClick={() => handleAuthorClick(post.authorId)}>
@@ -783,16 +843,15 @@ export default function PostDetailPage() {
 
           <PostActions>
             <ActionButtons>
-              <ActionButton onClick={handleLike} className={post.isLiked ? 'liked' : ''}>
-                <span>❤️</span>
-                <span>{post.likeCount}</span>
+              <ActionButton onClick={handleLike} $isActive={post.isLiked} $variant="like">
+                <ButtonText>좋아요</ButtonText>
+                <ButtonCount>{post.likeCount}</ButtonCount>
               </ActionButton>
-              <ActionButton>
-                <span>💬</span>
-                <span>{post.commentCount}</span>
+              <ActionButton onClick={handleDislike} $isActive={post.isDisliked} $variant="dislike">
+                <ButtonText>싫어요</ButtonText>
+                <ButtonCount>{post.dislikeCount}</ButtonCount>
               </ActionButton>
             </ActionButtons>
-            <ViewCount>조회 {post.viewCount}</ViewCount>
           </PostActions>
 
           <CommentsSection>
