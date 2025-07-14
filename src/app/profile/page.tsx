@@ -7,6 +7,7 @@ import ProfileHeader from '@/components/ProfileHeader';
 import TokenDisplay from '@/components/TokenDisplay';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
+import NicknameChangeModal from '@/components/NicknameChangeModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 
 const Container = styled.div`
@@ -127,6 +128,7 @@ export default function ProfilePage() {
   const [posts, setPosts] = useState(initialMockPosts);
   const [loading, setLoading] = useState(true);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
+  const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
   useEffect(() => {
     // 실제로는 API 호출을 여기서 할 예정
@@ -177,6 +179,20 @@ export default function ProfilePage() {
         prev ? { ...prev, tokens: (prev.tokens || 0) + harvestableTokens } : null,
       );
       setHarvestableTokens(0);
+    }
+  };
+
+  const handleNicknameChange = () => {
+    setIsNicknameModalOpen(true);
+  };
+
+  const handleNicknameSubmit = (newNickname: string) => {
+    if (userProfile) {
+      setUserProfile((prev) =>
+        prev ? { ...prev, name: newNickname, tokens: (prev.tokens || 0) - 1 } : null,
+      );
+      console.log('닉네임이 변경되었습니다:', newNickname);
+      console.log('1 토큰이 소각되었습니다.');
     }
   };
 
@@ -255,6 +271,7 @@ export default function ProfilePage() {
               name={userProfile.name}
               profileImage={userProfile.profileImage}
               isMyProfile={true}
+              onNicknameChange={handleNicknameChange}
             />
           </div>
           <div
@@ -287,6 +304,15 @@ export default function ProfilePage() {
           onHarvest={handleHarvest}
         />
       </Content>
+
+      <NicknameChangeModal
+        isOpen={isNicknameModalOpen}
+        onClose={() => setIsNicknameModalOpen(false)}
+        onSubmit={handleNicknameSubmit}
+        currentNickname={userProfile.name}
+        userTokens={userProfile.tokens ?? 0}
+      />
+
       <BottomNavigation />
     </Container>
   );
