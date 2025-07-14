@@ -204,6 +204,92 @@ const PendingDate = styled.span`
   font-size: ${(props) => props.theme.typography.fontSizes.xs};
 `;
 
+const RecommendedMatchCard = styled.div`
+  background-color: ${(props) => props.theme.colors.background};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: ${(props) => props.theme.spacing.lg};
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const RecommendedMatchHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const RecommendedMatchInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.md};
+`;
+
+const RecommendedOpponentId = styled.span`
+  font-weight: 600;
+  color: ${(props) => props.theme.colors.textBlack};
+`;
+
+const RecommendedSportBadge = styled.span`
+  background-color: ${(props) => props.theme.colors.secondary};
+  color: white;
+  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
+  border-radius: ${(props) => props.theme.borderRadius.sm};
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+`;
+
+const RecommendedElo = styled.span`
+  color: ${(props) => props.theme.colors.primary};
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  font-weight: 600;
+`;
+
+const ChallengeButton = styled.button`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.lg};
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: ${(props) => props.theme.spacing.md};
+  width: 100%;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.primaryHover};
+  }
+`;
+
+const RegionInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.sm};
+  margin-top: ${(props) => props.theme.spacing.md};
+`;
+
+const RegionBadge = styled.span`
+  background-color: ${(props) => props.theme.colors.secondary};
+  color: white;
+  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
+  border-radius: ${(props) => props.theme.borderRadius.sm};
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+`;
+
+const DistanceText = styled.span`
+  color: ${(props) => props.theme.colors.textGray};
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+`;
+
 interface PendingMatch {
   id: number;
   opponentId: string;
@@ -214,6 +300,18 @@ interface PendingMatch {
   myElo: number;
   opponentElo: number;
   createdAt: number;
+}
+
+interface RecommendedMatch {
+  id: number;
+  opponentId: string;
+  sport: string;
+  opponentElo: number;
+  winRate: number;
+  totalMatches: number;
+  lastActive: string;
+  region: string;
+  distance?: string;
 }
 
 export default function ManagementPage() {
@@ -244,16 +342,6 @@ export default function ManagementPage() {
       myElo: 1320,
       opponentElo: 1280,
     },
-    {
-      id: 2,
-      opponentId: 'user456',
-      sport: '체스',
-      result: '패',
-      date: '2024-01-14',
-      isWin: false,
-      myElo: 1310,
-      opponentElo: 1350,
-    },
   ];
 
   const handleAccept = (matchId: number) => {
@@ -262,6 +350,59 @@ export default function ManagementPage() {
 
   const handleReject = (matchId: number, reason?: string) => {
     console.log('Reject match:', matchId, reason);
+  };
+
+  // 추천매치 데이터
+  const recommendedMatches: RecommendedMatch[] = [
+    {
+      id: 1,
+      opponentId: 'tennis_pro',
+      sport: '테니스',
+      opponentElo: 1350,
+      winRate: 68,
+      totalMatches: 45,
+      lastActive: '2시간 전',
+      region: '강남구',
+      distance: '0.5km',
+    },
+    {
+      id: 2,
+      opponentId: 'chess_master',
+      sport: '체스',
+      opponentElo: 1420,
+      winRate: 72,
+      totalMatches: 32,
+      lastActive: '1시간 전',
+      region: '서초구',
+      distance: '1.2km',
+    },
+    {
+      id: 3,
+      opponentId: 'ping_pong_king',
+      sport: '탁구',
+      opponentElo: 1280,
+      winRate: 65,
+      totalMatches: 28,
+      lastActive: '30분 전',
+      region: '강남구',
+      distance: '0.8km',
+    },
+    {
+      id: 4,
+      opponentId: 'badminton_ace',
+      sport: '배드민턴',
+      opponentElo: 1380,
+      winRate: 70,
+      totalMatches: 38,
+      lastActive: '15분 전',
+      region: '송파구',
+      distance: '2.1km',
+    },
+  ];
+
+  const handleChallenge = (matchId: number) => {
+    console.log('Challenge match:', matchId);
+    // 여기에 매치 신청 로직 추가
   };
 
   const handleMatchRegistration = (matchData: {
@@ -325,6 +466,26 @@ export default function ManagementPage() {
           onAccept={handleAccept}
           onReject={handleReject}
         />
+
+        <SectionTitle>추천매치</SectionTitle>
+        {recommendedMatches.map((match) => (
+          <RecommendedMatchCard key={match.id}>
+            <RecommendedMatchHeader>
+              <RecommendedMatchInfo>
+                <RecommendedOpponentId>{match.opponentId}</RecommendedOpponentId>
+                <RecommendedSportBadge>{match.sport}</RecommendedSportBadge>
+              </RecommendedMatchInfo>
+              <RecommendedElo>ELO {match.opponentElo}</RecommendedElo>
+            </RecommendedMatchHeader>
+
+            <RegionInfo>
+              <RegionBadge>{match.region}</RegionBadge>
+              {match.distance && <DistanceText>{match.distance}</DistanceText>}
+            </RegionInfo>
+
+            <ChallengeButton onClick={() => handleChallenge(match.id)}>매치 신청</ChallengeButton>
+          </RecommendedMatchCard>
+        ))}
       </ContentContainer>
       <MatchRegistrationModal
         isOpen={registrationModal.isOpen}

@@ -208,7 +208,7 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
               </MatchDetails>
               <ActionButtons>
                 <ActionButton $variant="accept" onClick={() => handleAcceptClick(match.id)}>
-                  Accept
+                  Agree
                 </ActionButton>
                 <ActionButton $variant="reject" onClick={() => handleRejectClick(match.id)}>
                   Reject
