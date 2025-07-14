@@ -1,11 +1,10 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useMemo } from 'react';
 import TwoButtonModal from '@/components/TwoButtonModal';
 
-interface ProfilePost {
+export interface ProfilePost {
   id: number;
   title: string;
   content: string;
@@ -15,7 +14,8 @@ interface ProfilePost {
   commentCount: number;
   showInProfile: boolean;
   likeCount?: number;
-  enableHarvest?: boolean | null;
+  enableHarvest?: boolean | null; // boolean | null (수확 가능/불가능/완료)
+  harvestStage?: number; // 수확 단계 (1, 2, 3, 4...)
 }
 
 interface ProfilePostListProps {
@@ -114,23 +114,32 @@ const PostStats = styled.div`
   gap: 4px;
 `;
 
-const HarvestButton = styled.button<{ $canHarvest: boolean; $isHarvested: boolean }>`
-  background-color: ${(props) =>
-    props.$isHarvested
-      ? '#444' // 수확완료: 딥그레이
-      : props.$canHarvest
-      ? props.theme.colors.success // 수확가능: 초록
-      : '#fff'}; // 수확불가: 흰색
+const HarvestButton = styled.button<{ $canHarvest: boolean; $stage?: number }>`
+  background-color: ${(props) => {
+    if (!props.$canHarvest) return '#fff'; // 수확불가: 흰색
+
+    // 단계별 색상
+    switch (props.$stage) {
+      case 1:
+        return '#ffc107'; // 1단계: 노란색
+      case 2:
+        return '#28a745'; // 2단계: 초록색
+      case 3:
+        return '#007bff'; // 3단계: 파란색
+      case 4:
+        return '#6f42c1'; // 4단계: 보라색
+      case 5:
+        return '#fd7e14'; // 5단계: 주황색
+      default:
+        return props.theme.colors.success; // 기본: 초록색
+    }
+  }};
   color: ${(props) =>
-    props.$isHarvested
-      ? 'white' // 수확완료: 흰색
-      : props.$canHarvest
+    props.$canHarvest
       ? 'white' // 수확가능: 흰색
       : props.theme.colors.textGray}; // 수확불가: 회색
   border: ${(props) =>
-    props.$isHarvested
-      ? 'none' // 수확완료: 테두리 없음
-      : props.$canHarvest
+    props.$canHarvest
       ? 'none' // 수확가능: 테두리 없음
       : `1.5px solid ${props.theme.colors.textLightGray}`}; // 수확불가: 회색 테두리
   border-radius: ${(props) => props.theme.borderRadius.sm};
@@ -138,9 +147,7 @@ const HarvestButton = styled.button<{ $canHarvest: boolean; $isHarvested: boolea
   font-size: ${(props) => props.theme.typography.fontSizes.xs};
   font-weight: ${(props) => props.theme.typography.fontWeights.medium};
   cursor: ${(props) =>
-    props.$isHarvested
-      ? 'not-allowed' // 수확완료: 클릭 불가
-      : props.$canHarvest
+    props.$canHarvest
       ? 'pointer' // 수확가능: 클릭 가능
       : 'default'}; // 수확불가: 클릭 불가
   transition: all 0.2s;
@@ -149,19 +156,30 @@ const HarvestButton = styled.button<{ $canHarvest: boolean; $isHarvested: boolea
   text-align: center;
 
   &:hover {
-    background-color: ${(props) =>
-      props.$isHarvested
-        ? '#444' // 수확완료: 그대로
-        : props.$canHarvest
-        ? props.theme.colors.success // 수확가능: 그대로
-        : '#fff'}; // 수확불가: 그대로
+    background-color: ${(props) => {
+      if (!props.$canHarvest) return '#fff';
+
+      // 호버 시 약간 어둡게
+      switch (props.$stage) {
+        case 1:
+          return '#e0a800'; // 1단계: 어두운 노란색
+        case 2:
+          return '#218838'; // 2단계: 어두운 초록색
+        case 3:
+          return '#0056b3'; // 3단계: 어두운 파란색
+        case 4:
+          return '#5a32a3'; // 4단계: 어두운 보라색
+        case 5:
+          return '#e8690b'; // 5단계: 어두운 주황색
+        default:
+          return props.theme.colors.success;
+      }
+    }};
   }
 
   &:active {
     transform: ${(props) =>
-      props.$isHarvested
-        ? 'none' // 수확완료: 변형 없음
-        : props.$canHarvest
+      props.$canHarvest
         ? 'translateY(1px)' // 수확가능: 클릭 효과
         : 'none'}; // 수확불가: 변형 없음
   }
@@ -170,41 +188,6 @@ const HarvestButton = styled.button<{ $canHarvest: boolean; $isHarvested: boolea
     opacity: 0.7;
     cursor: not-allowed;
     transform: none;
-  }
-`;
-
-const ToggleSwitch = styled.button<{ $isOn: boolean }>`
-  position: relative;
-  width: 32px;
-  height: 18px;
-  background-color: ${(props) =>
-    props.$isOn ? props.theme.colors.success : props.theme.colors.textLightGray};
-  border: none;
-  border-radius: 9px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  outline: none;
-  flex-shrink: 0;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: ${(props) => (props.$isOn ? '15px' : '1px')};
-    width: 16px;
-    height: 16px;
-    background-color: white;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  }
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:active::after {
-    width: 18px;
   }
 `;
 
@@ -229,10 +212,49 @@ export default function ProfilePostList({
   onToggleVisibility,
   onHarvest,
 }: ProfilePostListProps) {
-  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [modalAction, setModalAction] = useState<'show' | 'hide'>('show');
+  // 정렬된 게시글 목록: 수확 가능한 것들을 위로, 그 다음 시간순
+  const sortedPosts = useMemo(() => {
+    return [...posts].sort((a, b) => {
+      // 1. 수확 가능한 것들을 위로
+      if (a.enableHarvest && !b.enableHarvest) return -1;
+      if (!a.enableHarvest && b.enableHarvest) return 1;
+
+      // 2. 수확 가능한 것들 중에서는 단계순 (낮은 단계부터)
+      if (a.enableHarvest && b.enableHarvest) {
+        const stageA = a.harvestStage || 0;
+        const stageB = b.harvestStage || 0;
+        if (stageA !== stageB) return stageA - stageB;
+      }
+
+      // 3. 수확 가능 여부가 같다면 최신순 (날짜 내림차순)
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  }, [posts]);
+
+  // 수확 단계별 텍스트 생성
+  const getHarvestText = (post: ProfilePost) => {
+    if (post.enableHarvest === true) {
+      // 수확 가능할 때만 단계 표시
+      switch (post.harvestStage) {
+        case 1:
+          return '1단계 수확';
+        case 2:
+          return '2단계 수확';
+        case 3:
+          return '3단계 수확';
+        case 4:
+          return '4단계 수확';
+        default:
+          return '수확하기';
+      }
+    }
+
+    // 수확 불가능하거나 완료된 경우 좋아요 개수 표시
+    return `좋아요 ${post.likeCount || 0}개`;
+  };
 
   const handlePostClick = () => {
     // 게시글 상세 페이지로 이동 (나중에 구현)
@@ -300,7 +322,9 @@ export default function ProfilePostList({
     return modalAction === 'show' ? '노출하기' : '숨기기';
   };
 
-  const filteredPosts = isMyProfile ? posts : posts.filter((post) => post.showInProfile);
+  const filteredPosts = isMyProfile
+    ? sortedPosts
+    : sortedPosts.filter((post) => post.showInProfile);
 
   if (filteredPosts.length === 0) {
     return (
@@ -313,7 +337,6 @@ export default function ProfilePostList({
       </PostListContainer>
     );
   }
-
   return (
     <>
       <PostListContainer>
@@ -331,11 +354,11 @@ export default function ProfilePostList({
                 {isMyProfile && (
                   <HarvestButton
                     $canHarvest={post.enableHarvest === true}
-                    $isHarvested={post.enableHarvest === null}
+                    $stage={post.harvestStage}
                     onClick={(e) => handleHarvest(e, post.id)}
                     disabled={post.enableHarvest !== true}
                   >
-                    좋아요 {post.likeCount}
+                    {getHarvestText(post)}
                   </HarvestButton>
                 )}
               </div>
