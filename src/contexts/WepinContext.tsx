@@ -59,10 +59,12 @@ export function WepinProvider({ children }: WepinProviderProps) {
 
   const login = async () => {
     if (!wepinSDK) return;
-    await wepinSDK.loginWithUI();
-    setIsLoggedIn(true);
+    const result = await wepinSDK.loginWithUI();
+    console.log('result', result);
+    // setIsLoggedIn(true);
     const userAccounts = await wepinSDK.getAccounts();
-    setAccounts(userAccounts || []);
+    console.log('userAccounts', userAccounts);
+    // setAccounts(userAccounts || []);
   };
 
   const logout = async () => {

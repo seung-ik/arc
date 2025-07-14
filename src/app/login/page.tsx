@@ -133,12 +133,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 이미 로그인된 경우 메인 페이지로 리다이렉트
-  useEffect(() => {
-    if (isInitialized && isLoggedIn) {
-      router.push('/elo');
-    }
-  }, [isInitialized, isLoggedIn, router]);
+  // useEffect(() => {
+  //   if (isInitialized && isLoggedIn) {
+  //     router.push('/elo');
+  //   }
+  // }, [isInitialized, isLoggedIn, router]);
 
   const handleGoogleLogin = async () => {
     if (!isInitialized) {
