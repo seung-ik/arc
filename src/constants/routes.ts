@@ -7,6 +7,7 @@ export const ROUTES = {
   profile: {
     root: '/profile',
     user: (userId: string) => `/profile/${userId}`,
+    tokenHistory: '/profile/token_history',
   },
   community: {
     root: '/community',

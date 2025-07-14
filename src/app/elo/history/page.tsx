@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import BottomNavigation from '@/components/BottomNavigation';
+
 import MatchHistory from '@/components/MatchHistory';
 import EloTabCards from '@/components/EloTabCards';
 import CommunityLayout from '@/components/CommunityLayout';
@@ -14,11 +14,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px;
   position: relative;
   align-items: center;
   padding: ${(props) => props.theme.spacing.md};
-  padding-bottom: 80px;
 `;
 
 const ContentContainer = styled.div`
@@ -94,7 +92,6 @@ export default function HistoryPage() {
         />
         <MatchHistory matches={historyMatches} />
       </ContentContainer>
-      <BottomNavigation />
     </Container>
   );
 }

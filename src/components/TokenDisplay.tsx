@@ -7,6 +7,7 @@ interface TokenDisplayProps {
   harvestableTokens?: number;
   onHarvestAll?: () => void;
   harvestButtonText?: string;
+  onViewHistory?: () => void;
 }
 
 const TokenContainer = styled.div`
@@ -92,6 +93,27 @@ const HarvestButton = styled.button`
   }
 `;
 
+const HistoryButton = styled.button`
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: white;
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`;
+
 const TokenRow = styled.div`
   display: flex;
   gap: 16px;
@@ -113,6 +135,7 @@ export default function TokenDisplay({
   harvestableTokens = 0,
   onHarvestAll,
   harvestButtonText = '수확하기',
+  onViewHistory,
 }: TokenDisplayProps) {
   return (
     <TokenColumn>
@@ -124,6 +147,7 @@ export default function TokenDisplay({
             {tokens.toLocaleString()}
           </TokenAmount>
         </TokenInfo>
+        {onViewHistory && <HistoryButton onClick={onViewHistory}>내역보기</HistoryButton>}
       </TokenContainer>
 
       <HarvestSection>

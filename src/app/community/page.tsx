@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import { useState, useMemo } from 'react';
-import BottomNavigation from '@/components/BottomNavigation';
+
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import AdBanner from '@/components/AdBanner';
@@ -18,7 +18,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px; /* 하단 네비게이션 높이만큼 패딩 */
   position: relative;
 `;
 
@@ -305,7 +304,6 @@ export default function CommunityPage() {
         </Content>
       </CommunityLayout>
       <WriteButton onClick={handleWriteClick} />
-      <BottomNavigation />
     </Container>
   );
 }

@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import BottomNavigation from '@/components/BottomNavigation';
+
 import { useModal } from '@/hooks/useModal';
 import MatchRegistrationModal from '@/components/MatchRegistrationModal';
 import MatchManagement from '@/components/MatchManagement';
@@ -13,7 +13,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 140px;
   position: relative;
   align-items: center;
   padding: ${(props) => props.theme.spacing.md};
@@ -52,7 +51,6 @@ const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
   overflow-y: auto;
-  padding-bottom: 80px;
 
   @media (min-width: 1200px) {
     min-width: 1100px;
@@ -492,7 +490,6 @@ export default function ManagementPage() {
         onClose={registrationModal.closeModal}
         onSubmit={handleMatchRegistration}
       />
-      <BottomNavigation />
     </Container>
   );
 }

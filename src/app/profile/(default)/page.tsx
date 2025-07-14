@@ -2,20 +2,21 @@
 
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import BottomNavigation from '@/components/BottomNavigation';
+
 import ProfileHeader from '@/components/ProfileHeader';
 import TokenDisplay from '@/components/TokenDisplay';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
 import NicknameChangeModal from '@/components/NicknameChangeModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
+import { ROUTES } from '@/constants/routes';
+import { useRouter } from 'next/navigation';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px; /* 하단 네비게이션 높이만큼 패딩 */
 `;
 
 const Content = styled.div`
@@ -124,6 +125,7 @@ const initialMockPosts = [
 ];
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState(initialMockPosts);
   const [loading, setLoading] = useState(true);
@@ -196,6 +198,10 @@ export default function ProfilePage() {
     }
   };
 
+  const handleViewTokenHistory = () => {
+    router.push(ROUTES.profile.tokenHistory);
+  };
+
   if (loading) {
     return (
       <Container>
@@ -213,7 +219,6 @@ export default function ProfilePage() {
             로딩 중...
           </div>
         </Content>
-        <BottomNavigation />
       </Container>
     );
   }
@@ -235,7 +240,6 @@ export default function ProfilePage() {
             프로필을 불러올 수 없습니다.
           </div>
         </Content>
-        <BottomNavigation />
       </Container>
     );
   }
@@ -289,6 +293,7 @@ export default function ProfilePage() {
               harvestableTokens={harvestableTokens}
               onHarvestAll={handleHarvestAll}
               harvestButtonText="수확하기"
+              onViewHistory={handleViewTokenHistory}
             />
           </div>
         </div>
@@ -312,8 +317,6 @@ export default function ProfilePage() {
         currentNickname={userProfile.name}
         userTokens={userProfile.tokens ?? 0}
       />
-
-      <BottomNavigation />
     </Container>
   );
 }

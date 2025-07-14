@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import { useState, useMemo } from 'react';
-import BottomNavigation from '@/components/BottomNavigation';
+
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import AdBanner from '@/components/AdBanner';
@@ -18,7 +18,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px;
   position: relative;
 `;
 
@@ -331,7 +330,6 @@ export default function TennisPage() {
         </Content>
       </CommunityLayout>
       <WriteButton onClick={handleWriteClick} />
-      <BottomNavigation />
     </Container>
   );
 }
