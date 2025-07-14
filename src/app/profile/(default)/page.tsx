@@ -11,6 +11,7 @@ import NicknameChangeModal from '@/components/NicknameChangeModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 import { ROUTES } from '@/constants/routes';
 import { useRouter } from 'next/navigation';
+import { useWepin } from '@/contexts/WepinContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -21,6 +22,26 @@ const Container = styled.div`
 
 const Content = styled.div`
   flex: 1;
+`;
+
+const LogoutButton = styled.button`
+  position: absolute;
+  top: ${(props) => props.theme.spacing.md};
+  left: ${(props) => props.theme.spacing.md};
+  background-color: white;
+  color: ${(props) => props.theme.colors.error};
+  border: 1px solid ${(props) => props.theme.colors.error};
+  border-radius: ${(props) => props.theme.borderRadius.sm};
+  padding: 4px 8px;
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.error};
+    color: white;
+  }
 `;
 
 // 임시 데이터 - 실제로는 API에서 가져올 예정
@@ -237,6 +258,7 @@ const mockMyPosts: ProfilePost[] = [
 ];
 export default function ProfilePage() {
   const router = useRouter();
+  const { logout } = useWepin();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState(mockMyPosts);
   const [loading, setLoading] = useState(true);
@@ -314,6 +336,15 @@ export default function ProfilePage() {
     router.push(ROUTES.profile.tokenHistory);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push(ROUTES.auth.login);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   if (loading) {
     return (
       <Container>
@@ -358,6 +389,7 @@ export default function ProfilePage() {
 
   return (
     <Container>
+      <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
       <Content>
         <div
           style={{

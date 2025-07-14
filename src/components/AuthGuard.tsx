@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWepin } from '@/contexts/WepinContext';
+import { ROUTES } from '@/constants/routes';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -21,10 +22,10 @@ export default function AuthGuard({ children, requireAuth = true }: AuthGuardPro
 
     if (requireAuth && !isLoggedIn) {
       // 로그인이 필요한 페이지인데 로그인되지 않은 경우
-      router.push('/login');
+      router.push(ROUTES.auth.login);
     } else if (!requireAuth && isLoggedIn) {
       // 로그인 페이지인데 이미 로그인된 경우
-      router.push('/elo');
+      router.push(ROUTES.elo.root);
     } else {
       setIsChecking(false);
     }

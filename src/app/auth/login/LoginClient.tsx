@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWepin } from '@/contexts/WepinContext';
+import { ROUTES } from '@/constants/routes';
 
 const LoginContainer = styled.div`
   min-height: 100vh;
@@ -147,7 +148,7 @@ export default function LoginClient() {
       await login();
 
       // 로그인 성공 시 메인 페이지로 이동
-      router.push('/elo');
+      router.push(ROUTES.elo.root);
     } catch (error) {
       console.error('Login failed:', error);
       setError('로그인에 실패했습니다. 다시 시도해주세요.');

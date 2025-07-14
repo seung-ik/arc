@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWepin } from '@/contexts/WepinContext';
+import { ROUTES } from '@/constants/routes';
 
 export default function Home() {
   const router = useRouter();
@@ -14,9 +15,9 @@ export default function Home() {
     }
 
     if (isLoggedIn) {
-      router.push('/elo');
+      router.push(ROUTES.elo.root);
     } else {
-      router.push('/login');
+      router.push(ROUTES.auth.login);
     }
   }, [isInitialized, isLoggedIn, router]);
 

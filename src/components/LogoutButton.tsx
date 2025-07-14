@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import { useWepin } from '@/contexts/WepinContext';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 const LogoutButtonStyled = styled.button`
   background: ${(props) => props.theme.colors.error};
@@ -36,7 +37,7 @@ export default function LogoutButton({ className }: LogoutButtonProps) {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push('/login');
+      router.push(ROUTES.auth.login);
     } catch (error) {
       console.error('Logout failed:', error);
     }

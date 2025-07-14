@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 interface HistoryMatch {
   id: number;
@@ -127,7 +128,7 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
   const router = useRouter();
 
   const handleOpponentClick = (opponentId: string) => {
-    router.push(`/profile/${opponentId}`);
+    router.push(ROUTES.profile.user(opponentId));
   };
 
   return (

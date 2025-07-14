@@ -1,4 +1,7 @@
 export const ROUTES = {
+  auth: {
+    login: '/auth/login',
+  },
   elo: {
     root: '/elo',
     management: '/elo/management',

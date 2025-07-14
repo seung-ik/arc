@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TwoButtonModal from '@/components/TwoButtonModal';
+import { ROUTES } from '@/constants/routes';
 
 interface Match {
   id: number;
@@ -151,7 +152,7 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
   const [rejectReason, setRejectReason] = useState('');
 
   const handleOpponentClick = (opponentId: string) => {
-    router.push(`/profile/${opponentId}`);
+    router.push(ROUTES.profile.user(opponentId));
   };
 
   // Accept 버튼 클릭

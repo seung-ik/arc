@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { ROUTES } from '@/constants/routes';
 
 const CategoryContainer = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -96,14 +97,14 @@ export default function CategoryTabs() {
   useEffect(() => {
     const fetchCategories = async () => {
       const mockCategories: Category[] = [
-        { id: 'trending', label: '자유글', path: '/community', order: 1 },
-        { id: 'tennis', label: '테니스', path: '/community/tennis', order: 2 },
-        { id: 'badminton', label: '배드민턴', path: '/community/badminton', order: 3 },
-        { id: 'table-tennis', label: '탁구', path: '/community/table-tennis', order: 4 },
-        { id: 'billiards', label: '당구', path: '/community/billiards', order: 5 },
-        { id: 'go', label: '바둑', path: '/community/go', order: 6 },
-        { id: 'chess', label: '체스', path: '/community/chess', order: 7 },
-        { id: 'notice', label: '공지사항', path: '/community/notice', order: 8 },
+        { id: 'trending', label: '자유글', path: ROUTES.community.root, order: 1 },
+        { id: 'tennis', label: '테니스', path: ROUTES.community.tennis, order: 2 },
+        { id: 'badminton', label: '배드민턴', path: ROUTES.community.badminton, order: 3 },
+        { id: 'table-tennis', label: '탁구', path: ROUTES.community.tableTennis, order: 4 },
+        { id: 'billiards', label: '당구', path: ROUTES.community.billiards, order: 5 },
+        { id: 'go', label: '바둑', path: ROUTES.community.go, order: 6 },
+        { id: 'chess', label: '체스', path: ROUTES.community.chess, order: 7 },
+        { id: 'notice', label: '공지사항', path: ROUTES.community.notice, order: 8 },
       ];
 
       const sortedCategories = mockCategories.sort((a, b) => a.order - b.order);
