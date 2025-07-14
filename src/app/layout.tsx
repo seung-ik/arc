@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyle from '@/styles/GlobalStyle';
 import ThemeWrapper from '@/components/ThemeWrapper';
-import { WepinProvider } from '@/contexts/WepinContext';
+import Providers from '@/components/Providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Arc - Elo 기반 스포츠 매칭 플랫폼',
+  title: 'Elo 기반 커뮤니티 플랫폼',
   description: '실력 기반 매칭과 토큰 보상 시스템을 제공하는 스포츠 커뮤니티',
 };
 
@@ -32,10 +32,10 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <StyledComponentsRegistry>
           <ThemeWrapper>
-            <WepinProvider>
+            <Providers>
               <GlobalStyle />
               {children}
-            </WepinProvider>
+            </Providers>
           </ThemeWrapper>
         </StyledComponentsRegistry>
       </body>
