@@ -127,17 +127,11 @@ const FeatureIcon = styled.div`
   font-weight: bold;
 `;
 
-export default function LoginPage() {
+export default function LoginClient() {
   const router = useRouter();
   const { isInitialized, isLoggedIn, login } = useWepin();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   if (isInitialized && isLoggedIn) {
-  //     router.push('/elo');
-  //   }
-  // }, [isInitialized, isLoggedIn, router]);
 
   const handleGoogleLogin = async () => {
     if (!isInitialized) {

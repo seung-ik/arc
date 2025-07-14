@@ -1,9 +1,10 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import type { WepinSDK, WepinSDKModule } from '@/types/wepin';
 
 interface WepinContextType {
-  wepinSDK: any;
+  wepinSDK: WepinSDK | null;
   isInitialized: boolean;
   isLoggedIn: boolean;
   userInfo: any;
@@ -11,7 +12,7 @@ interface WepinContextType {
   login: () => Promise<void>;
   logout: () => Promise<void>;
   getAccounts: () => Promise<any[]>;
-  getBalance: (network: string, address: string) => Promise<any>;
+  getBalance: (params: { network: string; address: string }) => Promise<any>;
 }
 
 const WepinContext = createContext<WepinContextType | undefined>(undefined);
@@ -21,7 +22,7 @@ interface WepinProviderProps {
 }
 
 export function WepinProvider({ children }: WepinProviderProps) {
-  const [wepinSDK, setWepinSDK] = useState<any>(null);
+  const [wepinSDK, setWepinSDK] = useState<WepinSDK | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
@@ -31,25 +32,30 @@ export function WepinProvider({ children }: WepinProviderProps) {
     if (typeof window === 'undefined') return; // SSR 방지
     let isMounted = true;
     (async () => {
-      const { WepinSDK } = await import('@wepin/sdk-js');
-      const sdk = new WepinSDK({
-        appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID || '',
-        appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY || '',
-      });
-      await sdk.init();
-      if (!isMounted) return;
-      setWepinSDK(sdk);
-      setIsInitialized(true);
-      // 로그인 상태 확인
-      const status = await sdk.getStatus();
-      if (status === 'login' || status === 'login_before_register') {
-        setIsLoggedIn(true);
-        try {
-          const userAccounts = await sdk.getAccounts();
-          setAccounts(userAccounts || []);
-        } catch (error) {
-          console.error('Failed to get accounts:', error);
+      try {
+        // 동적 import로 WepinSDK 로드 (SSR 시 로드되지 않음)
+        const { WepinSDK }: WepinSDKModule = await import('@wepin/sdk-js');
+        const sdk = new WepinSDK({
+          appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID || '',
+          appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY || '',
+        });
+        await sdk.init();
+        if (!isMounted) return;
+        setWepinSDK(sdk);
+        setIsInitialized(true);
+        // 로그인 상태 확인
+        const status = await sdk.getStatus();
+        if (status === 'login' || status === 'login_before_register') {
+          setIsLoggedIn(true);
+          try {
+            const userAccounts = await sdk.getAccounts();
+            setAccounts(userAccounts || []);
+          } catch (error) {
+            console.error('Failed to get accounts:', error);
+          }
         }
+      } catch (error) {
+        console.error('Failed to initialize Wepin SDK:', error);
       }
     })();
     return () => {
@@ -79,9 +85,12 @@ export function WepinProvider({ children }: WepinProviderProps) {
     return await wepinSDK.getAccounts();
   };
 
-  const getBalance = async (network: string, address: string) => {
+  const getBalance = async (params: { network: string; address: string }) => {
     if (!wepinSDK) return null;
-    return await wepinSDK.getBalance(network, address);
+    // wepinSDK.getBalance expects an array of params, so wrap in array
+    const result = await wepinSDK.getBalance([params]);
+    // result is likely an array, return the first element or null if empty
+    return Array.isArray(result) && result.length > 0 ? result[0] : null;
   };
 
   return (

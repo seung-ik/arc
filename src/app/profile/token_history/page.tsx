@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 
 import { ROUTES } from '@/constants/routes';
+import { useWepin } from '@/contexts/WepinContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -198,6 +199,7 @@ const mockTokenHistory: TokenHistoryItem[] = [
 
 export default function TokenHistoryPage() {
   const router = useRouter();
+  const { isInitialized, isLoggedIn, wepinSDK, login } = useWepin();
 
   const handleBack = () => {
     router.push(ROUTES.profile.root);
@@ -208,9 +210,27 @@ export default function TokenHistoryPage() {
     // 여기에 자세한 설명 모달이나 페이지로 이동
   };
 
-  const handleMyWallet = () => {
-    console.log('내 지갑 클릭');
-    // 여기에 지갑 페이지로 이동
+  const handleMyWallet = async () => {
+    console.log('handleMyWallet called');
+    console.log('isInitialized:', isInitialized);
+    console.log('isLoggedIn:', isLoggedIn);
+    console.log('wepinSDK:', wepinSDK);
+    if (!isInitialized || !wepinSDK) {
+      alert('Wepin SDK가 초기화되지 않았습니다.');
+      return;
+    }
+    try {
+      if (!isLoggedIn) {
+        console.log('Not logged in, calling login()...');
+        await login();
+      }
+      console.log('Calling wepinSDK.openWallet()...');
+      await wepinSDK.openWidget();
+      console.log('openWallet success!');
+    } catch (e) {
+      console.error('openWallet error:', e);
+      alert('지갑 열기에 실패했습니다.');
+    }
   };
 
   // 날짜별로 그룹화
