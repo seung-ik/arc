@@ -7,6 +7,7 @@ import { useModal } from '@/hooks/useModal';
 import MatchRegistrationModal from '@/components/MatchRegistrationModal';
 import MatchManagement from '@/components/MatchManagement';
 import EloTabCards from '@/components/EloTabCards';
+import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -466,23 +467,35 @@ export default function ManagementPage() {
         />
 
         <SectionTitle>추천매치</SectionTitle>
-        {recommendedMatches.map((match) => (
-          <RecommendedMatchCard key={match.id}>
-            <RecommendedMatchHeader>
-              <RecommendedMatchInfo>
-                <RecommendedOpponentId>{match.opponentId}</RecommendedOpponentId>
-                <RecommendedSportBadge>{match.sport}</RecommendedSportBadge>
-              </RecommendedMatchInfo>
-              <RecommendedElo>ELO {match.opponentElo}</RecommendedElo>
-            </RecommendedMatchHeader>
+        {recommendedMatches.map((match, index) => (
+          <div key={match.id}>
+            <RecommendedMatchCard>
+              <RecommendedMatchHeader>
+                <RecommendedMatchInfo>
+                  <RecommendedOpponentId>{match.opponentId}</RecommendedOpponentId>
+                  <RecommendedSportBadge>{match.sport}</RecommendedSportBadge>
+                </RecommendedMatchInfo>
+                <RecommendedElo>ELO {match.opponentElo}</RecommendedElo>
+              </RecommendedMatchHeader>
 
-            <RegionInfo>
-              <RegionBadge>{match.region}</RegionBadge>
-              {match.distance && <DistanceText>{match.distance}</DistanceText>}
-            </RegionInfo>
+              <RegionInfo>
+                <RegionBadge>{match.region}</RegionBadge>
+                {match.distance && <DistanceText>{match.distance}</DistanceText>}
+              </RegionInfo>
 
-            <ChallengeButton onClick={() => handleChallenge(match.id)}>매치 신청</ChallengeButton>
-          </RecommendedMatchCard>
+              <ChallengeButton onClick={() => handleChallenge(match.id)}>매치 신청</ChallengeButton>
+            </RecommendedMatchCard>
+
+            {/* 2번째 매치 후에 광고 배너 추가 */}
+            {index === 1 && (
+              <AdBanner
+                title="프리미엄 구장 할인"
+                description="전용 코트에서 실력 향상! 20% 할인된 가격으로 이용하세요"
+                badge="할인"
+                onClick={() => console.log('구장 예약 클릭')}
+              />
+            )}
+          </div>
         ))}
       </ContentContainer>
       <MatchRegistrationModal
