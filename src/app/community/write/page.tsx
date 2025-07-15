@@ -221,14 +221,9 @@ const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
 // 글타입 옵션
 const POST_TYPES = [
-  { value: '질문', label: '질문' },
-  { value: '후기', label: '후기' },
-  { value: '팁', label: '팁' },
-  { value: '정보', label: '정보' },
-  { value: '모집', label: '모집' },
-  { value: '추천', label: '추천' },
-  { value: '분석', label: '분석' },
-  { value: '일상', label: '일상' },
+  { value: '일반', label: '일반' },
+  { value: '매치', label: '매치' },
+  { value: '멘토', label: '멘토' },
 ];
 
 // 카테고리 옵션
