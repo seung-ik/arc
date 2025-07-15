@@ -39,7 +39,9 @@ export function WepinProvider({ children }: WepinProviderProps) {
           appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID || '',
           appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY || '',
         });
-        await sdk.init();
+        await sdk.init({
+          loginProviders: ['google'], // 구글만 허용
+        });
         if (!isMounted) return;
         setWepinSDK(sdk);
         setIsInitialized(true);
