@@ -192,10 +192,71 @@ const ModalButtonGroup = styled.div`
   justify-content: center;
 `;
 
-const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.lg};
+const InfoBox = styled.div`
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.theme.colors.primaryLight} 0%,
+    rgba(59, 130, 246, 0.05) 100%
+  );
+  border: 1px solid ${(props) => props.theme.colors.primary};
   border-radius: ${(props) => props.theme.borderRadius.md};
+  padding: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const InfoTitle = styled.h3`
   font-size: ${(props) => props.theme.typography.fontSizes.base};
+  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${(props) => props.theme.colors.primary};
+  margin: 0 0 ${(props) => props.theme.spacing.xs} 0;
+`;
+
+const InfoText = styled.p`
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${(props) => props.theme.colors.textGray};
+  margin: 0;
+  line-height: 1.5;
+`;
+
+const MentorFields = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.md};
+  background-color: ${(props) => props.theme.colors.background};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const FieldRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${(props) => props.theme.spacing.md};
+`;
+
+const FieldDescription = styled.div`
+  margin-bottom: ${(props) => props.theme.spacing.xs};
+`;
+
+const FieldLabel = styled.label`
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  color: ${(props) => props.theme.colors.textBlack};
+  margin-bottom: ${(props) => props.theme.spacing.xs};
+  display: block;
+`;
+
+const FieldHelp = styled.span`
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  color: ${(props) => props.theme.colors.textGray};
+  font-style: italic;
+`;
+
+const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.md};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
   font-weight: ${(props) => props.theme.typography.fontWeights.medium};
   border: 1px solid ${(props) => props.theme.colors.border};
   cursor: pointer;
@@ -246,6 +307,11 @@ function WritePostForm() {
     content: '',
     postType: '',
     category: defaultCategory,
+    sport: '',
+    customSport: '',
+    elo: '',
+    location: '',
+    tokenReward: '',
   });
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -269,6 +335,20 @@ function WritePostForm() {
     ) {
       alert('모든 필드를 입력해주세요.');
       return;
+    }
+
+    // 멘토 포스트 타입일 때 추가 필드 검증
+    if (formData.postType === '멘토') {
+      if (!formData.sport || !formData.elo || !formData.location || !formData.tokenReward) {
+        alert('멘토링 요청에 필요한 모든 정보를 입력해주세요.');
+        return;
+      }
+
+      // 직접 입력한 경우 customSport도 확인
+      if (formData.sport === '직접입력' && !formData.customSport.trim()) {
+        alert('종목을 직접 입력해주세요.');
+        return;
+      }
     }
 
     // TODO: API 호출하여 글 작성
@@ -363,6 +443,140 @@ function WritePostForm() {
               </FormGroup>
             </TopFormGroup>
 
+            {formData.postType === '멘토' && (
+              <>
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
+                    border: '1px solid #2196f3',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <h3
+                    style={{
+                      color: '#2196f3',
+                      margin: '0 0 8px 0',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    📚 멘토링 요청 안내
+                  </h3>
+                  <p style={{ color: '#666', margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
+                    멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역/시간, 보상 토큰 등을
+                    상세히 작성해주세요. 멘토가 요청을 보고 연락을 드릴 예정입니다.
+                  </p>
+                </div>
+
+                <MentorFields>
+                  <FieldRow>
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="sport">종목 *</FieldLabel>
+                        <FieldHelp>멘토링을 받고 싶은 종목을 선택하거나 직접 입력하세요</FieldHelp>
+                      </FieldDescription>
+                      <Select
+                        id="sport"
+                        value={formData.sport || ''}
+                        onChange={(e) => handleInputChange('sport', e.target.value)}
+                        required
+                      >
+                        <option value="">종목 선택</option>
+                        {CATEGORIES.map((category) => (
+                          <option key={category.value} value={category.value}>
+                            {category.label}
+                          </option>
+                        ))}
+                        <option value="직접입력">직접 입력</option>
+                      </Select>
+                      {formData.sport === '직접입력' && (
+                        <Input
+                          type="text"
+                          value={formData.customSport || ''}
+                          onChange={(e) => handleInputChange('customSport', e.target.value)}
+                          placeholder="종목을 직접 입력하세요"
+                          style={{ marginTop: '8px' }}
+                          required
+                        />
+                      )}
+                    </FormGroup>
+
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="elo">희망 멘토 실력 *</FieldLabel>
+                        <FieldHelp>희망하는 멘토의 최소 실력 수준</FieldHelp>
+                      </FieldDescription>
+                      <Select
+                        id="elo"
+                        value={formData.elo || ''}
+                        onChange={(e) => handleInputChange('elo', e.target.value)}
+                        required
+                      >
+                        <option value="">실력 선택</option>
+                        <option value="1000-1200">1000-1200 (초급)</option>
+                        <option value="1200-1400">1200-1400 (중급)</option>
+                        <option value="1400-1600">1400-1600 (고급)</option>
+                        <option value="1600+">1600+ (전문가)</option>
+                      </Select>
+                    </FormGroup>
+                  </FieldRow>
+
+                  <FieldRow>
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="location">지역/시간 *</FieldLabel>
+                        <FieldHelp>멘토링을 받을 수 있는 지역과 시간</FieldHelp>
+                      </FieldDescription>
+                      <Input
+                        id="location"
+                        type="text"
+                        value={formData.location || ''}
+                        onChange={(e) => handleInputChange('location', e.target.value)}
+                        placeholder="예: 서울 강남구, 주말 오후"
+                        required
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="tokenReward">보상 토큰 *</FieldLabel>
+                        <FieldHelp>멘토에게 지급할 토큰 수량 (숫자만 입력)</FieldHelp>
+                      </FieldDescription>
+                      <Input
+                        id="tokenReward"
+                        type="number"
+                        value={formData.tokenReward || ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // 숫자만 허용
+                          if (value === '' || /^\d+$/.test(value)) {
+                            handleInputChange('tokenReward', value);
+                          }
+                        }}
+                        onKeyPress={(e) => {
+                          // 숫자와 백스페이스, 화살표 키만 허용
+                          if (
+                            !/[0-9]/.test(e.key) &&
+                            e.key !== 'Backspace' &&
+                            e.key !== 'Delete' &&
+                            e.key !== 'ArrowLeft' &&
+                            e.key !== 'ArrowRight'
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                        placeholder="예: 100"
+                        min="1"
+                        required
+                      />
+                    </FormGroup>
+                  </FieldRow>
+                </MentorFields>
+              </>
+            )}
+
             <FormGroup>
               <Label htmlFor="title">제목 *</Label>
               <Input
@@ -370,7 +584,11 @@ function WritePostForm() {
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="제목을 입력하세요"
+                placeholder={
+                  formData.postType === '멘토'
+                    ? '예: 테니스 초보자 멘토링 요청합니다'
+                    : '제목을 입력하세요'
+                }
                 required
               />
             </FormGroup>
