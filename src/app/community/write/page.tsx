@@ -129,6 +129,36 @@ const TextArea = styled.textarea`
   }
 `;
 
+const ShortTextArea = styled.textarea`
+  padding: ${(props) => props.theme.spacing.sm};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  background-color: ${(props) => props.theme.colors.background};
+  color: ${(props) => props.theme.colors.textBlack};
+  resize: vertical;
+  min-height: 80px;
+  max-height: 120px;
+  font-family: inherit;
+  line-height: 1.5;
+
+  &:focus {
+    outline: none;
+    border-color: ${(props) => props.theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${(props) => props.theme.colors.textGray};
+  }
+`;
+
+const CharCount = styled.div`
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  color: ${(props) => props.theme.colors.textGray};
+  text-align: right;
+  margin-top: ${(props) => props.theme.spacing.xs};
+`;
+
 const Select = styled.select`
   padding: ${(props) => props.theme.spacing.sm};
   border: 1px solid ${(props) => props.theme.colors.border};
@@ -253,6 +283,94 @@ const FieldHelp = styled.span`
   font-style: italic;
 `;
 
+const MatchFields = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.md};
+  background-color: ${(props) => props.theme.colors.background};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const TimeLocationRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${(props) => props.theme.spacing.md};
+`;
+
+const ValidityPeriodSection = styled.div`
+  margin-top: ${(props) => props.theme.spacing.lg};
+`;
+
+const ValidityTitle = styled.h3`
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${(props) => props.theme.colors.textBlack};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const ValidityCards = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const ValidityCard = styled.div<{ $selected?: boolean }>`
+  padding: ${(props) => props.theme.spacing.md};
+  border: 2px solid
+    ${(props) => (props.$selected ? props.theme.colors.primary : props.theme.colors.border)};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: ${(props) =>
+    props.$selected ? props.theme.colors.primaryLight : props.theme.colors.background};
+
+  &:hover {
+    border-color: ${(props) => props.theme.colors.primary};
+    background-color: ${(props) => props.theme.colors.primaryLight};
+  }
+`;
+
+const ValidityPeriod = styled.div`
+  font-size: ${(props) => props.theme.typography.fontSizes.lg};
+  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${(props) => props.theme.colors.textBlack};
+  margin-bottom: ${(props) => props.theme.spacing.xs};
+`;
+
+const ValidityToken = styled.div`
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+`;
+
+const TokenInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${(props) => props.theme.spacing.md};
+  background-color: ${(props) => props.theme.colors.background};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  margin-top: ${(props) => props.theme.spacing.md};
+`;
+
+const TokenLabel = styled.span`
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${(props) => props.theme.colors.textGray};
+`;
+
+const TokenAmount = styled.span<{ $insufficient?: boolean }>`
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${(props) =>
+    props.$insufficient ? props.theme.colors.error : props.theme.colors.primary};
+`;
+
 const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.md};
   border-radius: ${(props) => props.theme.borderRadius.md};
@@ -297,6 +415,21 @@ const CATEGORIES = [
   { value: 'chess', label: '체스' },
 ];
 
+// 유효기간 옵션
+const VALIDITY_PERIODS = [
+  { value: '1', label: '1일', token: 1 },
+  { value: '3', label: '3일', token: 2 },
+  { value: '7', label: '7일', token: 5 },
+];
+
+// 시간대 옵션
+const TIME_OPTIONS = [
+  { value: 'morning', label: '오전 (09:00-12:00)' },
+  { value: 'afternoon', label: '오후 (12:00-18:00)' },
+  { value: 'evening', label: '저녁 (18:00-21:00)' },
+  { value: 'flexible', label: '시간 협의 가능' },
+];
+
 function WritePostForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -312,6 +445,13 @@ function WritePostForm() {
     elo: '',
     location: '',
     tokenReward: '',
+    // 매치 관련 필드
+    matchDate: '',
+    matchTime: '',
+    matchLocation: '',
+    myElo: '',
+    preferredElo: '',
+    validityPeriod: '',
   });
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -347,6 +487,14 @@ function WritePostForm() {
       // 직접 입력한 경우 customSport도 확인
       if (formData.sport === '직접입력' && !formData.customSport.trim()) {
         alert('종목을 직접 입력해주세요.');
+        return;
+      }
+    }
+
+    // 매치 포스트 타입일 때 추가 필드 검증
+    if (formData.postType === '매치') {
+      if (!formData.matchDate || !formData.matchTime || !formData.validityPeriod) {
+        alert('매칭 요청에 필요한 모든 정보를 입력해주세요.');
         return;
       }
     }
@@ -577,6 +725,155 @@ function WritePostForm() {
               </>
             )}
 
+            {formData.postType === '매치' && (
+              <>
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%)',
+                    border: '1px solid #4caf50',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <h3
+                    style={{
+                      color: '#4caf50',
+                      margin: '0 0 8px 0',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    🏓 매칭 요청 안내
+                  </h3>
+                  <p style={{ color: '#666', margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
+                    매칭을 원하는 시간, 장소, 상대 실력을 설정하고 유효기간을 선택하세요. AI 추천
+                    시스템을 통해 적합한 상대를 찾아드립니다.
+                  </p>
+                </div>
+
+                <MatchFields>
+                  <TimeLocationRow>
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="matchDate">희망 날짜 *</FieldLabel>
+                        <FieldHelp>매칭을 원하는 날짜를 선택하세요</FieldHelp>
+                      </FieldDescription>
+                      <Select
+                        id="matchDate"
+                        value={formData.matchDate}
+                        onChange={(e) => handleInputChange('matchDate', e.target.value)}
+                        required
+                      >
+                        <option value="">날짜 선택</option>
+                        <option value="today">오늘</option>
+                        <option value="tomorrow">내일</option>
+                        <option value="this-weekend">이번 주말</option>
+                        <option value="next-weekend">다음 주말</option>
+                        <option value="flexible">날짜 협의 가능</option>
+                      </Select>
+                    </FormGroup>
+
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="matchTime">희망 시간대 *</FieldLabel>
+                        <FieldHelp>매칭을 원하는 시간대를 선택하세요</FieldHelp>
+                      </FieldDescription>
+                      <Select
+                        id="matchTime"
+                        value={formData.matchTime}
+                        onChange={(e) => handleInputChange('matchTime', e.target.value)}
+                        required
+                      >
+                        <option value="">시간대 선택</option>
+                        {TIME_OPTIONS.map((time) => (
+                          <option key={time.value} value={time.value}>
+                            {time.label}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormGroup>
+                  </TimeLocationRow>
+
+                  <FormGroup>
+                    <FieldDescription>
+                      <FieldLabel htmlFor="matchLocation">선호 장소</FieldLabel>
+                      <FieldHelp>매칭을 원하는 장소를 입력하세요 (선택사항)</FieldHelp>
+                    </FieldDescription>
+                    <Input
+                      id="matchLocation"
+                      type="text"
+                      value={formData.matchLocation}
+                      onChange={(e) => handleInputChange('matchLocation', e.target.value)}
+                      placeholder="예: 강남구 테니스장, 협의 가능"
+                    />
+                  </FormGroup>
+
+                  <TimeLocationRow>
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="myElo">내 실력 (Elo)</FieldLabel>
+                        <FieldHelp>현재 Elo 점수를 입력하세요</FieldHelp>
+                      </FieldDescription>
+                      <Input
+                        id="myElo"
+                        type="number"
+                        value={formData.myElo}
+                        onChange={(e) => handleInputChange('myElo', e.target.value)}
+                        placeholder="예: 1200"
+                        min="0"
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <FieldDescription>
+                        <FieldLabel htmlFor="preferredElo">희망 상대 실력</FieldLabel>
+                        <FieldHelp>희망하는 상대의 실력 범위</FieldHelp>
+                      </FieldDescription>
+                      <Select
+                        id="preferredElo"
+                        value={formData.preferredElo}
+                        onChange={(e) => handleInputChange('preferredElo', e.target.value)}
+                      >
+                        <option value="">실력 무관</option>
+                        <option value="similar">비슷한 실력</option>
+                        <option value="higher">더 높은 실력</option>
+                        <option value="lower">더 낮은 실력</option>
+                        <option value="any">모든 실력</option>
+                      </Select>
+                    </FormGroup>
+                  </TimeLocationRow>
+                </MatchFields>
+
+                <ValidityPeriodSection>
+                  <ValidityTitle>유효기간 선택 *</ValidityTitle>
+                  <ValidityCards>
+                    {VALIDITY_PERIODS.map((period) => (
+                      <ValidityCard
+                        key={period.value}
+                        $selected={formData.validityPeriod === period.value}
+                        onClick={() => handleInputChange('validityPeriod', period.value)}
+                      >
+                        <ValidityPeriod>{period.label}</ValidityPeriod>
+                        <ValidityToken>{period.token} 토큰</ValidityToken>
+                      </ValidityCard>
+                    ))}
+                  </ValidityCards>
+
+                  <TokenInfo>
+                    <TokenLabel>필요 토큰:</TokenLabel>
+                    <TokenAmount $insufficient={false}>
+                      {formData.validityPeriod
+                        ? VALIDITY_PERIODS.find((p) => p.value === formData.validityPeriod)
+                            ?.token || 0
+                        : 0}{' '}
+                      토큰
+                    </TokenAmount>
+                  </TokenInfo>
+                </ValidityPeriodSection>
+              </>
+            )}
+
             <FormGroup>
               <Label htmlFor="title">제목 *</Label>
               <Input
@@ -587,6 +884,8 @@ function WritePostForm() {
                 placeholder={
                   formData.postType === '멘토'
                     ? '예: 테니스 초보자 멘토링 요청합니다'
+                    : formData.postType === '매치'
+                    ? '예: 테니스 매칭 구합니다'
                     : '제목을 입력하세요'
                 }
                 required
@@ -595,13 +894,36 @@ function WritePostForm() {
 
             <FormGroup>
               <Label htmlFor="content">내용 *</Label>
-              <TextArea
-                id="content"
-                value={formData.content}
-                onChange={(e) => handleInputChange('content', e.target.value)}
-                placeholder="내용을 입력하세요"
-                required
-              />
+              {formData.postType === '매치' || formData.postType === '멘토' ? (
+                <>
+                  <ShortTextArea
+                    id="content"
+                    value={formData.content}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value.length <= 80) {
+                        handleInputChange('content', value);
+                      }
+                    }}
+                    placeholder={
+                      formData.postType === '매치'
+                        ? '매칭 요청 내용을 간단히 입력하세요 (80자 이내)'
+                        : '멘토링 요청 내용을 간단히 입력하세요 (80자 이내)'
+                    }
+                    maxLength={80}
+                    required
+                  />
+                  <CharCount>{formData.content.length}/80</CharCount>
+                </>
+              ) : (
+                <TextArea
+                  id="content"
+                  value={formData.content}
+                  onChange={(e) => handleInputChange('content', e.target.value)}
+                  placeholder="내용을 입력하세요"
+                  required
+                />
+              )}
             </FormGroup>
           </Form>
         </Content>
