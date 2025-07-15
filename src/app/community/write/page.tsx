@@ -7,6 +7,9 @@ import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityLayout from '@/components/CommunityLayout';
 import { ROUTES } from '@/constants/routes';
+import dynamic from 'next/dynamic';
+
+const ToastEditor = dynamic(() => import('@/components/ToastEditor'), { ssr: false });
 
 const Container = styled.div`
   min-height: 100vh;
@@ -438,7 +441,7 @@ function WritePostForm() {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    postType: '',
+    postType: '일반',
     category: defaultCategory,
     sport: '',
     customSport: '',
@@ -916,12 +919,12 @@ function WritePostForm() {
                   <CharCount>{formData.content.length}/80</CharCount>
                 </>
               ) : (
-                <TextArea
-                  id="content"
+                <ToastEditor
                   value={formData.content}
-                  onChange={(e) => handleInputChange('content', e.target.value)}
+                  onChange={(value) => handleInputChange('content', value)}
+                  height="400px"
                   placeholder="내용을 입력하세요"
-                  required
+                  initialEditType="wysiwyg"
                 />
               )}
             </FormGroup>
