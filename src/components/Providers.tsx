@@ -2,7 +2,6 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { WepinProvider } from '@/contexts/WepinContext';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -19,10 +18,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
-      <QueryClientProvider client={queryClient}>
-        <WepinProvider>{children}</WepinProvider>
-      </QueryClientProvider>
-    </GoogleOAuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <WepinProvider>{children}</WepinProvider>
+    </QueryClientProvider>
   );
 }
