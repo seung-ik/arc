@@ -140,7 +140,8 @@ export default function LoginClient() {
 
     try {
       // Wepin SDK를 통한 구글 로그인 및 지갑 생성
-      await login();
+      const data = await login();
+      console.log(data);
 
       // 로그인 성공 시 메인 페이지로 이동
       router.push(ROUTES.elo.root);

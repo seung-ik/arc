@@ -12,7 +12,7 @@ interface WepinContextType {
   isLoggedIn: boolean;
   userInfo: any;
   accounts: any[];
-  login: () => Promise<void>;
+  login: () => Promise<{ idToken: string; wepinUser: any; accounts: any[] } | undefined>;
   logout: () => Promise<void>;
   getAccounts: () => Promise<any[]>;
   getBalance: (params: { network: string; address: string }) => Promise<any>;
@@ -77,11 +77,10 @@ export function WepinProvider({ children }: WepinProviderProps) {
   }, []);
 
   const login = async () => {
-    if (!wepinLogin) return;
+    if (!wepinLogin) return undefined;
 
     try {
       const oauthResult = await wepinLogin.loginWithOauthProvider({ provider: 'google' });
-      console.log('OAuth 로그인 성공, idToken:', oauthResult.token.idToken);
 
       // 2. Firebase Token으로 위핀 로그인
       const wepinUser = await wepinLogin.loginWepin({
@@ -92,19 +91,25 @@ export function WepinProvider({ children }: WepinProviderProps) {
         },
       });
 
-      console.log('Wepin 로그인 성공, wepinUserInfo:', wepinUser);
-
-      setIsLoggedIn(true);
-      setUserInfo(wepinUser);
-
+      let userAccounts: any[] = [];
       if (wepinSDK) {
         wepinSDK.setUserInfo(wepinUser);
+        userAccounts = await wepinSDK.getAccounts();
+        setIsLoggedIn(true);
+        setUserInfo(wepinUser);
+        setAccounts(userAccounts);
 
         const statusAfterSetUser = await wepinSDK.getStatus();
         if (statusAfterSetUser === 'login_before_register') {
           await wepinSDK.register();
         }
       }
+
+      return {
+        idToken: oauthResult.token.idToken,
+        wepinUser,
+        accounts: userAccounts,
+      };
     } catch (error) {
       console.error('로그인 실패:', error);
       throw error;
