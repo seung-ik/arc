@@ -31,5 +31,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "typescript": "^5"
+  },
+  "overrides": {
+    "react": "^19.0.0"
   }
 }
