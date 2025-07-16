@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { GoogleLogin } from '@react-oauth/google';
 import { useWepin } from '@/contexts/WepinContext';
 import { ROUTES } from '@/constants/routes';
 
@@ -47,40 +48,6 @@ const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
-const LoginButton = styled.button`
-  background: ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.textWhite};
-  border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md} ${(props) => props.theme.spacing.xl};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${(props) => props.theme.spacing.sm};
-
-  &:hover {
-    background: ${(props) => props.theme.colors.primaryHover};
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
-  }
-
-  &:disabled {
-    background: ${(props) => props.theme.colors.textLightGray};
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-`;
-
-const GoogleIcon = styled.div`
-  font-size: 20px;
-`;
-
 const LoadingSpinner = styled.div`
   width: 20px;
   height: 20px;
@@ -108,6 +75,15 @@ const ErrorMessage = styled.div`
   border-radius: ${(props) => props.theme.borderRadius.sm};
 `;
 
+const SuccessMessage = styled.div`
+  color: ${(props) => props.theme.colors.success};
+  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  margin-top: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.sm};
+  background: ${(props) => props.theme.colors.backgroundGray};
+  border-radius: ${(props) => props.theme.borderRadius.sm};
+`;
+
 const Features = styled.div`
   margin-top: ${(props) => props.theme.spacing.xl};
   padding-top: ${(props) => props.theme.spacing.lg};
@@ -128,34 +104,36 @@ const FeatureIcon = styled.div`
   font-weight: bold;
 `;
 
+const GoogleLoginContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
 export default function LoginClient() {
   const router = useRouter();
-  const { isInitialized, isLoggedIn, login } = useWepin();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { isInitialized, isLoggedIn } = useWepin();
 
-  const handleGoogleLogin = async () => {
-    if (!isInitialized) {
-      setError('Wepin SDK가 초기화되지 않았습니다.');
-      return;
-    }
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    console.log('Google OAuth Success:', credentialResponse);
 
-    setIsLoading(true);
-    setError(null);
+    if (credentialResponse.credential) {
+      const token = credentialResponse.credential;
 
-    try {
-      // Wepin SDK를 통한 구글 로그인 및 지갑 생성
-      await login();
+      // ID Token을 콘솔에 출력 (개발용)
+      console.log('ID Token:', token, credentialResponse);
 
-      // 로그인 성공 시 메인 페이지로 이동
-      router.push(ROUTES.elo.root);
-    } catch (error) {
-      console.error('Login failed:', error);
-      setError('로그인에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setIsLoading(false);
+      // TODO: 여기서 Wepin SDK로 ID Token을 전달할 예정
+      // await wepinSDK.loginWithIdToken(token);
+
+      // 임시로 3초 후 메인 페이지로 이동
+      setTimeout(() => {
+        router.push(ROUTES.elo.root);
+      }, 3000);
     }
   };
+
+  const handleGoogleError = () => {};
 
   if (!isInitialized) {
     return (
@@ -170,50 +148,15 @@ export default function LoginClient() {
 
   return (
     <LoginContainer>
-      <LoginCard>
-        <Logo>🏆</Logo>
-        <Title>Arc에 오신 것을 환영합니다</Title>
-        <Subtitle>
-          구글 계정으로 간편하게 로그인하고
-          <br />
-          실력 기반 스포츠 매칭을 시작하세요
-        </Subtitle>
-
-        <LoginButton onClick={handleGoogleLogin} disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <LoadingSpinner />
-              로그인 중...
-            </>
-          ) : (
-            <>
-              <GoogleIcon>🔗</GoogleIcon>
-              구글 계정으로 시작하기
-            </>
-          )}
-        </LoginButton>
-
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        <Features>
-          <FeatureItem>
-            <FeatureIcon>✓</FeatureIcon>
-            구글 계정으로 간편 로그인
-          </FeatureItem>
-          <FeatureItem>
-            <FeatureIcon>✓</FeatureIcon>
-            자동 지갑 생성 및 관리
-          </FeatureItem>
-          <FeatureItem>
-            <FeatureIcon>✓</FeatureIcon>
-            실력 기반 매칭 시스템
-          </FeatureItem>
-          <FeatureItem>
-            <FeatureIcon>✓</FeatureIcon>
-            토큰 보상 및 커뮤니티
-          </FeatureItem>
-        </Features>
-      </LoginCard>
+      <GoogleLoginContainer>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          theme="filled_blue"
+          size="large"
+          text="signin_with"
+        />
+      </GoogleLoginContainer>
     </LoginContainer>
   );
 }
