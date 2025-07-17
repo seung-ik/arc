@@ -50,6 +50,10 @@ import {
   ReplyMeta,
   ReplyDate,
   ReplyAuthor,
+  ManagementSection,
+  ManagementTitle,
+  ManagementButtons,
+  ManagementButton,
   MatchInfoSection,
   MatchInfoGrid,
   MatchInfoItem,
@@ -57,7 +61,6 @@ import {
   MatchInfoValue,
   EloValue,
   ValidityPeriod,
-  JoinButton,
 } from '@/styles/PostDetailStyles';
 
 interface MatchPost {
@@ -82,6 +85,8 @@ interface MatchPost {
   validityPeriod?: number;
   participants?: string[];
   maxParticipants?: number;
+  // 프로필 노출 관련
+  showInProfile?: boolean;
 }
 
 interface Comment {
@@ -96,31 +101,23 @@ interface Comment {
   isLiked: boolean;
 }
 
-interface MatchPostDetailProps {
+interface MatchMyPostDetailProps {
   post: MatchPost;
 }
 
-export default function MatchPostDetail({ post }: MatchPostDetailProps) {
+export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
   const router = useRouter();
-  const [isJoined, setIsJoined] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
-  const handleJoin = () => {
-    setIsJoined(!isJoined);
-    // TODO: 실제 매치 참가 로직 구현
-  };
-
   const getValidityText = (validityPeriod: number) => {
     if (validityPeriod <= 0) return '유효기간 만료';
     if (validityPeriod === 1) return '유효기간: 오늘까지';
     return `유효기간: ${validityPeriod}일 남음`;
   };
-
-  const isExpired = (validityPeriod: number) => validityPeriod <= 0;
 
   const handleLike = () => {
     // TODO: 좋아요 처리
@@ -219,6 +216,11 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
     router.push(`/profile/${authorId}`);
   };
 
+  const handleDelete = () => {
+    // TODO: 삭제 처리
+    console.log('Delete post:', post.id);
+  };
+
   return (
     <Container>
       <Content>
@@ -231,9 +233,7 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
           </PostTitleRow>
           <PostMeta>
             <AuthorInfo>
-              <AuthorName onClick={() => handleAuthorClick(post.authorId)}>
-                {post.authorName}
-              </AuthorName>
+              <AuthorName>{post.authorName}</AuthorName>
               <PostDate>{post.date}</PostDate>
             </AuthorInfo>
             <PostTypeBadge>{post.postType}</PostTypeBadge>
@@ -267,14 +267,6 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
               </MatchInfoItem>
             )}
           </MatchInfoGrid>
-
-          <JoinButton onClick={handleJoin} disabled={isExpired(post.validityPeriod || 0)}>
-            {isExpired(post.validityPeriod || 0)
-              ? '매치 종료'
-              : isJoined
-              ? '참가 취소'
-              : '매치 참가'}
-          </JoinButton>
         </MatchInfoSection>
 
         <PostContent>{post.content}</PostContent>
@@ -291,6 +283,15 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
             </ActionButton>
           </ActionButtons>
         </PostActions>
+
+        <ManagementSection>
+          <ManagementTitle>게시글 관리</ManagementTitle>
+          <ManagementButtons>
+            <ManagementButton onClick={handleDelete} $variant="delete">
+              삭제
+            </ManagementButton>
+          </ManagementButtons>
+        </ManagementSection>
 
         <CommentsSection>
           <CommentsHeader>댓글 ({post.commentCount})</CommentsHeader>

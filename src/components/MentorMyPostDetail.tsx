@@ -3,7 +3,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
 import {
   Container,
   Content,
@@ -50,17 +49,19 @@ import {
   ReplyMeta,
   ReplyDate,
   ReplyAuthor,
-  MatchInfoSection,
-  MatchInfoGrid,
-  MatchInfoItem,
-  MatchInfoLabel,
-  MatchInfoValue,
-  EloValue,
-  ValidityPeriod,
-  JoinButton,
+  ManagementSection,
+  ManagementTitle,
+  ManagementButtons,
+  ManagementButton,
+  MentorInfoSection,
+  MentorInfoGrid,
+  MentorInfoItem,
+  MentorInfoLabel,
+  MentorInfoValue,
+  PriceValue,
 } from '@/styles/PostDetailStyles';
 
-interface MatchPost {
+interface Post {
   id: number;
   title: string;
   content: string;
@@ -75,13 +76,14 @@ interface MatchPost {
   commentCount: number;
   isLiked: boolean;
   isDisliked: boolean;
-  // 매치 전용 필드들
-  elo?: number;
+  // 멘토 전용 필드들
+  mentorLevel?: string;
+  experience?: string;
+  lessonType?: string;
+  price?: string;
   location?: string;
-  desiredSkillLevel?: string;
-  validityPeriod?: number;
-  participants?: string[];
-  maxParticipants?: number;
+  // 프로필 노출 관련
+  showInProfile?: boolean;
 }
 
 interface Comment {
@@ -96,31 +98,32 @@ interface Comment {
   isLiked: boolean;
 }
 
-interface MatchPostDetailProps {
-  post: MatchPost;
+interface MentorMyPostDetailProps {
+  post: Post;
 }
 
-export default function MatchPostDetail({ post }: MatchPostDetailProps) {
+export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
   const router = useRouter();
-  const [isJoined, setIsJoined] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
-  const handleJoin = () => {
-    setIsJoined(!isJoined);
-    // TODO: 실제 매치 참가 로직 구현
+  const handleEdit = () => {
+    // TODO: 수정 처리
+    console.log('Edit post:', post.id);
   };
 
-  const getValidityText = (validityPeriod: number) => {
-    if (validityPeriod <= 0) return '유효기간 만료';
-    if (validityPeriod === 1) return '유효기간: 오늘까지';
-    return `유효기간: ${validityPeriod}일 남음`;
+  const handleDelete = () => {
+    // TODO: 삭제 처리
+    console.log('Delete post:', post.id);
   };
 
-  const isExpired = (validityPeriod: number) => validityPeriod <= 0;
+  const handleToggleProfile = () => {
+    // TODO: 프로필 노출 토글 처리
+    console.log('Toggle profile visibility:', post.id);
+  };
 
   const handleLike = () => {
     // TODO: 좋아요 처리
@@ -231,51 +234,51 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
           </PostTitleRow>
           <PostMeta>
             <AuthorInfo>
-              <AuthorName onClick={() => handleAuthorClick(post.authorId)}>
-                {post.authorName}
-              </AuthorName>
+              <AuthorName>{post.authorName}</AuthorName>
               <PostDate>{post.date}</PostDate>
             </AuthorInfo>
             <PostTypeBadge>{post.postType}</PostTypeBadge>
           </PostMeta>
         </PostHeader>
 
-        {post.validityPeriod !== undefined && (
-          <ValidityPeriod>{getValidityText(post.validityPeriod)}</ValidityPeriod>
-        )}
+        <MentorInfoSection>
+          <MentorInfoGrid>
+            {post.mentorLevel && (
+              <MentorInfoItem>
+                <MentorInfoLabel>멘토 레벨</MentorInfoLabel>
+                <MentorInfoValue>{post.mentorLevel}</MentorInfoValue>
+              </MentorInfoItem>
+            )}
 
-        <MatchInfoSection>
-          <MatchInfoGrid>
-            {post.elo !== undefined && (
-              <MatchInfoItem>
-                <MatchInfoLabel>ELO</MatchInfoLabel>
-                <EloValue>{post.elo}</EloValue>
-              </MatchInfoItem>
+            {post.experience && (
+              <MentorInfoItem>
+                <MentorInfoLabel>경력</MentorInfoLabel>
+                <MentorInfoValue>{post.experience}</MentorInfoValue>
+              </MentorInfoItem>
+            )}
+
+            {post.lessonType && (
+              <MentorInfoItem>
+                <MentorInfoLabel>레슨 유형</MentorInfoLabel>
+                <MentorInfoValue>{post.lessonType}</MentorInfoValue>
+              </MentorInfoItem>
+            )}
+
+            {post.price && (
+              <MentorInfoItem>
+                <MentorInfoLabel>레슨 비용</MentorInfoLabel>
+                <PriceValue>{post.price}</PriceValue>
+              </MentorInfoItem>
             )}
 
             {post.location && (
-              <MatchInfoItem>
-                <MatchInfoLabel>위치</MatchInfoLabel>
-                <MatchInfoValue>{post.location}</MatchInfoValue>
-              </MatchInfoItem>
+              <MentorInfoItem>
+                <MentorInfoLabel>위치</MentorInfoLabel>
+                <MentorInfoValue>{post.location}</MentorInfoValue>
+              </MentorInfoItem>
             )}
-
-            {post.desiredSkillLevel && (
-              <MatchInfoItem>
-                <MatchInfoLabel>희망 상대실력</MatchInfoLabel>
-                <MatchInfoValue>{post.desiredSkillLevel}</MatchInfoValue>
-              </MatchInfoItem>
-            )}
-          </MatchInfoGrid>
-
-          <JoinButton onClick={handleJoin} disabled={isExpired(post.validityPeriod || 0)}>
-            {isExpired(post.validityPeriod || 0)
-              ? '매치 종료'
-              : isJoined
-              ? '참가 취소'
-              : '매치 참가'}
-          </JoinButton>
-        </MatchInfoSection>
+          </MentorInfoGrid>
+        </MentorInfoSection>
 
         <PostContent>{post.content}</PostContent>
 
@@ -291,6 +294,21 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
             </ActionButton>
           </ActionButtons>
         </PostActions>
+
+        <ManagementSection>
+          <ManagementTitle>게시글 관리</ManagementTitle>
+          <ManagementButtons>
+            <ManagementButton onClick={handleEdit} $variant="edit">
+              수정
+            </ManagementButton>
+            <ManagementButton onClick={handleDelete} $variant="delete">
+              삭제
+            </ManagementButton>
+            <ManagementButton onClick={handleToggleProfile} $variant="profile">
+              {post.showInProfile ? '프로필에서 숨기기' : '프로필에 노출'}
+            </ManagementButton>
+          </ManagementButtons>
+        </ManagementSection>
 
         <CommentsSection>
           <CommentsHeader>댓글 ({post.commentCount})</CommentsHeader>

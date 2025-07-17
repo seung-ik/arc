@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import TwoButtonModal from '@/components/TwoButtonModal';
 
 export interface ProfilePost {
@@ -239,6 +240,7 @@ export default function ProfilePostList({
   onToggleVisibility,
   onHarvest,
 }: ProfilePostListProps) {
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [modalAction, setModalAction] = useState<'show' | 'hide'>('show');
@@ -283,9 +285,9 @@ export default function ProfilePostList({
     return `좋아요 ${post.likeCount || 0}개`;
   };
 
-  const handlePostClick = () => {
-    // 게시글 상세 페이지로 이동 (나중에 구현)
-    console.log('Post clicked');
+  const handlePostClick = (post: ProfilePost) => {
+    // 게시글 상세 페이지로 이동 (프로필에서 온 것으로 표시)
+    router.push(`/community/post/${post.id}?from=profile&type=${post.postType.toLowerCase()}`);
   };
 
   const handleToggleVisibility = (
@@ -369,7 +371,7 @@ export default function ProfilePostList({
       <PostListContainer>
         <SectionTitle>{isMyProfile ? '내 글' : '작성한 글'}</SectionTitle>
         {filteredPosts.map((post) => (
-          <PostCard key={post.id} onClick={handlePostClick}>
+          <PostCard key={post.id} onClick={() => handlePostClick(post)}>
             <PostHeader>
               <PostTitleSection>
                 <PostTypeBadge $postType={post.postType}>{post.postType}</PostTypeBadge>

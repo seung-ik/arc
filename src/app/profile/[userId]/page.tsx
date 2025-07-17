@@ -74,6 +74,7 @@ const mockOtherUserPosts = [
     content:
       '최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.',
     category: '후기',
+    postType: '일반',
     date: '2024-01-15',
     viewCount: 89,
     commentCount: 31,
@@ -85,6 +86,7 @@ const mockOtherUserPosts = [
     content:
       '오늘 프로 기사와의 대국에서 배운 수를 분석해보았습니다. 특히 중반전에서의 포석이 인상적이었어요.',
     category: '분석',
+    postType: '일반',
     date: '2024-01-14',
     viewCount: 56,
     commentCount: 18,
@@ -96,6 +98,7 @@ const mockOtherUserPosts = [
     content:
       '서울 강북 지역에서 당구를 치는 동호회를 만들려고 합니다. 실력에 관계없이 즐겁게 치실 분들 모집합니다.',
     category: '모집',
+    postType: '일반',
     date: '2024-01-13',
     viewCount: 34,
     commentCount: 12,
