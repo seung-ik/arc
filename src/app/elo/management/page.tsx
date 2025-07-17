@@ -10,6 +10,7 @@ import EloTabCards from '@/components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import CommunityPost from '@/components/CommunityPost';
 import MatchPostCard from '@/components/MatchPostCard';
+import { useRouter } from 'next/navigation';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -218,6 +219,7 @@ interface PendingMatch {
 }
 
 export default function ManagementPage() {
+  const router = useRouter();
   const registrationModal = useModal();
   const [pendingMatches, setPendingMatches] = useState<PendingMatch[]>([]);
 
@@ -341,8 +343,7 @@ export default function ManagementPage() {
   ];
 
   const handleChallenge = (matchId: number) => {
-    console.log('Challenge match:', matchId);
-    // 여기에 매치 신청 로직 추가
+    router.push(`/community/post/${matchId}?from=match`);
   };
 
   const handleMatchRegistration = (matchData: {

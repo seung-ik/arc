@@ -2,10 +2,12 @@
 
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityLayout from '@/components/CommunityLayout';
+import MatchPostDetail from '@/components/MatchPostDetail';
+import GeneralPostDetail from '@/components/GeneralPostDetail';
 import { ROUTES } from '@/constants/routes';
 
 const Container = styled.div`
@@ -529,6 +531,13 @@ interface Post {
   commentCount: number;
   isLiked: boolean;
   isDisliked: boolean;
+  // 매치 전용 필드들
+  elo?: number;
+  location?: string;
+  desiredSkillLevel?: string;
+  validityPeriod?: number;
+  participants?: string[];
+  maxParticipants?: number;
 }
 
 interface Comment {
@@ -544,29 +553,42 @@ interface Comment {
 }
 
 // 임시 데이터
-const mockPost: Post = {
+const mockGeneralPost: Post = {
   id: 1,
   title: '테니스 라켓 구매 후기',
-  content: `최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.
-
-특히 서브와 포핸드에서 위력이 대단합니다. 라켓 헤드가 작아서 정확도가 높고, 무게감이 있어서 파워도 충분합니다.
-
-다만 초보자에게는 조금 어려울 수 있어요. 적어도 1년 이상 테니스를 치신 분들에게 추천드립니다.
-
-스트링은 Luxilon Alu Power를 사용했는데, 이것도 정말 좋네요. 스핀과 컨트롤이 완벽하게 조화를 이룹니다.
-
-전체적으로 만족도가 높은 구매였습니다!`,
+  content: `최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.\n\n특히 서브와 포핸드에서 위력이 대단합니다. 라켓 헤드가 작아서 정확도가 높고, 무게감이 있어서 파워도 충분합니다.\n\n다만 초보자에게는 조금 어려울 수 있어요. 적어도 1년 이상 테니스를 치신 분들에게 추천드립니다.\n\n스트링은 Luxilon Alu Power를 사용했는데, 이것도 정말 좋네요. 스핀과 컨트롤이 완벽하게 조화를 이룹니다.\n\n전체적으로 만족도가 높은 구매였습니다!`,
   authorId: 'user303',
   authorName: '테니스매니아',
   date: '2024-01-15',
   category: 'tennis',
-  postType: '후기',
+  postType: 'general',
   viewCount: 89,
   likeCount: 31,
   dislikeCount: 5,
   commentCount: 8,
   isLiked: false,
   isDisliked: false,
+};
+
+const mockMatchPost: Post = {
+  id: 2,
+  title: '테니스 매치 구합니다 (ELO 1500-1600)',
+  content: `안녕하세요! 테니스 매치 상대를 구합니다.\n\n- 실력: 중급 (ELO 1500-1600 정도)\n- 위치: 강남 테니스장\n- 시간: 주말 오후\n- 인원: 2명 (더블스 가능)\n\n실력이 비슷한 분들과 재미있게 치고 싶습니다. 연락주세요!`,
+  authorId: 'user404',
+  authorName: '테니스러버',
+  date: '2024-01-20',
+  category: 'tennis',
+  postType: 'match',
+  viewCount: 55,
+  likeCount: 10,
+  dislikeCount: 1,
+  commentCount: 2,
+  isLiked: false,
+  isDisliked: false,
+  elo: 1550,
+  location: '강남 테니스장',
+  desiredSkillLevel: '중급',
+  validityPeriod: 7,
 };
 
 // 카테고리 한글 이름 매핑
@@ -635,7 +657,9 @@ const mockComments: Comment[] = [
 export default function PostDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const postId = params.postId as string;
+  const from = searchParams.get('from');
 
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -651,18 +675,21 @@ export default function PostDetailPage() {
       try {
         setLoading(true);
         await new Promise((resolve) => setTimeout(resolve, 500));
-
-        setPost(mockPost);
-        setComments(mockComments);
+        if (from === 'match') {
+          setPost(mockMatchPost);
+          setComments(mockComments);
+        } else {
+          setPost(mockGeneralPost);
+          setComments(mockComments);
+        }
       } catch (err) {
         setError('게시글을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
-
     fetchPost();
-  }, [postId]);
+  }, [postId, from]);
 
   const handleLike = () => {
     if (!post) return;
@@ -819,140 +846,47 @@ export default function PostDetailPage() {
     <Container>
       <CategoryTabs />
       <CommunityLayout>
-        <Content>
-          <PostHeader>
-            <PostTitleRow>
-              <PostTitleContainer>
-                <PostTitle>{post.title}</PostTitle>
-              </PostTitleContainer>
-              <ViewCount>조회 {post.viewCount}</ViewCount>
-            </PostTitleRow>
-            <PostMeta>
-              <AuthorInfo>
-                <AuthorName onClick={() => handleAuthorClick(post.authorId)}>
-                  {post.authorName}
-                </AuthorName>
-                <PostDate>{post.date}</PostDate>
-              </AuthorInfo>
-              <CategoryBadge>{CATEGORY_LABELS[post.category] || post.category}</CategoryBadge>
-              <PostTypeBadge>{post.postType}</PostTypeBadge>
-            </PostMeta>
-          </PostHeader>
-
-          <PostContent>{post.content}</PostContent>
-
-          <PostActions>
-            <ActionButtons>
-              <ActionButton onClick={handleLike} $isActive={post.isLiked} $variant="like">
-                <ButtonText>좋아요</ButtonText>
-                <ButtonCount>{post.likeCount}</ButtonCount>
-              </ActionButton>
-              <ActionButton onClick={handleDislike} $isActive={post.isDisliked} $variant="dislike">
-                <ButtonText>싫어요</ButtonText>
-                <ButtonCount>{post.dislikeCount}</ButtonCount>
-              </ActionButton>
-            </ActionButtons>
-          </PostActions>
-
-          <CommentsSection>
-            <CommentsHeader>댓글 ({post.commentCount})</CommentsHeader>
-
-            <CommentForm>
-              <CommentTextarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="댓글을 입력하세요..."
-              />
-              <CommentSubmitButton onClick={handleCommentSubmit} disabled={!newComment.trim()}>
-                등록
-              </CommentSubmitButton>
-            </CommentForm>
-
-            <CommentList>
-              {comments
-                .sort((a, b) => b.likeCount - a.likeCount)
-                .map((comment) => (
-                  <CommentItem key={comment.id}>
-                    <CommentHeader>
-                      <CommentMeta>
-                        <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
-                          {comment.authorName}
-                        </CommentAuthor>
-                        <span>/</span>
-                        <CommentDate>{comment.date}</CommentDate>
-                      </CommentMeta>
-                      <CommentActions>
-                        <CommentLikeButton
-                          onClick={() => handleCommentLike(comment.id)}
-                          className={comment.isLiked ? 'liked' : ''}
-                        >
-                          <span>❤️</span>
-                          <span>{comment.likeCount}</span>
-                        </CommentLikeButton>
-                        <ReplyButton onClick={() => handleReplyClick(comment.id)}>답글</ReplyButton>
-                      </CommentActions>
-                    </CommentHeader>
-                    <CommentContent>{comment.content}</CommentContent>
-
-                    {replyingTo === comment.id && (
-                      <ReplyForm>
-                        <ReplyTextarea
-                          value={replyContent}
-                          onChange={(e) => setReplyContent(e.target.value)}
-                          placeholder="답글을 입력하세요..."
-                        />
-                        <ReplyCancelButton onClick={handleReplyCancel}>취소</ReplyCancelButton>
-                        <ReplySubmitButton
-                          onClick={() => handleReplySubmit(comment.id)}
-                          disabled={!replyContent.trim()}
-                        >
-                          등록
-                        </ReplySubmitButton>
-                      </ReplyForm>
-                    )}
-
-                    {comment.replies && comment.replies.length > 0 && (
-                      <>
-                        {!expandedReplies.has(comment.id) ? (
-                          <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                            답글 {comment.replies.length}개 보기
-                          </ToggleRepliesButton>
-                        ) : (
-                          <>
-                            <RepliesContainer>
-                              {comment.replies
-                                .sort(
-                                  (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-                                )
-                                .map((reply) => (
-                                  <ReplyItem key={reply.id}>
-                                    <ReplyContent>{reply.content}</ReplyContent>
-                                    <ReplyFooter>
-                                      <ReplyMeta>
-                                        <ReplyDate>{reply.date}</ReplyDate>
-                                        <span>/</span>
-                                        <ReplyAuthor
-                                          onClick={() => handleAuthorClick(reply.authorId)}
-                                        >
-                                          {reply.authorName}
-                                        </ReplyAuthor>
-                                      </ReplyMeta>
-                                    </ReplyFooter>
-                                  </ReplyItem>
-                                ))}
-                            </RepliesContainer>
-                            <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                              답글 접기
-                            </ToggleRepliesButton>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </CommentItem>
-                ))}
-            </CommentList>
-          </CommentsSection>
-        </Content>
+        {post.postType === 'match' ? (
+          <MatchPostDetail
+            post={post}
+            comments={comments}
+            onLike={handleLike}
+            onDislike={handleDislike}
+            onCommentSubmit={handleCommentSubmit}
+            onCommentLike={handleCommentLike}
+            onReplyClick={handleReplyClick}
+            onReplyCancel={handleReplyCancel}
+            onReplySubmit={handleReplySubmit}
+            onToggleReplies={handleToggleReplies}
+            onAuthorClick={handleAuthorClick}
+            newComment={newComment}
+            setNewComment={setNewComment}
+            replyingTo={replyingTo}
+            replyContent={replyContent}
+            setReplyContent={setReplyContent}
+            expandedReplies={expandedReplies}
+          />
+        ) : (
+          <GeneralPostDetail
+            post={post}
+            comments={comments}
+            onLike={handleLike}
+            onDislike={handleDislike}
+            onCommentSubmit={handleCommentSubmit}
+            onCommentLike={handleCommentLike}
+            onReplyClick={handleReplyClick}
+            onReplyCancel={handleReplyCancel}
+            onReplySubmit={handleReplySubmit}
+            onToggleReplies={handleToggleReplies}
+            onAuthorClick={handleAuthorClick}
+            newComment={newComment}
+            setNewComment={setNewComment}
+            replyingTo={replyingTo}
+            replyContent={replyContent}
+            setReplyContent={setReplyContent}
+            expandedReplies={expandedReplies}
+          />
+        )}
       </CommunityLayout>
       <BottomNavigation />
     </Container>
