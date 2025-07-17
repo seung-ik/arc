@@ -8,6 +8,8 @@ import MatchRegistrationModal from '@/components/MatchRegistrationModal';
 import MatchManagement from '@/components/MatchManagement';
 import EloTabCards from '@/components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
+import CommunityPost from '@/components/CommunityPost';
+import MatchPostCard from '@/components/MatchPostCard';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -203,92 +205,6 @@ const PendingDate = styled.span`
   font-size: ${(props) => props.theme.typography.fontSizes.xs};
 `;
 
-const RecommendedMatchCard = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.lg};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-`;
-
-const RecommendedMatchHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.md};
-`;
-
-const RecommendedMatchInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${(props) => props.theme.spacing.md};
-`;
-
-const RecommendedOpponentId = styled.span`
-  font-weight: 600;
-  color: ${(props) => props.theme.colors.textBlack};
-`;
-
-const RecommendedSportBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.secondary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
-  border-radius: ${(props) => props.theme.borderRadius.sm};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-`;
-
-const RecommendedElo = styled.span`
-  color: ${(props) => props.theme.colors.primary};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: 600;
-`;
-
-const ChallengeButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.lg};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: ${(props) => props.theme.spacing.md};
-  width: 100%;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.primaryHover};
-  }
-`;
-
-const RegionInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
-  margin-top: ${(props) => props.theme.spacing.md};
-`;
-
-const RegionBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.secondary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
-  border-radius: ${(props) => props.theme.borderRadius.sm};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-`;
-
-const DistanceText = styled.span`
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-`;
-
 interface PendingMatch {
   id: number;
   opponentId: string;
@@ -299,18 +215,6 @@ interface PendingMatch {
   myElo: number;
   opponentElo: number;
   createdAt: number;
-}
-
-interface RecommendedMatch {
-  id: number;
-  opponentId: string;
-  sport: string;
-  opponentElo: number;
-  winRate: number;
-  totalMatches: number;
-  lastActive: string;
-  region: string;
-  distance?: string;
 }
 
 export default function ManagementPage() {
@@ -351,51 +255,88 @@ export default function ManagementPage() {
     console.log('Reject match:', matchId, reason);
   };
 
-  // 추천매치 데이터
-  const recommendedMatches: RecommendedMatch[] = [
+  // 추천매치 데이터를 Post 형식으로 변환
+  const recommendedMatchPosts = [
     {
       id: 1,
-      opponentId: 'tennis_pro',
-      sport: '테니스',
-      opponentElo: 1350,
-      winRate: 68,
-      totalMatches: 45,
-      lastActive: '2시간 전',
-      region: '강남구',
-      distance: '0.5km',
+      title: '테니스 매칭 구합니다',
+      content:
+        '테니스 실력 향상을 위해 매칭을 구합니다. 실력은 무관하고 즐겁게 치실 분 환영합니다.',
+      authorId: 'tennis_pro',
+      authorName: 'tennis_pro',
+      date: '2024-01-10',
+      postType: '매치',
+      category: 'tennis',
+      matchLocation: '서울 강남구 테니스장',
+      myElo: '1350',
+      preferredElo: 'similar',
+      validityPeriod: '7',
+      viewCount: 45,
+      commentCount: 12,
+      likeCount: 28,
+      dislikeCount: 1,
+      isLiked: true,
+      isDisliked: false,
     },
     {
       id: 2,
-      opponentId: 'chess_master',
-      sport: '체스',
-      opponentElo: 1420,
-      winRate: 72,
-      totalMatches: 32,
-      lastActive: '1시간 전',
-      region: '서초구',
-      distance: '1.2km',
+      title: '체스 친선 대국 상대',
+      content: '체스 친선 대국 상대를 구합니다. 실력에 관계없이 즐겁게 두실 분 환영합니다.',
+      authorId: 'chess_master',
+      authorName: 'chess_master',
+      date: '2024-01-12',
+      postType: '매치',
+      category: 'chess',
+      matchLocation: '서울 서초구 체스클럽',
+      myElo: '1420',
+      preferredElo: 'any',
+      validityPeriod: '3',
+      viewCount: 32,
+      commentCount: 8,
+      likeCount: 34,
+      dislikeCount: 0,
+      isLiked: false,
+      isDisliked: false,
     },
     {
       id: 3,
-      opponentId: 'ping_pong_king',
-      sport: '탁구',
-      opponentElo: 1280,
-      winRate: 65,
-      totalMatches: 28,
-      lastActive: '30분 전',
-      region: '강남구',
-      distance: '0.8km',
+      title: '탁구 연습 상대 구합니다',
+      content: '탁구 연습 상대를 구합니다. 초급부터 중급까지 환영합니다.',
+      authorId: 'ping_pong_king',
+      authorName: 'ping_pong_king',
+      date: '2024-01-14',
+      postType: '매치',
+      category: 'table-tennis',
+      matchLocation: '서울 강남구 탁구장',
+      myElo: '1280',
+      preferredElo: 'similar',
+      validityPeriod: '1',
+      viewCount: 28,
+      commentCount: 6,
+      likeCount: 42,
+      dislikeCount: 1,
+      isLiked: false,
+      isDisliked: false,
     },
     {
       id: 4,
-      opponentId: 'badminton_ace',
-      sport: '배드민턴',
-      opponentElo: 1380,
-      winRate: 70,
-      totalMatches: 38,
-      lastActive: '15분 전',
-      region: '송파구',
-      distance: '2.1km',
+      title: '배드민턴 매칭 구합니다',
+      content: '배드민턴 동호인과 함께 치고 싶습니다. 실력은 비슷하거나 조금 높은 분이면 좋겠어요.',
+      authorId: 'badminton_ace',
+      authorName: 'badminton_ace',
+      date: '2024-01-11',
+      postType: '매치',
+      category: 'badminton',
+      matchLocation: '서울 송파구 배드민턴장',
+      myElo: '1380',
+      preferredElo: 'higher',
+      validityPeriod: '5',
+      viewCount: 38,
+      commentCount: 15,
+      likeCount: 34,
+      dislikeCount: 0,
+      isLiked: false,
+      isDisliked: false,
     },
   ];
 
@@ -467,24 +408,9 @@ export default function ManagementPage() {
         />
 
         <SectionTitle>추천매치</SectionTitle>
-        {recommendedMatches.map((match, index) => (
-          <div key={match.id}>
-            <RecommendedMatchCard>
-              <RecommendedMatchHeader>
-                <RecommendedMatchInfo>
-                  <RecommendedOpponentId>{match.opponentId}</RecommendedOpponentId>
-                  <RecommendedSportBadge>{match.sport}</RecommendedSportBadge>
-                </RecommendedMatchInfo>
-                <RecommendedElo>ELO {match.opponentElo}</RecommendedElo>
-              </RecommendedMatchHeader>
-
-              <RegionInfo>
-                <RegionBadge>{match.region}</RegionBadge>
-                {match.distance && <DistanceText>{match.distance}</DistanceText>}
-              </RegionInfo>
-
-              <ChallengeButton onClick={() => handleChallenge(match.id)}>매치 신청</ChallengeButton>
-            </RecommendedMatchCard>
+        {recommendedMatchPosts.map((post, index) => (
+          <div key={post.id}>
+            <MatchPostCard post={post} onClick={handleChallenge} />
 
             {/* 2번째 매치 후에 광고 배너 추가 */}
             {index === 1 && (

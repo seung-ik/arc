@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import MatchPostCard from '@/components/MatchPostCard';
 import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
@@ -205,11 +206,13 @@ const mockPosts = [
       '서울 강남 지역에서 당구 매치 상대를 구합니다. 실력은 중급 정도이고, 매주 토요일 오후에 치고 싶습니다. 연락처 남겨주세요!',
     authorId: 'user222',
     authorName: '당구매처',
-    date: '2024-01-15',
+    date: '2024-01-24',
     postType: '매치',
     category: '당구',
-    location: '서울 강남',
-    skillLevel: '중급',
+    matchLocation: '서울 강남구 당구장',
+    myElo: '1450',
+    preferredElo: 'similar',
+    validityPeriod: '7',
     viewCount: 34,
     commentCount: 12,
   },
@@ -220,11 +223,13 @@ const mockPosts = [
       '부산 해운대 지역에서 당구 친선 경기 상대를 구합니다. 실력에 관계없이 즐겁게 치실 분 환영합니다!',
     authorId: 'user333',
     authorName: '부산당구',
-    date: '2024-01-14',
+    date: '2024-01-21',
     postType: '매치',
     category: '당구',
-    location: '부산 해운대',
-    skillLevel: '무관',
+    matchLocation: '부산 해운대구 당구장',
+    myElo: '1320',
+    preferredElo: 'any',
+    validityPeriod: '3',
     viewCount: 28,
     commentCount: 8,
   },
@@ -235,11 +240,13 @@ const mockPosts = [
       '대구 수성구에서 당구 연습 상대를 구합니다. 초급 실력이고, 실력 향상이 목표입니다. 매주 일요일 오전에 치고 싶습니다.',
     authorId: 'user444',
     authorName: '대구당구',
-    date: '2024-01-13',
+    date: '2024-01-19',
     postType: '매치',
     category: '당구',
-    location: '대구 수성구',
-    skillLevel: '초급',
+    matchLocation: '대구 수성구 당구장',
+    myElo: '1180',
+    preferredElo: 'similar',
+    validityPeriod: '1',
     viewCount: 22,
     commentCount: 6,
   },
@@ -250,11 +257,13 @@ const mockPosts = [
       '인천 연수구에서 당구 토너먼트를 개최하려고 합니다. 참가자 16명을 모집합니다. 실력은 중급 이상이어야 합니다.',
     authorId: 'user555',
     authorName: '인천당구',
-    date: '2024-01-12',
+    date: '2024-01-17',
     postType: '매치',
     category: '당구',
-    location: '인천 연수구',
-    skillLevel: '중급 이상',
+    matchLocation: '인천 연수구 당구장',
+    myElo: '1520',
+    preferredElo: 'higher',
+    validityPeriod: '5',
     viewCount: 45,
     commentCount: 15,
   },
@@ -385,7 +394,13 @@ export default function BilliardsPage() {
           <SearchInput onSearch={handleSearch} placeholder="당구 게시글 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+              currentPosts.map((post) =>
+                post.postType === '매치' ? (
+                  <MatchPostCard key={post.id} post={post} />
+                ) : (
+                  <CommunityPost key={post.id} post={post} />
+                ),
+              )
             ) : (
               <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
             )}

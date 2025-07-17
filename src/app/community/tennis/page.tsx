@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import MatchPostCard from '@/components/MatchPostCard';
 import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
@@ -150,7 +151,7 @@ const mockPosts = [
     content: '테니스 실력 향상을 위해 매칭을 구합니다. 실력은 무관하고 즐겁게 치실 분 환영합니다.',
     authorId: 'user101',
     authorName: '테니스초보',
-    date: '2024-01-14',
+    date: '2024-01-21',
     category: 'tennis',
     postType: '매치',
     matchLocation: '서울 강남구 테니스장',
@@ -170,7 +171,7 @@ const mockPosts = [
     content: '테니스 더블스 파트너를 구합니다. 중급 실력이고 주말에 자주 치실 분 찾습니다.',
     authorId: 'user456',
     authorName: '테니스러버',
-    date: '2024-01-12',
+    date: '2024-01-18',
     category: 'tennis',
     postType: '매치',
     matchLocation: '서울 서초구 테니스장',
@@ -190,7 +191,7 @@ const mockPosts = [
     content: '테니스 연습 상대를 구합니다. 초보자도 환영하고 함께 실력 향상하실 분 찾습니다.',
     authorId: 'user202',
     authorName: '테니스학도',
-    date: '2024-01-09',
+    date: '2024-01-16',
     category: 'tennis',
     postType: '매치',
     matchLocation: '서울 마포구 테니스장',
@@ -333,7 +334,13 @@ export default function TennisPage() {
           <SearchInput onSearch={handleSearch} placeholder="테니스 게시글 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+              currentPosts.map((post) =>
+                post.postType === '매치' ? (
+                  <MatchPostCard key={post.id} post={post} />
+                ) : (
+                  <CommunityPost key={post.id} post={post} />
+                ),
+              )
             ) : (
               <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
             )}

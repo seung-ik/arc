@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import MatchPostCard from '@/components/MatchPostCard';
 import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
@@ -283,11 +284,13 @@ const mockPosts = [
       '서울 강남 지역에서 탁구 매치 상대를 구합니다. 실력은 중급 정도이고, 매주 토요일 오후에 치고 싶습니다. 연락처 남겨주세요!',
     authorId: 'user777',
     authorName: '탁구매처',
-    date: '2024-01-15',
+    date: '2024-01-20',
     postType: '매치',
     category: '탁구',
-    location: '서울 강남',
-    skillLevel: '중급',
+    matchLocation: '서울 강남구 탁구장',
+    myElo: '1350',
+    preferredElo: 'similar',
+    validityPeriod: '7',
     viewCount: 34,
     commentCount: 12,
   },
@@ -298,11 +301,13 @@ const mockPosts = [
       '부산 해운대 지역에서 탁구 친선 경기 상대를 구합니다. 실력에 관계없이 즐겁게 치실 분 환영합니다!',
     authorId: 'user888',
     authorName: '부산탁구',
-    date: '2024-01-14',
+    date: '2024-01-18',
     postType: '매치',
     category: '탁구',
-    location: '부산 해운대',
-    skillLevel: '무관',
+    matchLocation: '부산 해운대구 탁구장',
+    myElo: '1280',
+    preferredElo: 'any',
+    validityPeriod: '3',
     viewCount: 28,
     commentCount: 8,
   },
@@ -313,11 +318,13 @@ const mockPosts = [
       '대구 수성구에서 탁구 연습 상대를 구합니다. 초급 실력이고, 실력 향상이 목표입니다. 매주 일요일 오전에 치고 싶습니다.',
     authorId: 'user999',
     authorName: '대구탁구',
-    date: '2024-01-13',
+    date: '2024-01-16',
     postType: '매치',
     category: '탁구',
-    location: '대구 수성구',
-    skillLevel: '초급',
+    matchLocation: '대구 수성구 탁구장',
+    myElo: '1100',
+    preferredElo: 'similar',
+    validityPeriod: '1',
     viewCount: 22,
     commentCount: 6,
   },
@@ -328,11 +335,13 @@ const mockPosts = [
       '인천 연수구에서 탁구 토너먼트를 개최하려고 합니다. 참가자 16명을 모집합니다. 실력은 중급 이상이어야 합니다.',
     authorId: 'user111',
     authorName: '인천탁구',
-    date: '2024-01-12',
+    date: '2024-01-15',
     postType: '매치',
     category: '탁구',
-    location: '인천 연수구',
-    skillLevel: '중급 이상',
+    matchLocation: '인천 연수구 탁구장',
+    myElo: '1420',
+    preferredElo: 'higher',
+    validityPeriod: '5',
     viewCount: 45,
     commentCount: 15,
   },
@@ -463,7 +472,13 @@ export default function TableTennisPage() {
           <SearchInput onSearch={handleSearch} placeholder="탁구 게시글 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+              currentPosts.map((post) =>
+                post.postType === '매치' ? (
+                  <MatchPostCard key={post.id} post={post} />
+                ) : (
+                  <CommunityPost key={post.id} post={post} />
+                ),
+              )
             ) : (
               <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
             )}

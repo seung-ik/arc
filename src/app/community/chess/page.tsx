@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
+import MatchPostCard from '@/components/MatchPostCard';
 import AdBanner from '@/components/AdBanner';
 import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
@@ -120,84 +121,7 @@ const mockPosts = [
     viewCount: 134,
     commentCount: 38,
   },
-  {
-    id: 7,
-    title: '체스 엔드게임 연구',
-    content:
-      '체스 엔드게임에 대한 연구를 정리해보았습니다. 킹과 폰, 킹과 룩 등 다양한 엔드게임 상황을 분석해봤어요.',
-    authorId: 'user505',
-    authorName: '체스연구가',
-    date: '2024-01-09',
-    postType: '일반',
-    category: '체스',
-    viewCount: 67,
-    commentCount: 21,
-  },
-  {
-    id: 8,
-    title: '체스 동호회 후기',
-    content:
-      '지난 달에 가입한 체스 동호회 후기를 공유합니다. 정말 좋은 분들과 함께해서 실력도 향상되고 즐거운 시간을 보내고 있어요.',
-    authorId: 'user606',
-    authorName: '체스러버',
-    date: '2024-01-08',
-    postType: '일반',
-    category: '체스',
-    viewCount: 89,
-    commentCount: 26,
-  },
-  {
-    id: 9,
-    title: '체스 대회 정보',
-    content:
-      '올해 상반기 체스 대회 일정을 정리해드립니다. 각 대회별 참가 조건과 상금 정보도 포함되어 있습니다.',
-    authorId: 'user707',
-    authorName: '체스선수',
-    date: '2024-01-07',
-    postType: '일반',
-    category: '체스',
-    viewCount: 201,
-    commentCount: 52,
-  },
-  {
-    id: 10,
-    title: '체스 기보 관리법',
-    content:
-      '체스 기보를 체계적으로 관리하는 방법을 공유합니다. 디지털 기보와 아날로그 기보의 장단점을 비교해봤어요.',
-    authorId: 'user808',
-    authorName: '체스학도',
-    date: '2024-01-06',
-    postType: '일반',
-    category: '체스',
-    viewCount: 45,
-    commentCount: 16,
-  },
-  {
-    id: 11,
-    title: '체스 실력 측정법',
-    content:
-      '체스 실력을 객관적으로 측정하는 방법에 대해 알아보았습니다. 각 단계별 특징과 향상 방법을 정리해봤어요.',
-    authorId: 'user909',
-    authorName: '체스마스터',
-    date: '2024-01-05',
-    postType: '일반',
-    category: '체스',
-    viewCount: 156,
-    commentCount: 47,
-  },
-  {
-    id: 12,
-    title: '체스 기보 분석 도구',
-    content:
-      '체스 기보를 분석할 수 있는 다양한 도구들을 소개합니다. AI 분석, 기보 데이터베이스 등 유용한 도구들을 정리해봤어요.',
-    authorId: 'user111',
-    authorName: '체스연구가',
-    date: '2024-01-04',
-    postType: '일반',
-    category: '체스',
-    viewCount: 167,
-    commentCount: 41,
-  },
+
   // 매치 포스트
   {
     id: 13,
@@ -206,11 +130,13 @@ const mockPosts = [
       '서울 강남 지역에서 체스 매치 상대를 구합니다. 실력은 중급 정도이고, 매주 토요일 오후에 두고 싶습니다. 연락처 남겨주세요!',
     authorId: 'user222',
     authorName: '체스매처',
-    date: '2024-01-15',
+    date: '2024-01-26',
     postType: '매치',
     category: '체스',
-    location: '서울 강남',
-    skillLevel: '중급',
+    matchLocation: '서울 강남구 체스클럽',
+    myElo: '1620',
+    preferredElo: 'similar',
+    validityPeriod: '7',
     viewCount: 34,
     commentCount: 12,
   },
@@ -221,11 +147,13 @@ const mockPosts = [
       '부산 해운대 지역에서 체스 친선 대국 상대를 구합니다. 실력에 관계없이 즐겁게 두실 분 환영합니다!',
     authorId: 'user333',
     authorName: '부산체스',
-    date: '2024-01-14',
+    date: '2024-01-23',
     postType: '매치',
     category: '체스',
-    location: '부산 해운대',
-    skillLevel: '무관',
+    matchLocation: '부산 해운대구 체스클럽',
+    myElo: '1480',
+    preferredElo: 'any',
+    validityPeriod: '3',
     viewCount: 28,
     commentCount: 8,
   },
@@ -236,11 +164,13 @@ const mockPosts = [
       '대구 수성구에서 체스 연습 상대를 구합니다. 초급 실력이고, 실력 향상이 목표입니다. 매주 일요일 오전에 두고 싶습니다.',
     authorId: 'user444',
     authorName: '대구체스',
-    date: '2024-01-13',
+    date: '2024-01-21',
     postType: '매치',
     category: '체스',
-    location: '대구 수성구',
-    skillLevel: '초급',
+    matchLocation: '대구 수성구 체스클럽',
+    myElo: '1350',
+    preferredElo: 'similar',
+    validityPeriod: '1',
     viewCount: 22,
     commentCount: 6,
   },
@@ -251,11 +181,13 @@ const mockPosts = [
       '인천 연수구에서 체스 토너먼트를 개최하려고 합니다. 참가자 16명을 모집합니다. 실력은 중급 이상이어야 합니다.',
     authorId: 'user555',
     authorName: '인천체스',
-    date: '2024-01-12',
+    date: '2024-01-19',
     postType: '매치',
     category: '체스',
-    location: '인천 연수구',
-    skillLevel: '중급 이상',
+    matchLocation: '인천 연수구 체스클럽',
+    myElo: '1750',
+    preferredElo: 'higher',
+    validityPeriod: '5',
     viewCount: 45,
     commentCount: 15,
   },
@@ -386,7 +318,13 @@ export default function ChessPage() {
           <SearchInput onSearch={handleSearch} placeholder="체스 게시글 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+              currentPosts.map((post) =>
+                post.postType === '매치' ? (
+                  <MatchPostCard key={post.id} post={post} />
+                ) : (
+                  <CommunityPost key={post.id} post={post} />
+                ),
+              )
             ) : (
               <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
             )}

@@ -19,6 +19,17 @@ interface Post {
   dislikeCount?: number;
   isLiked?: boolean;
   isDisliked?: boolean;
+  // 매치 포스트 전용 필드
+  matchLocation?: string;
+  myElo?: string;
+  preferredElo?: string;
+  validityPeriod?: string;
+  // 멘토 포스트 전용 필드
+  sport?: string;
+  customSport?: string;
+  elo?: string;
+  location?: string;
+  tokenReward?: string;
 }
 
 interface CommunityPostProps {
@@ -152,6 +163,40 @@ const DateAuthorInfo = styled.div`
   color: ${(props) => props.theme.colors.textLightGray};
 `;
 
+const MatchInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.sm};
+  margin-top: ${(props) => props.theme.spacing.xs};
+`;
+
+const EloBadge = styled.span`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: white;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+`;
+
+const LocationBadge = styled.span`
+  background-color: ${(props) => props.theme.colors.secondary};
+  color: white;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+`;
+
+const SkillLevelBadge = styled.span`
+  background-color: ${(props) => props.theme.colors.success};
+  color: white;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+`;
+
 export default function CommunityPost({ post }: CommunityPostProps) {
   const router = useRouter();
 
@@ -185,6 +230,12 @@ export default function CommunityPost({ post }: CommunityPostProps) {
             <span>•</span>
             <AuthorId onClick={handleAuthorClick}>{post.authorName}</AuthorId>
           </DateAuthorInfo>
+          {post.postType === '매치' && post.myElo && post.matchLocation && (
+            <MatchInfo>
+              <EloBadge>ELO {post.myElo}</EloBadge>
+              <LocationBadge>{post.matchLocation}</LocationBadge>
+            </MatchInfo>
+          )}
         </PostFooter>
       </PostContent>
     </PostCard>
