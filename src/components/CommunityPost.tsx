@@ -12,8 +12,13 @@ interface Post {
   authorName: string;
   date: string;
   category: string;
+  postType: string;
   viewCount: number;
   commentCount?: number;
+  likeCount?: number;
+  dislikeCount?: number;
+  isLiked?: boolean;
+  isDisliked?: boolean;
 }
 
 interface CommunityPostProps {
@@ -58,9 +63,31 @@ const PostTitle = styled.h3`
   }
 `;
 
-const CategoryBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.primaryLight};
-  color: ${(props) => props.theme.colors.primary};
+const CategoryBadge = styled.span<{ $type: string }>`
+  background-color: ${(props) => {
+    switch (props.$type) {
+      case '일반':
+        return props.theme.colors.postType.general.background;
+      case '매치':
+        return props.theme.colors.postType.match.background;
+      case '멘토':
+        return props.theme.colors.postType.mentor.background;
+      default:
+        return props.theme.colors.postType.general.background;
+    }
+  }};
+  color: ${(props) => {
+    switch (props.$type) {
+      case '일반':
+        return props.theme.colors.postType.general.text;
+      case '매치':
+        return props.theme.colors.postType.match.text;
+      case '멘토':
+        return props.theme.colors.postType.mentor.text;
+      default:
+        return props.theme.colors.postType.general.text;
+    }
+  }};
   padding: 2px 8px;
   border-radius: 12px;
   font-size: ${(props) => props.theme.typography.fontSizes.xs};
@@ -147,7 +174,7 @@ export default function CommunityPost({ post }: CommunityPostProps) {
     <PostCard onClick={handlePostClick}>
       <PostHeader>
         <PostTitle onClick={handleTitleClick}>{post.title}</PostTitle>
-        <CategoryBadge>{post.category}</CategoryBadge>
+        <CategoryBadge $type={post.postType}>{post.postType}</CategoryBadge>
       </PostHeader>
 
       <PostContent>

@@ -30,6 +30,26 @@ export const theme = {
     warning: '#ffc107',
     error: '#dc3545',
     info: '#17a2b8',
+
+    // Post type colors
+    postType: {
+      general: {
+        background: '#e6f3ff',
+        text: '#0070f3',
+      },
+      match: {
+        background: '#e8f5e8',
+        text: '#4caf50',
+      },
+      mentor: {
+        background: '#f3e5f5',
+        text: '#9c27b0',
+      },
+      notice: {
+        background: '#fff3cd',
+        text: '#856404',
+      },
+    },
   },
 
   // Typography

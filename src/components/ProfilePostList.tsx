@@ -8,6 +8,7 @@ export interface ProfilePost {
   id: number;
   title: string;
   content: string;
+  postType: string;
   category: string;
   date: string;
   viewCount: number;
@@ -75,9 +76,35 @@ const PostTitle = styled.h3`
   line-height: 1.4;
 `;
 
-const CategoryBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.primaryLight};
-  color: ${(props) => props.theme.colors.primary};
+const PostTypeBadge = styled.span<{ $postType: string }>`
+  background-color: ${(props) => {
+    switch (props.$postType) {
+      case '일반':
+        return props.theme.colors.postType.general.background;
+      case '매치':
+        return props.theme.colors.postType.match.background;
+      case '멘토':
+        return props.theme.colors.postType.mentor.background;
+      case '공지':
+        return props.theme.colors.postType.notice.background;
+      default:
+        return props.theme.colors.primaryLight;
+    }
+  }};
+  color: ${(props) => {
+    switch (props.$postType) {
+      case '일반':
+        return props.theme.colors.postType.general.text;
+      case '매치':
+        return props.theme.colors.postType.match.text;
+      case '멘토':
+        return props.theme.colors.postType.mentor.text;
+      case '공지':
+        return props.theme.colors.postType.notice.text;
+      default:
+        return props.theme.colors.primary;
+    }
+  }};
   padding: 2px 8px;
   border-radius: 12px;
   font-size: ${(props) => props.theme.typography.fontSizes.xs};
@@ -345,7 +372,7 @@ export default function ProfilePostList({
           <PostCard key={post.id} onClick={handlePostClick}>
             <PostHeader>
               <PostTitleSection>
-                <CategoryBadge>{post.category}</CategoryBadge>
+                <PostTypeBadge $postType={post.postType}>{post.postType}</PostTypeBadge>
                 <PostTitle>{post.title}</PostTitle>
                 <PostStats>[{post.commentCount}]</PostStats>
               </PostTitleSection>
