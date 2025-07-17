@@ -449,8 +449,6 @@ function WritePostForm() {
     location: '',
     tokenReward: '',
     // 매치 관련 필드
-    matchDate: '',
-    matchTime: '',
     matchLocation: '',
     myElo: '',
     preferredElo: '',
@@ -496,7 +494,7 @@ function WritePostForm() {
 
     // 매치 포스트 타입일 때 추가 필드 검증
     if (formData.postType === '매치') {
-      if (!formData.matchDate || !formData.matchTime || !formData.validityPeriod) {
+      if (!formData.validityPeriod) {
         alert('매칭 요청에 필요한 모든 정보를 입력해주세요.');
         return;
       }
@@ -616,8 +614,8 @@ function WritePostForm() {
                     📚 멘토링 요청 안내
                   </h3>
                   <p style={{ color: '#666', margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
-                    멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역/시간, 보상 토큰 등을
-                    상세히 작성해주세요. 멘토가 요청을 보고 연락을 드릴 예정입니다.
+                    멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역, 보상 토큰 등을 상세히
+                    작성해주세요. 멘토가 요청을 보고 연락을 드릴 예정입니다.
                   </p>
                 </div>
 
@@ -677,15 +675,15 @@ function WritePostForm() {
                   <FieldRow>
                     <FormGroup>
                       <FieldDescription>
-                        <FieldLabel htmlFor="location">지역/시간 *</FieldLabel>
-                        <FieldHelp>멘토링을 받을 수 있는 지역과 시간</FieldHelp>
+                        <FieldLabel htmlFor="location">지역 *</FieldLabel>
+                        <FieldHelp>멘토링을 받을 수 있는 지역</FieldHelp>
                       </FieldDescription>
                       <Input
                         id="location"
                         type="text"
                         value={formData.location || ''}
                         onChange={(e) => handleInputChange('location', e.target.value)}
-                        placeholder="예: 서울 강남구, 주말 오후"
+                        placeholder="예: 서울 강남구"
                         required
                       />
                     </FormGroup>
@@ -750,54 +748,12 @@ function WritePostForm() {
                     🏓 매칭 요청 안내
                   </h3>
                   <p style={{ color: '#666', margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
-                    매칭을 원하는 시간, 장소, 상대 실력을 설정하고 유효기간을 선택하세요. AI 추천
-                    시스템을 통해 적합한 상대를 찾아드립니다.
+                    매칭을 원하는 장소, 상대 실력을 설정하고 유효기간을 선택하세요. AI 추천 시스템을
+                    통해 적합한 상대를 찾아드립니다.
                   </p>
                 </div>
 
                 <MatchFields>
-                  <TimeLocationRow>
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="matchDate">희망 날짜 *</FieldLabel>
-                        <FieldHelp>매칭을 원하는 날짜를 선택하세요</FieldHelp>
-                      </FieldDescription>
-                      <Select
-                        id="matchDate"
-                        value={formData.matchDate}
-                        onChange={(e) => handleInputChange('matchDate', e.target.value)}
-                        required
-                      >
-                        <option value="">날짜 선택</option>
-                        <option value="today">오늘</option>
-                        <option value="tomorrow">내일</option>
-                        <option value="this-weekend">이번 주말</option>
-                        <option value="next-weekend">다음 주말</option>
-                        <option value="flexible">날짜 협의 가능</option>
-                      </Select>
-                    </FormGroup>
-
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="matchTime">희망 시간대 *</FieldLabel>
-                        <FieldHelp>매칭을 원하는 시간대를 선택하세요</FieldHelp>
-                      </FieldDescription>
-                      <Select
-                        id="matchTime"
-                        value={formData.matchTime}
-                        onChange={(e) => handleInputChange('matchTime', e.target.value)}
-                        required
-                      >
-                        <option value="">시간대 선택</option>
-                        {TIME_OPTIONS.map((time) => (
-                          <option key={time.value} value={time.value}>
-                            {time.label}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormGroup>
-                  </TimeLocationRow>
-
                   <FormGroup>
                     <FieldDescription>
                       <FieldLabel htmlFor="matchLocation">선호 장소</FieldLabel>
