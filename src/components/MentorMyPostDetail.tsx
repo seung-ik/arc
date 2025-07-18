@@ -6,6 +6,7 @@ import PostHeader from '@/components/PostHeader';
 import MentorApplicationList from '@/components/MentorApplicationList';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import { MentorPost } from '@/types/post';
+import PostInfoSection from './PostInfoSection';
 
 interface MentorApplication {
   id: number;
@@ -20,44 +21,6 @@ interface MentorApplication {
 interface MentorMyPostDetailProps {
   post: MentorPost;
 }
-
-const MenteeInfoSection = styled.div`
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
-  border: 1px solid #e9ecef;
-`;
-
-const MenteeInfoGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-`;
-
-const MenteeInfoItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const MenteeInfoLabel = styled.span`
-  font-size: 12px;
-  color: #666;
-  font-weight: 500;
-`;
-
-const MenteeInfoValue = styled.span`
-  font-size: 14px;
-  color: #333;
-  font-weight: 600;
-`;
-
-const BudgetValue = styled.span`
-  font-size: 16px;
-  color: #667eea;
-  font-weight: 700;
-`;
 
 const ManagementSection = styled.div`
   margin-top: 30px;
@@ -180,34 +143,18 @@ export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
           viewCount={post.viewCount}
         />
 
-        <MenteeInfoSection>
-          <MenteeInfoGrid>
-            {post.sport && (
-              <MenteeInfoItem>
-                <MenteeInfoLabel>구하는 종목</MenteeInfoLabel>
-                <MenteeInfoValue>{post.sport}</MenteeInfoValue>
-              </MenteeInfoItem>
-            )}
-            {post.elo && (
-              <MenteeInfoItem>
-                <MenteeInfoLabel>현재 ELO</MenteeInfoLabel>
-                <MenteeInfoValue>{post.elo}</MenteeInfoValue>
-              </MenteeInfoItem>
-            )}
-            {post.location && (
-              <MenteeInfoItem>
-                <MenteeInfoLabel>선호 지역</MenteeInfoLabel>
-                <MenteeInfoValue>{post.location}</MenteeInfoValue>
-              </MenteeInfoItem>
-            )}
-            {post.tokenReward && (
-              <MenteeInfoItem>
-                <MenteeInfoLabel>제안 예산</MenteeInfoLabel>
-                <BudgetValue>{post.tokenReward} 토큰</BudgetValue>
-              </MenteeInfoItem>
-            )}
-          </MenteeInfoGrid>
-        </MenteeInfoSection>
+        <PostInfoSection
+          items={[
+            { label: '구하는 종목', value: post.sport },
+            { label: '현재 ELO', value: post.elo },
+            { label: '선호 지역', value: post.location },
+            {
+              label: '제안 예산',
+              value: post.tokenReward ? `${post.tokenReward} 토큰` : undefined,
+              highlight: true,
+            },
+          ]}
+        />
 
         <PostContent>{post.content}</PostContent>
 
