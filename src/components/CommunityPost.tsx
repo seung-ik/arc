@@ -207,7 +207,10 @@ export default function CommunityPost({ post }: CommunityPostProps) {
 
   const handleTitleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 게시글 클릭 이벤트와 충돌 방지
-    router.push(`${ROUTES.community.post(post.id.toString())}`);
+    // postType을 영어로 변환하여 type 파라미터로 전달
+    const postType =
+      post.postType === '매치' ? 'match' : post.postType === '멘토' ? 'mentor' : 'general';
+    router.push(`${ROUTES.community.post(post.id.toString())}?type=${postType}`);
   };
 
   const handlePostClick = () => {
