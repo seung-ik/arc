@@ -136,8 +136,8 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
     if (onClick) {
       onClick(post.id);
     } else {
-      // 기본적으로 상세 페이지로 이동 (from=match 쿼리 추가)
-      router.push(`${ROUTES.community.post(post.id.toString())}?from=match`);
+      // 기본적으로 상세 페이지로 이동 (type=match 쿼리 추가)
+      router.push(`${ROUTES.community.post(post.id.toString())}?type=match`);
     }
   };
 

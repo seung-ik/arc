@@ -286,8 +286,12 @@ export default function ProfilePostList({
   };
 
   const handlePostClick = (post: ProfilePost) => {
+    // postType을 영어로 변환
+    const typeParam =
+      post.postType === '매치' ? 'match' : post.postType === '멘토' ? 'mentor' : 'general';
+
     // 게시글 상세 페이지로 이동 (프로필에서 온 것으로 표시)
-    router.push(`/community/post/${post.id}?from=profile&type=${post.postType.toLowerCase()}`);
+    router.push(`/community/post/${post.id}?from=profile&type=${typeParam}`);
   };
 
   const handleToggleVisibility = (

@@ -343,7 +343,7 @@ export default function ManagementPage() {
   ];
 
   const handleChallenge = (matchId: number) => {
-    router.push(`/community/post/${matchId}?from=match`);
+    router.push(`/community/post/${matchId}?type=match`);
   };
 
   const handleMatchRegistration = (matchData: {

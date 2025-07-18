@@ -211,8 +211,10 @@ export default function CommunityPost({ post }: CommunityPostProps) {
   };
 
   const handlePostClick = () => {
-    // 게시글 상세 페이지로 이동
-    router.push(`${ROUTES.community.post(post.id.toString())}`);
+    // 게시글 상세 페이지로 이동 (type 파라미터 추가)
+    const postType =
+      post.postType === '매치' ? 'match' : post.postType === '멘토' ? 'mentor' : 'general';
+    router.push(`${ROUTES.community.post(post.id.toString())}?type=${postType}`);
   };
 
   return (

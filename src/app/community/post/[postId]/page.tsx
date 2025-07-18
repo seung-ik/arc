@@ -147,7 +147,14 @@ export default function PostDetailPage() {
       try {
         setLoading(true);
         await new Promise((resolve) => setTimeout(resolve, 500));
-        if (from === 'match') {
+
+        // 1. 먼저 from 파라미터 확인 (프로필에서 온 건지)
+        const fromParam = searchParams.get('from');
+        // 2. 그 다음 type 파라미터 확인 (매치 타입인지)
+        const typeParam = searchParams.get('type');
+
+        // 3. 두 정보를 조합해서 포스트 데이터 결정
+        if (typeParam === 'match' || typeParam === '매치') {
           setPost(mockMatchPost);
         } else {
           setPost(mockGeneralPost);
@@ -159,7 +166,7 @@ export default function PostDetailPage() {
       }
     };
     fetchPost();
-  }, [postId, from]);
+  }, [postId, searchParams]);
 
   const handleBackClick = () => {
     router.back();
@@ -202,22 +209,28 @@ export default function PostDetailPage() {
   const renderPostDetail = () => {
     if (isMyPost) {
       // 내 글인 경우 postType에 따라 다른 컴포넌트 렌더링
-      switch (post.postType) {
+      switch (typeParam) {
         case 'match':
+        case '매치':
           return <MatchMyPostDetail post={post} />;
         case 'mentor':
+        case '멘토':
           return <MentorMyPostDetail post={post} />;
         case 'general':
+        case '일반':
         default:
           return <GeneralMyPostDetail post={post} />;
       }
     } else {
       // 다른 사람의 글인 경우 postType에 따라 다른 컴포넌트 렌더링
-      switch (post.postType) {
+      switch (typeParam) {
         case 'match':
+        case '매치':
           return <MatchPostDetail post={post} />;
         case 'general':
+        case '일반':
         case 'mentor':
+        case '멘토':
         default:
           return <GeneralPostDetail post={post} />;
       }
