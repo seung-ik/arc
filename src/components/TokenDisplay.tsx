@@ -13,11 +13,13 @@ interface TokenDisplayProps {
 const TokenContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${props => props.theme.spacing.sm};
   padding: ${props => props.theme.spacing.md};
-  background: ${props => props.theme.colors.background};
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: ${props => props.theme.borderRadius.md};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: ${props => props.theme.colors.textWhite};
 `;
 
 const TokenInfo = styled.div`

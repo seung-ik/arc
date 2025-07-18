@@ -319,16 +319,19 @@ export default function ProfilePostList({
             </PostTitleSection>
 
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              {isMyProfile && (
-                <HarvestButton
-                  $canHarvest={post.enableHarvest === true}
-                  $stage={post.harvestStage}
-                  onClick={e => handleHarvest(e, post.id)}
-                  disabled={post.enableHarvest !== true}
-                >
-                  {getHarvestText(post)}
-                </HarvestButton>
-              )}
+              {isMyProfile &&
+                (post.postType === '일반' ||
+                  post.postType === 'general' ||
+                  post.postType === '공지') && (
+                  <HarvestButton
+                    $canHarvest={post.enableHarvest === true}
+                    $stage={post.harvestStage}
+                    onClick={e => handleHarvest(e, post.id)}
+                    disabled={post.enableHarvest !== true}
+                  >
+                    {getHarvestText(post)}
+                  </HarvestButton>
+                )}
             </div>
           </PostHeader>
 
