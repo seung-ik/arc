@@ -1,66 +1,18 @@
 'use client';
 
-import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
+import MatchApplicationList from '@/components/MatchApplicationList';
+import MatchInfo from '@/components/MatchInfo';
+import PostHeader from '@/components/PostHeader';
 import {
   Container,
   Content,
-  PostHeader,
-  PostTitle,
-  PostTitleRow,
-  PostTitleContainer,
-  ViewCount,
-  PostMeta,
-  AuthorInfo,
-  AuthorName,
-  PostDate,
-  PostTypeBadge,
   PostContent,
-  PostActions,
-  ActionButtons,
-  ActionButton,
-  ButtonText,
-  ButtonCount,
-  CommentsSection,
-  CommentsHeader,
-  CommentForm,
-  CommentTextarea,
-  CommentSubmitButton,
-  CommentList,
-  CommentItem,
-  CommentHeader,
-  CommentMeta,
-  CommentAuthor,
-  CommentDate,
-  CommentActions,
-  CommentLikeButton,
-  ReplyButton,
-  CommentContent,
-  ReplyForm,
-  ReplyTextarea,
-  ReplyCancelButton,
-  ReplySubmitButton,
-  ToggleRepliesButton,
-  RepliesContainer,
-  ReplyItem,
-  ReplyContent,
-  ReplyFooter,
-  ReplyMeta,
-  ReplyDate,
-  ReplyAuthor,
   ManagementSection,
   ManagementTitle,
   ManagementButtons,
   ManagementButton,
-  MatchInfoSection,
-  MatchInfoGrid,
-  MatchInfoItem,
-  MatchInfoLabel,
-  MatchInfoValue,
-  EloValue,
-  ValidityPeriod,
 } from '@/styles/PostDetailStyles';
 
 interface MatchPost {
@@ -89,16 +41,14 @@ interface MatchPost {
   showInProfile?: boolean;
 }
 
-interface Comment {
+interface MatchApplication {
   id: number;
-  authorId: string;
-  authorName: string;
-  content: string;
-  date: string;
-  parentId?: number;
-  replies?: Comment[];
-  likeCount: number;
-  isLiked: boolean;
+  userId: string;
+  userName: string;
+  userElo: number;
+  message: string;
+  appliedAt: string;
+  status: 'pending' | 'approved' | 'rejected';
 }
 
 interface MatchMyPostDetailProps {
@@ -107,182 +57,79 @@ interface MatchMyPostDetailProps {
 
 export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
   const router = useRouter();
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyContent, setReplyContent] = useState('');
-  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
-  const getValidityText = (validityPeriod: number) => {
-    if (validityPeriod <= 0) return '유효기간 만료';
-    if (validityPeriod === 1) return '유효기간: 오늘까지';
-    return `유효기간: ${validityPeriod}일 남음`;
-  };
-
-  const handleLike = () => {
-    // TODO: 좋아요 처리
-    console.log('Like post:', post.id);
-  };
-
-  const handleDislike = () => {
-    // TODO: 싫어요 처리
-    console.log('Dislike post:', post.id);
-  };
-
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-
-    const comment: Comment = {
-      id: Date.now(),
-      authorId: 'currentUser',
-      authorName: '현재사용자',
-      content: newComment.trim(),
-      date: new Date().toISOString().split('T')[0],
-      likeCount: 0,
-      isLiked: false,
-    };
-
-    setComments((prev) => [comment, ...prev]);
-    setNewComment('');
-  };
-
-  const handleCommentLike = (commentId: number) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
-            }
-          : comment,
-      ),
-    );
-  };
-
-  const handleReplyClick = (commentId: number) => {
-    setReplyingTo(commentId);
-    setReplyContent('');
-  };
-
-  const handleReplyCancel = () => {
-    setReplyingTo(null);
-    setReplyContent('');
-  };
-
-  const handleReplySubmit = (parentCommentId: number) => {
-    if (!replyContent.trim()) return;
-
-    const reply: Comment = {
-      id: Date.now(),
-      authorId: 'currentUser',
-      authorName: '현재사용자',
-      content: replyContent.trim(),
-      date: new Date().toISOString().split('T')[0],
-      parentId: parentCommentId,
-      likeCount: 0,
-      isLiked: false,
-    };
-
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === parentCommentId
-          ? {
-              ...comment,
-              replies: [...(comment.replies || []), reply],
-            }
-          : comment,
-      ),
-    );
-
-    setReplyContent('');
-    setReplyingTo(null);
-  };
-
-  const handleToggleReplies = (commentId: number) => {
-    setExpandedReplies((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
-  };
-
-  const handleAuthorClick = (authorId: string) => {
-    router.push(`/profile/${authorId}`);
-  };
+  // 매치 참가 신청자 목록
+  const [applications, setApplications] = useState<MatchApplication[]>([
+    {
+      id: 1,
+      userId: 'user123',
+      userName: '테니스러버',
+      userElo: 1450,
+      message: '안녕하세요! 실력이 비슷해서 좋을 것 같습니다. 함께 치고 싶어요!',
+      appliedAt: '2024-01-20',
+      status: 'pending',
+    },
+    {
+      id: 2,
+      userId: 'user456',
+      userName: '테니스매니아',
+      userElo: 1520,
+      message: '저도 참가하고 싶습니다. 주말에 가능하시면 연락주세요.',
+      appliedAt: '2024-01-19',
+      status: 'approved',
+    },
+    {
+      id: 3,
+      userId: 'user789',
+      userName: '테니스초보',
+      userElo: 1200,
+      message: '초보지만 열심히 하겠습니다!',
+      appliedAt: '2024-01-18',
+      status: 'rejected',
+    },
+  ]);
 
   const handleDelete = () => {
     // TODO: 삭제 처리
     console.log('Delete post:', post.id);
   };
 
+  const handleApproveApplication = (applicationId: number) => {
+    setApplications((prev) =>
+      prev.map((app) => (app.id === applicationId ? { ...app, status: 'approved' as const } : app)),
+    );
+    // TODO: API 호출로 승인 처리
+    console.log('Approve application:', applicationId);
+  };
+
+  const handleRejectApplication = (applicationId: number) => {
+    setApplications((prev) =>
+      prev.map((app) => (app.id === applicationId ? { ...app, status: 'rejected' as const } : app)),
+    );
+    // TODO: API 호출로 거절 처리
+    console.log('Reject application:', applicationId);
+  };
+
   return (
     <Container>
       <Content>
-        <PostHeader>
-          <PostTitleRow>
-            <PostTitleContainer>
-              <PostTitle>{post.title}</PostTitle>
-            </PostTitleContainer>
-            <ViewCount>조회 {post.viewCount}</ViewCount>
-          </PostTitleRow>
-          <PostMeta>
-            <AuthorInfo>
-              <AuthorName>{post.authorName}</AuthorName>
-              <PostDate>{post.date}</PostDate>
-            </AuthorInfo>
-            <PostTypeBadge>{post.postType}</PostTypeBadge>
-          </PostMeta>
-        </PostHeader>
+        <PostHeader
+          title={post.title}
+          authorId={post.authorId}
+          authorName={post.authorName}
+          date={post.date}
+          postType={post.postType}
+          viewCount={post.viewCount}
+        />
 
-        {post.validityPeriod !== undefined && (
-          <ValidityPeriod>{getValidityText(post.validityPeriod)}</ValidityPeriod>
-        )}
-
-        <MatchInfoSection>
-          <MatchInfoGrid>
-            {post.elo !== undefined && (
-              <MatchInfoItem>
-                <MatchInfoLabel>ELO</MatchInfoLabel>
-                <EloValue>{post.elo}</EloValue>
-              </MatchInfoItem>
-            )}
-
-            {post.location && (
-              <MatchInfoItem>
-                <MatchInfoLabel>위치</MatchInfoLabel>
-                <MatchInfoValue>{post.location}</MatchInfoValue>
-              </MatchInfoItem>
-            )}
-
-            {post.desiredSkillLevel && (
-              <MatchInfoItem>
-                <MatchInfoLabel>희망 상대실력</MatchInfoLabel>
-                <MatchInfoValue>{post.desiredSkillLevel}</MatchInfoValue>
-              </MatchInfoItem>
-            )}
-          </MatchInfoGrid>
-        </MatchInfoSection>
+        <MatchInfo
+          elo={post.elo}
+          location={post.location}
+          desiredSkillLevel={post.desiredSkillLevel}
+          validityPeriod={post.validityPeriod}
+        />
 
         <PostContent>{post.content}</PostContent>
-
-        <PostActions>
-          <ActionButtons>
-            <ActionButton onClick={handleLike} $isActive={post.isLiked} $variant="like">
-              <ButtonText>좋아요</ButtonText>
-              <ButtonCount>{post.likeCount}</ButtonCount>
-            </ActionButton>
-            <ActionButton onClick={handleDislike} $isActive={post.isDisliked} $variant="dislike">
-              <ButtonText>싫어요</ButtonText>
-              <ButtonCount>{post.dislikeCount}</ButtonCount>
-            </ActionButton>
-          </ActionButtons>
-        </PostActions>
 
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>
@@ -293,104 +140,11 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
           </ManagementButtons>
         </ManagementSection>
 
-        <CommentsSection>
-          <CommentsHeader>댓글 ({post.commentCount})</CommentsHeader>
-
-          <CommentForm>
-            <CommentTextarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="댓글을 입력하세요..."
-            />
-            <CommentSubmitButton onClick={handleCommentSubmit} disabled={!newComment.trim()}>
-              등록
-            </CommentSubmitButton>
-          </CommentForm>
-
-          <CommentList>
-            {comments
-              .sort((a, b) => b.likeCount - a.likeCount)
-              .map((comment) => (
-                <CommentItem key={comment.id}>
-                  <CommentHeader>
-                    <CommentMeta>
-                      <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
-                        {comment.authorName}
-                      </CommentAuthor>
-                      <span>/</span>
-                      <CommentDate>{comment.date}</CommentDate>
-                    </CommentMeta>
-                    <CommentActions>
-                      <CommentLikeButton
-                        onClick={() => handleCommentLike(comment.id)}
-                        className={comment.isLiked ? 'liked' : ''}
-                      >
-                        <span>❤️</span>
-                        <span>{comment.likeCount}</span>
-                      </CommentLikeButton>
-                      <ReplyButton onClick={() => handleReplyClick(comment.id)}>답글</ReplyButton>
-                    </CommentActions>
-                  </CommentHeader>
-                  <CommentContent>{comment.content}</CommentContent>
-
-                  {replyingTo === comment.id && (
-                    <ReplyForm>
-                      <ReplyTextarea
-                        value={replyContent}
-                        onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder="답글을 입력하세요..."
-                      />
-                      <ReplyCancelButton onClick={handleReplyCancel}>취소</ReplyCancelButton>
-                      <ReplySubmitButton
-                        onClick={() => handleReplySubmit(comment.id)}
-                        disabled={!replyContent.trim()}
-                      >
-                        등록
-                      </ReplySubmitButton>
-                    </ReplyForm>
-                  )}
-
-                  {comment.replies && comment.replies.length > 0 && (
-                    <>
-                      {!expandedReplies.has(comment.id) ? (
-                        <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                          답글 {comment.replies.length}개 보기
-                        </ToggleRepliesButton>
-                      ) : (
-                        <>
-                          <RepliesContainer>
-                            {comment.replies
-                              .sort(
-                                (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-                              )
-                              .map((reply) => (
-                                <ReplyItem key={reply.id}>
-                                  <ReplyContent>{reply.content}</ReplyContent>
-                                  <ReplyFooter>
-                                    <ReplyMeta>
-                                      <ReplyDate>{reply.date}</ReplyDate>
-                                      <span>/</span>
-                                      <ReplyAuthor
-                                        onClick={() => handleAuthorClick(reply.authorId)}
-                                      >
-                                        {reply.authorName}
-                                      </ReplyAuthor>
-                                    </ReplyMeta>
-                                  </ReplyFooter>
-                                </ReplyItem>
-                              ))}
-                          </RepliesContainer>
-                          <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                            답글 접기
-                          </ToggleRepliesButton>
-                        </>
-                      )}
-                    </>
-                  )}
-                </CommentItem>
-              ))}
-          </CommentList>
-        </CommentsSection>
+        <MatchApplicationList
+          applications={applications}
+          onApprove={handleApproveApplication}
+          onReject={handleRejectApplication}
+        />
       </Content>
     </Container>
   );

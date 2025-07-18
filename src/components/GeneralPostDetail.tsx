@@ -4,19 +4,10 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import PostHeader from '@/components/PostHeader';
 import {
   Container,
   Content,
-  PostHeader,
-  PostTitle,
-  PostTitleRow,
-  PostTitleContainer,
-  ViewCount,
-  PostMeta,
-  AuthorInfo,
-  AuthorName,
-  PostDate,
-  PostTypeBadge,
   CategoryBadge,
   PostContent,
   PostActions,
@@ -194,24 +185,14 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
   return (
     <Container>
       <Content>
-        <PostHeader>
-          <PostTitleRow>
-            <PostTitleContainer>
-              <PostTitle>{post.title}</PostTitle>
-            </PostTitleContainer>
-            <ViewCount>조회 {post.viewCount}</ViewCount>
-          </PostTitleRow>
-          <PostMeta>
-            <AuthorInfo>
-              <AuthorName onClick={() => handleAuthorClick(post.authorId)}>
-                {post.authorName}
-              </AuthorName>
-              <PostDate>{post.date}</PostDate>
-            </AuthorInfo>
-            <CategoryBadge>{post.category}</CategoryBadge>
-            <PostTypeBadge>{post.postType}</PostTypeBadge>
-          </PostMeta>
-        </PostHeader>
+        <PostHeader
+          title={post.title}
+          authorId={post.authorId}
+          authorName={post.authorName}
+          date={post.date}
+          postType={post.postType}
+          viewCount={post.viewCount}
+        />
 
         <PostContent>{post.content}</PostContent>
 

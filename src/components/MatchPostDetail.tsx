@@ -4,19 +4,11 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import PostHeader from '@/components/PostHeader';
+import MatchInfo from '@/components/MatchInfo';
 import {
   Container,
   Content,
-  PostHeader,
-  PostTitle,
-  PostTitleRow,
-  PostTitleContainer,
-  ViewCount,
-  PostMeta,
-  AuthorInfo,
-  AuthorName,
-  PostDate,
-  PostTypeBadge,
   PostContent,
   PostActions,
   ActionButtons,
@@ -50,13 +42,6 @@ import {
   ReplyMeta,
   ReplyDate,
   ReplyAuthor,
-  MatchInfoSection,
-  MatchInfoGrid,
-  MatchInfoItem,
-  MatchInfoLabel,
-  MatchInfoValue,
-  EloValue,
-  ValidityPeriod,
   JoinButton,
 } from '@/styles/PostDetailStyles';
 
@@ -112,12 +97,6 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
   const handleJoin = () => {
     setIsJoined(!isJoined);
     // TODO: 실제 매치 참가 로직 구현
-  };
-
-  const getValidityText = (validityPeriod: number) => {
-    if (validityPeriod <= 0) return '유효기간 만료';
-    if (validityPeriod === 1) return '유효기간: 오늘까지';
-    return `유효기간: ${validityPeriod}일 남음`;
   };
 
   const isExpired = (validityPeriod: number) => validityPeriod <= 0;
@@ -215,67 +194,24 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
     });
   };
 
-  const handleAuthorClick = (authorId: string) => {
-    router.push(`/profile/${authorId}`);
-  };
-
   return (
     <Container>
       <Content>
-        <PostHeader>
-          <PostTitleRow>
-            <PostTitleContainer>
-              <PostTitle>{post.title}</PostTitle>
-            </PostTitleContainer>
-            <ViewCount>조회 {post.viewCount}</ViewCount>
-          </PostTitleRow>
-          <PostMeta>
-            <AuthorInfo>
-              <AuthorName onClick={() => handleAuthorClick(post.authorId)}>
-                {post.authorName}
-              </AuthorName>
-              <PostDate>{post.date}</PostDate>
-            </AuthorInfo>
-            <PostTypeBadge>{post.postType}</PostTypeBadge>
-          </PostMeta>
-        </PostHeader>
+        <PostHeader
+          title={post.title}
+          authorId={post.authorId}
+          authorName={post.authorName}
+          date={post.date}
+          postType={post.postType}
+          viewCount={post.viewCount}
+        />
 
-        {post.validityPeriod !== undefined && (
-          <ValidityPeriod>{getValidityText(post.validityPeriod)}</ValidityPeriod>
-        )}
-
-        <MatchInfoSection>
-          <MatchInfoGrid>
-            {post.elo !== undefined && (
-              <MatchInfoItem>
-                <MatchInfoLabel>ELO</MatchInfoLabel>
-                <EloValue>{post.elo}</EloValue>
-              </MatchInfoItem>
-            )}
-
-            {post.location && (
-              <MatchInfoItem>
-                <MatchInfoLabel>위치</MatchInfoLabel>
-                <MatchInfoValue>{post.location}</MatchInfoValue>
-              </MatchInfoItem>
-            )}
-
-            {post.desiredSkillLevel && (
-              <MatchInfoItem>
-                <MatchInfoLabel>희망 상대실력</MatchInfoLabel>
-                <MatchInfoValue>{post.desiredSkillLevel}</MatchInfoValue>
-              </MatchInfoItem>
-            )}
-          </MatchInfoGrid>
-
-          <JoinButton onClick={handleJoin} disabled={isExpired(post.validityPeriod || 0)}>
-            {isExpired(post.validityPeriod || 0)
-              ? '매치 종료'
-              : isJoined
-              ? '참가 취소'
-              : '매치 참가'}
-          </JoinButton>
-        </MatchInfoSection>
+        <MatchInfo
+          elo={post.elo}
+          location={post.location}
+          desiredSkillLevel={post.desiredSkillLevel}
+          validityPeriod={post.validityPeriod}
+        />
 
         <PostContent>{post.content}</PostContent>
 
@@ -313,7 +249,7 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
                 <CommentItem key={comment.id}>
                   <CommentHeader>
                     <CommentMeta>
-                      <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
+                      <CommentAuthor onClick={() => router.push(`/profile/${comment.authorId}`)}>
                         {comment.authorName}
                       </CommentAuthor>
                       <span>/</span>
@@ -370,7 +306,7 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
                                       <ReplyDate>{reply.date}</ReplyDate>
                                       <span>/</span>
                                       <ReplyAuthor
-                                        onClick={() => handleAuthorClick(reply.authorId)}
+                                        onClick={() => router.push(`/profile/${reply.authorId}`)}
                                       >
                                         {reply.authorName}
                                       </ReplyAuthor>
