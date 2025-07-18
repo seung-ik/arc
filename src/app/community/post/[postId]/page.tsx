@@ -68,8 +68,8 @@ const BackButton = styled.button`
   }
 `;
 
-// 임시 데이터 타입
-interface Post {
+// 기본 포스트 인터페이스
+interface BasePost {
   id: number;
   title: string;
   content: string;
@@ -84,17 +84,38 @@ interface Post {
   commentCount: number;
   isLiked: boolean;
   isDisliked: boolean;
-  // 매치 전용 필드들
-  elo?: number;
-  location?: string;
-  desiredSkillLevel?: string;
-  validityPeriod?: number;
+}
+
+// 일반 포스트 인터페이스
+interface GeneralPost extends BasePost {
+  postType: 'general' | '일반';
+}
+
+// 매치 포스트 인터페이스
+interface MatchPost extends BasePost {
+  postType: 'match' | '매치';
+  elo: number;
+  location: string;
+  desiredSkillLevel: string;
+  validityPeriod: number;
   participants?: string[];
   maxParticipants?: number;
 }
 
-// 임시 데이터
-const mockGeneralPost: Post = {
+// 멘토 포스트 인터페이스
+interface MentorPost extends BasePost {
+  postType: 'mentor' | '멘토';
+  sport: string;
+  elo: number;
+  location: string;
+  tokenReward: string;
+}
+
+// 유니온 타입
+type Post = GeneralPost | MatchPost | MentorPost;
+
+// 임시 데이터 타입
+const mockGeneralPost: GeneralPost = {
   id: 1,
   title: '테니스 라켓 구매 후기',
   content: `최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.\n\n특히 서브와 포핸드에서 위력이 대단합니다. 라켓 헤드가 작아서 정확도가 높고, 무게감이 있어서 파워도 충분합니다.\n\n다만 초보자에게는 조금 어려울 수 있어요. 적어도 1년 이상 테니스를 치신 분들에게 추천드립니다.\n\n스트링은 Luxilon Alu Power를 사용했는데, 이것도 정말 좋네요. 스핀과 컨트롤이 완벽하게 조화를 이룹니다.\n\n전체적으로 만족도가 높은 구매였습니다!`,
@@ -111,7 +132,7 @@ const mockGeneralPost: Post = {
   isDisliked: false,
 };
 
-const mockMatchPost: Post = {
+const mockMatchPost: MatchPost = {
   id: 2,
   title: '테니스 매치 구합니다 (ELO 1500-1600)',
   content: `안녕하세요! 테니스 매치 상대를 구합니다.\n\n- 실력: 중급 (ELO 1500-1600 정도)\n- 위치: 강남 테니스장\n- 시간: 주말 오후\n- 인원: 2명 (더블스 가능)\n\n실력이 비슷한 분들과 재미있게 치고 싶습니다. 연락주세요!`,
@@ -130,6 +151,27 @@ const mockMatchPost: Post = {
   location: '강남 테니스장',
   desiredSkillLevel: '중급',
   validityPeriod: 7,
+};
+
+const mockMentorPost: MentorPost = {
+  id: 3,
+  title: '테니스 멘토 구합니다 (초급→중급)',
+  content: `안녕하세요! 테니스 멘토를 구합니다.\n\n- 현재 실력: 초급 (ELO 1200)\n- 목표: 중급 수준으로 발전\n- 원하는 멘토: ELO 1600+ 이상\n- 선호 지역: 강남, 서초\n- 예산: 40 토큰/시간\n- 수업 시간: 주말 오후\n\n아마추어 고수분께 한수 배우고 싶습니다! 특히 서브와 포핸드 개선에 도움이 필요해요.\n\n함께 치면서 팁 주실 수 있는 멘토님 연락주세요!`,
+  authorId: 'user606',
+  authorName: '테니스초보',
+  date: '2024-01-18',
+  category: 'tennis',
+  postType: 'mentor',
+  viewCount: 85,
+  likeCount: 12,
+  dislikeCount: 1,
+  commentCount: 8,
+  isLiked: false,
+  isDisliked: false,
+  elo: 1200,
+  location: '강남, 서초',
+  sport: '테니스',
+  tokenReward: '40',
 };
 
 export default function PostDetailPage() {
@@ -157,6 +199,8 @@ export default function PostDetailPage() {
         // 3. 두 정보를 조합해서 포스트 데이터 결정
         if (typeParam === 'match' || typeParam === '매치') {
           setPost(mockMatchPost);
+        } else if (typeParam === 'mentor' || typeParam === '멘토') {
+          setPost(mockMentorPost);
         } else {
           setPost(mockGeneralPost);
         }

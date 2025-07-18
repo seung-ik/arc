@@ -3,65 +3,11 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Container,
-  Content,
-  PostHeader,
-  PostTitle,
-  PostTitleRow,
-  PostTitleContainer,
-  ViewCount,
-  PostMeta,
-  AuthorInfo,
-  AuthorName,
-  PostDate,
-  PostTypeBadge,
-  PostContent,
-  PostActions,
-  ActionButtons,
-  ActionButton,
-  ButtonText,
-  ButtonCount,
-  CommentsSection,
-  CommentsHeader,
-  CommentForm,
-  CommentTextarea,
-  CommentSubmitButton,
-  CommentList,
-  CommentItem,
-  CommentHeader,
-  CommentMeta,
-  CommentAuthor,
-  CommentDate,
-  CommentActions,
-  CommentLikeButton,
-  ReplyButton,
-  CommentContent,
-  ReplyForm,
-  ReplyTextarea,
-  ReplyCancelButton,
-  ReplySubmitButton,
-  ToggleRepliesButton,
-  RepliesContainer,
-  ReplyItem,
-  ReplyContent,
-  ReplyFooter,
-  ReplyMeta,
-  ReplyDate,
-  ReplyAuthor,
-  ManagementSection,
-  ManagementTitle,
-  ManagementButtons,
-  ManagementButton,
-  MentorInfoSection,
-  MentorInfoGrid,
-  MentorInfoItem,
-  MentorInfoLabel,
-  MentorInfoValue,
-  PriceValue,
-} from '@/styles/PostDetailStyles';
+import PostHeader from '@/components/PostHeader';
+import MentorApplicationList from '@/components/MentorApplicationList';
+import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 
-interface Post {
+interface MentorPost {
   id: number;
   title: string;
   content: string;
@@ -76,39 +22,151 @@ interface Post {
   commentCount: number;
   isLiked: boolean;
   isDisliked: boolean;
-  // 멘토 전용 필드들
-  mentorLevel?: string;
-  experience?: string;
-  lessonType?: string;
-  price?: string;
+  // 멘티 전용 필드들
+  sport?: string;
+  elo?: number;
   location?: string;
+  tokenReward?: string;
   // 프로필 노출 관련
   showInProfile?: boolean;
 }
 
-interface Comment {
+interface MentorApplication {
   id: number;
-  authorId: string;
-  authorName: string;
-  content: string;
+  mentorId: string;
+  mentorName: string;
+  mentorElo: number;
+  status: 'pending' | 'approved' | 'rejected';
+  comment: string;
   date: string;
-  parentId?: number;
-  replies?: Comment[];
-  likeCount: number;
-  isLiked: boolean;
 }
 
 interface MentorMyPostDetailProps {
-  post: Post;
+  post: MentorPost;
 }
+
+const MenteeInfoSection = styled.div`
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px solid #e9ecef;
+`;
+
+const MenteeInfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+`;
+
+const MenteeInfoItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const MenteeInfoLabel = styled.span`
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+`;
+
+const MenteeInfoValue = styled.span`
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+`;
+
+const BudgetValue = styled.span`
+  font-size: 16px;
+  color: #667eea;
+  font-weight: 700;
+`;
+
+const ManagementSection = styled.div`
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+`;
+
+const ManagementTitle = styled.h3`
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+const ManagementButtons = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+const ManagementButton = styled.button<{ $variant: string }>`
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+
+  ${(props) => {
+    switch (props.$variant) {
+      case 'edit':
+        return `
+          background: #007bff;
+          color: white;
+          &:hover { background: #0056b3; }
+        `;
+      case 'delete':
+        return `
+          background: #dc3545;
+          color: white;
+          &:hover { background: #c82333; }
+        `;
+      case 'profile':
+        return `
+          background: #28a745;
+          color: white;
+          &:hover { background: #218838; }
+        `;
+      default:
+        return `
+          background: #6c757d;
+          color: white;
+          &:hover { background: #545b62; }
+        `;
+    }
+  }}
+`;
 
 export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
   const router = useRouter();
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyContent, setReplyContent] = useState('');
-  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
+
+  // Mock data - 실제로는 API에서 가져올 데이터
+  const [applications, setApplications] = useState<MentorApplication[]>([
+    {
+      id: 1,
+      mentorId: 'mentor123',
+      mentorName: '테니스고수',
+      mentorElo: 1750,
+      status: 'pending',
+      comment: '안녕하세요! 10년 경력의 테니스 선수입니다. 체계적으로 가르쳐드릴 수 있어요.',
+      date: '2024-01-20',
+    },
+    {
+      id: 2,
+      mentorId: 'mentor456',
+      mentorName: '테니스마스터',
+      mentorElo: 1850,
+      status: 'approved',
+      comment: '함께 치면서 팁 드릴 수 있습니다. 주말에 가능해요!',
+      date: '2024-01-19',
+    },
+  ]);
 
   const handleEdit = () => {
     // TODO: 수정 처리
@@ -125,289 +183,82 @@ export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
     console.log('Toggle profile visibility:', post.id);
   };
 
-  const handleLike = () => {
-    // TODO: 좋아요 처리
-    console.log('Like post:', post.id);
-  };
-
-  const handleDislike = () => {
-    // TODO: 싫어요 처리
-    console.log('Dislike post:', post.id);
-  };
-
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-
-    const comment: Comment = {
-      id: Date.now(),
-      authorId: 'currentUser',
-      authorName: '현재사용자',
-      content: newComment.trim(),
-      date: new Date().toISOString().split('T')[0],
-      likeCount: 0,
-      isLiked: false,
-    };
-
-    setComments((prev) => [comment, ...prev]);
-    setNewComment('');
-  };
-
-  const handleCommentLike = (commentId: number) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
-            }
-          : comment,
-      ),
+  const handleApprove = (applicationId: number) => {
+    setApplications((prev) =>
+      prev.map((app) => (app.id === applicationId ? { ...app, status: 'approved' as const } : app)),
     );
   };
 
-  const handleReplyClick = (commentId: number) => {
-    setReplyingTo(commentId);
-    setReplyContent('');
-  };
-
-  const handleReplyCancel = () => {
-    setReplyingTo(null);
-    setReplyContent('');
-  };
-
-  const handleReplySubmit = (parentCommentId: number) => {
-    if (!replyContent.trim()) return;
-
-    const reply: Comment = {
-      id: Date.now(),
-      authorId: 'currentUser',
-      authorName: '현재사용자',
-      content: replyContent.trim(),
-      date: new Date().toISOString().split('T')[0],
-      parentId: parentCommentId,
-      likeCount: 0,
-      isLiked: false,
-    };
-
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === parentCommentId
-          ? {
-              ...comment,
-              replies: [...(comment.replies || []), reply],
-            }
-          : comment,
-      ),
+  const handleReject = (applicationId: number) => {
+    setApplications((prev) =>
+      prev.map((app) => (app.id === applicationId ? { ...app, status: 'rejected' as const } : app)),
     );
-
-    setReplyContent('');
-    setReplyingTo(null);
   };
 
-  const handleToggleReplies = (commentId: number) => {
-    setExpandedReplies((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
-  };
-
-  const handleAuthorClick = (authorId: string) => {
-    router.push(`/profile/${authorId}`);
+  const handlePayment = (applicationId: number) => {
+    // TODO: 실제 지불 로직 구현
+    console.log('Payment sent for application:', applicationId);
+    alert('전송완료 되었습니다.');
   };
 
   return (
     <Container>
       <Content>
-        <PostHeader>
-          <PostTitleRow>
-            <PostTitleContainer>
-              <PostTitle>{post.title}</PostTitle>
-            </PostTitleContainer>
-            <ViewCount>조회 {post.viewCount}</ViewCount>
-          </PostTitleRow>
-          <PostMeta>
-            <AuthorInfo>
-              <AuthorName>{post.authorName}</AuthorName>
-              <PostDate>{post.date}</PostDate>
-            </AuthorInfo>
-            <PostTypeBadge>{post.postType}</PostTypeBadge>
-          </PostMeta>
-        </PostHeader>
+        <PostHeader
+          title={post.title}
+          authorId={post.authorId}
+          authorName={post.authorName}
+          date={post.date}
+          postType={post.postType}
+          viewCount={post.viewCount}
+        />
 
-        <MentorInfoSection>
-          <MentorInfoGrid>
-            {post.mentorLevel && (
-              <MentorInfoItem>
-                <MentorInfoLabel>멘토 레벨</MentorInfoLabel>
-                <MentorInfoValue>{post.mentorLevel}</MentorInfoValue>
-              </MentorInfoItem>
+        <MenteeInfoSection>
+          <MenteeInfoGrid>
+            {post.sport && (
+              <MenteeInfoItem>
+                <MenteeInfoLabel>구하는 종목</MenteeInfoLabel>
+                <MenteeInfoValue>{post.sport}</MenteeInfoValue>
+              </MenteeInfoItem>
             )}
-
-            {post.experience && (
-              <MentorInfoItem>
-                <MentorInfoLabel>경력</MentorInfoLabel>
-                <MentorInfoValue>{post.experience}</MentorInfoValue>
-              </MentorInfoItem>
+            {post.elo && (
+              <MenteeInfoItem>
+                <MenteeInfoLabel>현재 ELO</MenteeInfoLabel>
+                <MenteeInfoValue>{post.elo}</MenteeInfoValue>
+              </MenteeInfoItem>
             )}
-
-            {post.lessonType && (
-              <MentorInfoItem>
-                <MentorInfoLabel>레슨 유형</MentorInfoLabel>
-                <MentorInfoValue>{post.lessonType}</MentorInfoValue>
-              </MentorInfoItem>
-            )}
-
-            {post.price && (
-              <MentorInfoItem>
-                <MentorInfoLabel>레슨 비용</MentorInfoLabel>
-                <PriceValue>{post.price}</PriceValue>
-              </MentorInfoItem>
-            )}
-
             {post.location && (
-              <MentorInfoItem>
-                <MentorInfoLabel>위치</MentorInfoLabel>
-                <MentorInfoValue>{post.location}</MentorInfoValue>
-              </MentorInfoItem>
+              <MenteeInfoItem>
+                <MenteeInfoLabel>선호 지역</MenteeInfoLabel>
+                <MenteeInfoValue>{post.location}</MenteeInfoValue>
+              </MenteeInfoItem>
             )}
-          </MentorInfoGrid>
-        </MentorInfoSection>
+            {post.tokenReward && (
+              <MenteeInfoItem>
+                <MenteeInfoLabel>제안 예산</MenteeInfoLabel>
+                <BudgetValue>{post.tokenReward} 토큰</BudgetValue>
+              </MenteeInfoItem>
+            )}
+          </MenteeInfoGrid>
+        </MenteeInfoSection>
 
         <PostContent>{post.content}</PostContent>
-
-        <PostActions>
-          <ActionButtons>
-            <ActionButton onClick={handleLike} $isActive={post.isLiked} $variant="like">
-              <ButtonText>좋아요</ButtonText>
-              <ButtonCount>{post.likeCount}</ButtonCount>
-            </ActionButton>
-            <ActionButton onClick={handleDislike} $isActive={post.isDisliked} $variant="dislike">
-              <ButtonText>싫어요</ButtonText>
-              <ButtonCount>{post.dislikeCount}</ButtonCount>
-            </ActionButton>
-          </ActionButtons>
-        </PostActions>
 
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>
           <ManagementButtons>
-            <ManagementButton onClick={handleEdit} $variant="edit">
-              수정
-            </ManagementButton>
             <ManagementButton onClick={handleDelete} $variant="delete">
               삭제
-            </ManagementButton>
-            <ManagementButton onClick={handleToggleProfile} $variant="profile">
-              {post.showInProfile ? '프로필에서 숨기기' : '프로필에 노출'}
             </ManagementButton>
           </ManagementButtons>
         </ManagementSection>
 
-        <CommentsSection>
-          <CommentsHeader>댓글 ({post.commentCount})</CommentsHeader>
-
-          <CommentForm>
-            <CommentTextarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="댓글을 입력하세요..."
-            />
-            <CommentSubmitButton onClick={handleCommentSubmit} disabled={!newComment.trim()}>
-              등록
-            </CommentSubmitButton>
-          </CommentForm>
-
-          <CommentList>
-            {comments
-              .sort((a, b) => b.likeCount - a.likeCount)
-              .map((comment) => (
-                <CommentItem key={comment.id}>
-                  <CommentHeader>
-                    <CommentMeta>
-                      <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
-                        {comment.authorName}
-                      </CommentAuthor>
-                      <span>/</span>
-                      <CommentDate>{comment.date}</CommentDate>
-                    </CommentMeta>
-                    <CommentActions>
-                      <CommentLikeButton
-                        onClick={() => handleCommentLike(comment.id)}
-                        className={comment.isLiked ? 'liked' : ''}
-                      >
-                        <span>❤️</span>
-                        <span>{comment.likeCount}</span>
-                      </CommentLikeButton>
-                      <ReplyButton onClick={() => handleReplyClick(comment.id)}>답글</ReplyButton>
-                    </CommentActions>
-                  </CommentHeader>
-                  <CommentContent>{comment.content}</CommentContent>
-
-                  {replyingTo === comment.id && (
-                    <ReplyForm>
-                      <ReplyTextarea
-                        value={replyContent}
-                        onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder="답글을 입력하세요..."
-                      />
-                      <ReplyCancelButton onClick={handleReplyCancel}>취소</ReplyCancelButton>
-                      <ReplySubmitButton
-                        onClick={() => handleReplySubmit(comment.id)}
-                        disabled={!replyContent.trim()}
-                      >
-                        등록
-                      </ReplySubmitButton>
-                    </ReplyForm>
-                  )}
-
-                  {comment.replies && comment.replies.length > 0 && (
-                    <>
-                      {!expandedReplies.has(comment.id) ? (
-                        <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                          답글 {comment.replies.length}개 보기
-                        </ToggleRepliesButton>
-                      ) : (
-                        <>
-                          <RepliesContainer>
-                            {comment.replies
-                              .sort(
-                                (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-                              )
-                              .map((reply) => (
-                                <ReplyItem key={reply.id}>
-                                  <ReplyContent>{reply.content}</ReplyContent>
-                                  <ReplyFooter>
-                                    <ReplyMeta>
-                                      <ReplyDate>{reply.date}</ReplyDate>
-                                      <span>/</span>
-                                      <ReplyAuthor
-                                        onClick={() => handleAuthorClick(reply.authorId)}
-                                      >
-                                        {reply.authorName}
-                                      </ReplyAuthor>
-                                    </ReplyMeta>
-                                  </ReplyFooter>
-                                </ReplyItem>
-                              ))}
-                          </RepliesContainer>
-                          <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                            답글 접기
-                          </ToggleRepliesButton>
-                        </>
-                      )}
-                    </>
-                  )}
-                </CommentItem>
-              ))}
-          </CommentList>
-        </CommentsSection>
+        <MentorApplicationList
+          applications={applications}
+          onApprove={handleApprove}
+          onReject={handleReject}
+          onPayment={handlePayment}
+        />
       </Content>
     </Container>
   );
