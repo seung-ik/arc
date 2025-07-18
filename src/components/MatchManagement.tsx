@@ -26,14 +26,14 @@ interface MatchManagementProps {
 const MatchList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
 `;
 
 const MatchCard = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -41,18 +41,18 @@ const MatchHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
+  margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
 const OpponentInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.sm};
 `;
 
 const OpponentId = styled.button`
   font-weight: 600;
-  color: ${(props) => props.theme.colors.primary};
+  color: ${props => props.theme.colors.primary};
   background: none;
   border: none;
   cursor: pointer;
@@ -62,58 +62,59 @@ const OpponentId = styled.button`
   transition: color 0.2s;
 
   &:hover {
-    color: ${(props) => props.theme.colors.primaryHover};
+    color: ${props => props.theme.colors.primaryHover};
   }
 `;
 
 const SportBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.secondary};
+  background-color: ${props => props.theme.colors.secondary};
   color: white;
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
-  border-radius: ${(props) => props.theme.borderRadius.sm};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
 `;
 
 const MatchDetails = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
+  margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
 const ResultInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.sm};
 `;
 
 const ResultBadge = styled.span<{ $isWin: boolean }>`
-  background-color: ${(props) => (props.$isWin ? '#28a745' : '#dc3545')};
+  background-color: ${props => (props.$isWin ? '#28a745' : '#dc3545')};
   color: white;
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.sm};
-  border-radius: ${(props) => props.theme.borderRadius.sm};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: 600;
 `;
 
 const DateText = styled.span`
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
 `;
 
 const ActionButtons = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.sm};
 `;
 
 const ActionButton = styled.button<{ $variant: 'accept' | 'reject' }>`
   flex: 1;
-  background-color: ${(props) => (props.$variant === 'accept' ? '#28a745' : '#dc3545')};
+  background-color: ${props =>
+    props.$variant === 'accept' ? '#28a745' : '#dc3545'};
   color: white;
   border: none;
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.sm};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -128,23 +129,27 @@ const EmptyState = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${(props) => props.theme.spacing.xl};
-  color: ${(props) => props.theme.colors.textGray};
+  padding: ${props => props.theme.spacing.xl};
+  color: ${props => props.theme.colors.textGray};
   text-align: center;
 `;
 
 const EmptyIcon = styled.div`
   font-size: 3rem;
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const EloInfo = styled.div`
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  margin-bottom: ${(props) => props.theme.spacing.xs};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  margin-bottom: ${props => props.theme.spacing.xs};
 `;
 
-export default function MatchManagement({ matches, onAccept, onReject }: MatchManagementProps) {
+export default function MatchManagement({
+  matches,
+  onAccept,
+  onReject,
+}: MatchManagementProps) {
   const router = useRouter();
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
@@ -188,11 +193,13 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
     <>
       <MatchList>
         {matches.length > 0 ? (
-          matches.map((match) => (
+          matches.map(match => (
             <MatchCard key={match.id}>
               <MatchHeader>
                 <OpponentInfo>
-                  <OpponentId onClick={() => handleOpponentClick(match.opponentId)}>
+                  <OpponentId
+                    onClick={() => handleOpponentClick(match.opponentId)}
+                  >
                     {match.opponentId}
                   </OpponentId>
                   <SportBadge>{match.sport}</SportBadge>
@@ -208,10 +215,16 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
                 <DateText>{match.date}</DateText>
               </MatchDetails>
               <ActionButtons>
-                <ActionButton $variant="accept" onClick={() => handleAcceptClick(match.id)}>
+                <ActionButton
+                  $variant="accept"
+                  onClick={() => handleAcceptClick(match.id)}
+                >
                   Agree
                 </ActionButton>
-                <ActionButton $variant="reject" onClick={() => handleRejectClick(match.id)}>
+                <ActionButton
+                  $variant="reject"
+                  onClick={() => handleRejectClick(match.id)}
+                >
                   Reject
                 </ActionButton>
               </ActionButtons>
@@ -244,7 +257,7 @@ export default function MatchManagement({ matches, onAccept, onReject }: MatchMa
             <p>이 매치 결과를 거부하시겠습니까?</p>
             <textarea
               value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
+              onChange={e => setRejectReason(e.target.value)}
               placeholder="거부 사유를 입력하세요 (선택사항)"
               style={{
                 width: '100%',

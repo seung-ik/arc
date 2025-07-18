@@ -2,33 +2,9 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
 import PostHeader from '@/components/PostHeader';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-
-interface MentorPost {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-  // 멘토 전용 필드들
-  sport?: string;
-  customSport?: string;
-  elo?: number;
-  location?: string;
-  tokenReward?: string;
-}
+import { MentorPost } from '@/types/post';
 
 interface MentorPostDetailProps {
   post: MentorPost;
@@ -99,17 +75,11 @@ const ApplyButton = styled.button`
 `;
 
 export default function MentorPostDetail({ post }: MentorPostDetailProps) {
-  const router = useRouter();
-  const [isApplied, setIsApplied] = useState(false);
+  const [isApplied] = useState(false);
 
   const handleApply = () => {
-    // TODO: 실제 멘토 신청 로직 구현
-    console.log('멘토 신청:', post.id);
-    setIsApplied(true);
-  };
-
-  const handleAuthorClick = (authorId: string) => {
-    router.push(ROUTES.profile.user(authorId));
+    // TODO: 멘토링 신청 처리
+    console.log('Apply for mentoring:', post.id);
   };
 
   return (

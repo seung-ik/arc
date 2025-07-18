@@ -13,12 +13,13 @@ import CommunityLayout from '@/components/CommunityLayout';
 import WriteButton from '@/components/WriteButton';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { MatchPost, Post } from '@/types/post';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
 `;
@@ -35,9 +36,9 @@ const PostList = styled.div`
 
 const NoResults = styled.div`
   text-align: center;
-  padding: ${(props) => props.theme.spacing.xl};
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  padding: ${props => props.theme.spacing.xl};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.base};
 `;
 
 // 당구 관련 임시 게시글 데이터
@@ -98,7 +99,8 @@ const mockPosts = [
   {
     id: 5,
     title: '당구 기술 분석',
-    content: '프로 선수들의 당구 기술을 분석해보았습니다. 각 선수별 특징과 배울 점을 정리해봤어요.',
+    content:
+      '프로 선수들의 당구 기술을 분석해보았습니다. 각 선수별 특징과 배울 점을 정리해봤어요.',
     authorId: 'user303',
     authorName: '당구고수',
     date: '2024-01-11',
@@ -349,11 +351,11 @@ export default function BilliardsPage() {
 
     const query = searchQuery.toLowerCase();
     return mockPosts.filter(
-      (post) =>
+      post =>
         post.title.toLowerCase().includes(query) ||
         post.content.toLowerCase().includes(query) ||
         post.authorName.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query),
+        post.category.toLowerCase().includes(query)
     );
   }, [searchQuery]);
 
@@ -391,18 +393,23 @@ export default function BilliardsPage() {
           onClick={handleAdClick}
         />
         <Content>
-          <SearchInput onSearch={handleSearch} placeholder="당구 게시글 검색..." />
+          <SearchInput
+            onSearch={handleSearch}
+            placeholder="당구 게시글 검색..."
+          />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) =>
+              currentPosts.map(post =>
                 post.postType === '매치' ? (
-                  <MatchPostCard key={post.id} post={post} />
+                  <MatchPostCard key={post.id} post={post as MatchPost} />
                 ) : (
-                  <CommunityPost key={post.id} post={post} />
-                ),
+                  <CommunityPost key={post.id} post={post as Post} />
+                )
               )
             ) : (
-              <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
+              <NoResults>
+                {searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}
+              </NoResults>
             )}
           </PostList>
           <Pagination

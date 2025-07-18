@@ -74,7 +74,7 @@ const StatusBadge = styled.span<{ status: string }>`
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  background: ${(props) => {
+  background: ${props => {
     switch (props.status) {
       case 'pending':
         return '#e3f2fd';
@@ -86,7 +86,7 @@ const StatusBadge = styled.span<{ status: string }>`
         return '#f5f5f5';
     }
   }};
-  color: ${(props) => {
+  color: ${props => {
     switch (props.status) {
       case 'pending':
         return '#1976d2';

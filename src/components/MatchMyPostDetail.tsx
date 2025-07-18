@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import MatchApplicationList from '@/components/MatchApplicationList';
 import MatchInfo from '@/components/MatchInfo';
 import PostHeader from '@/components/PostHeader';
@@ -14,32 +13,7 @@ import {
   ManagementButtons,
   ManagementButton,
 } from '@/styles/PostDetailStyles';
-
-interface MatchPost {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-  // 매치 전용 필드들
-  elo?: number;
-  location?: string;
-  desiredSkillLevel?: string;
-  validityPeriod?: number;
-  participants?: string[];
-  maxParticipants?: number;
-  // 프로필 노출 관련
-  showInProfile?: boolean;
-}
+import { MatchPost } from '@/types/post';
 
 interface MatchApplication {
   id: number;
@@ -56,16 +30,14 @@ interface MatchMyPostDetailProps {
 }
 
 export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
-  const router = useRouter();
-
-  // 매치 참가 신청자 목록
   const [applications, setApplications] = useState<MatchApplication[]>([
     {
       id: 1,
       userId: 'user123',
       userName: '테니스러버',
       userElo: 1450,
-      message: '안녕하세요! 실력이 비슷해서 좋을 것 같습니다. 함께 치고 싶어요!',
+      message:
+        '안녕하세요! 실력이 비슷해서 좋을 것 같습니다. 함께 치고 싶어요!',
       appliedAt: '2024-01-20',
       status: 'pending',
     },
@@ -95,16 +67,20 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
   };
 
   const handleApproveApplication = (applicationId: number) => {
-    setApplications((prev) =>
-      prev.map((app) => (app.id === applicationId ? { ...app, status: 'approved' as const } : app)),
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === applicationId ? { ...app, status: 'approved' as const } : app
+      )
     );
     // TODO: API 호출로 승인 처리
     console.log('Approve application:', applicationId);
   };
 
   const handleRejectApplication = (applicationId: number) => {
-    setApplications((prev) =>
-      prev.map((app) => (app.id === applicationId ? { ...app, status: 'rejected' as const } : app)),
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === applicationId ? { ...app, status: 'rejected' as const } : app
+      )
     );
     // TODO: API 호출로 거절 처리
     console.log('Reject application:', applicationId);
@@ -123,10 +99,14 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
         />
 
         <MatchInfo
-          elo={post.elo}
+          elo={typeof post.elo === 'string' ? parseInt(post.elo) : post.elo}
           location={post.location}
           desiredSkillLevel={post.desiredSkillLevel}
-          validityPeriod={post.validityPeriod}
+          validityPeriod={
+            typeof post.validityPeriod === 'string'
+              ? parseInt(post.validityPeriod)
+              : post.validityPeriod
+          }
         />
 
         <PostContent>{post.content}</PostContent>

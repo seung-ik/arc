@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 const BannerContainer = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin-top: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
+  margin-top: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
   color: white;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -28,14 +28,14 @@ const BannerContainer = styled.div`
 `;
 
 const BannerTitle = styled.h3`
-  margin: 0 0 ${(props) => props.theme.spacing.sm} 0;
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  margin: 0 0 ${props => props.theme.spacing.sm} 0;
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
 `;
 
 const BannerDescription = styled.p`
   margin: 0;
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
   opacity: 0.9;
 `;
 
@@ -43,8 +43,8 @@ const BannerBadge = styled.span`
   background-color: rgba(255, 255, 255, 0.2);
   padding: 2px 8px;
   border-radius: 12px;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  margin-left: ${(props) => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  margin-left: ${props => props.theme.spacing.sm};
 `;
 
 interface AdBannerProps {

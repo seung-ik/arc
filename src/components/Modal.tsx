@@ -14,12 +14,12 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
 `;
 
 const ModalContainer = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border-radius: ${(props) => props.theme.borderRadius.lg};
+  background-color: ${props => props.theme.colors.background};
+  border-radius: ${props => props.theme.borderRadius.lg};
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   max-width: 320px;
   width: 100%;
@@ -40,29 +40,29 @@ const ModalContainer = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+  padding: ${props => props.theme.spacing.md};
+  border-bottom: 1px solid ${props => props.theme.colors.border};
 `;
 
 const ModalTitle = styled.h2`
   margin: 0;
-  color: ${(props) => props.theme.colors.textBlack};
-  font-size: ${(props) => props.theme.typography.fontSizes.xl};
-  font-weight: ${(props) => props.theme.typography.fontWeights.semibold};
+  color: ${props => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.xl};
+  font-weight: ${props => props.theme.typography.fontWeights.semibold};
 `;
 
 const ModalContent = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  padding: ${props => props.theme.spacing.md};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.base};
   line-height: 1.6;
 `;
 
 const ModalFooter = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
-  border-top: 1px solid ${(props) => props.theme.colors.border};
+  padding: ${props => props.theme.spacing.md};
+  border-top: 1px solid ${props => props.theme.colors.border};
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
   justify-content: flex-end;
 `;
 
@@ -74,7 +74,13 @@ interface ModalProps {
   footer?: React.ReactNode;
 }
 
-export default function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
+export default function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  footer,
+}: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -91,7 +97,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }: Moda
 
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
+      <ModalContainer onClick={e => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>
         </ModalHeader>

@@ -12,7 +12,11 @@ const ContentWrapper = styled.div`
   flex: 1;
 `;
 
-export default function TokenHistoryLayout({ children }: { children: React.ReactNode }) {
+export default function TokenHistoryLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <LayoutContainer>
       <ContentWrapper>{children}</ContentWrapper>

@@ -10,8 +10,8 @@ const NavigationContainer = styled.nav`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: ${(props) => props.theme.colors.background};
-  border-top: 1px solid ${(props) => props.theme.colors.border};
+  background-color: ${props => props.theme.colors.background};
+  border-top: 1px solid ${props => props.theme.colors.border};
   z-index: 9999;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 `;
@@ -32,11 +32,12 @@ const TabLink = styled.div<{ $isActive: boolean }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   text-decoration: none;
-  color: ${(props) => (props.$isActive ? props.theme.colors.primary : props.theme.colors.textGray)};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) =>
+  color: ${props =>
+    props.$isActive ? props.theme.colors.primary : props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props =>
     props.$isActive
       ? props.theme.typography.fontWeights.medium
       : props.theme.typography.fontWeights.normal};
@@ -45,7 +46,7 @@ const TabLink = styled.div<{ $isActive: boolean }>`
   cursor: pointer;
 
   &:hover {
-    color: ${(props) => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary};
   }
 `;
 
@@ -75,15 +76,15 @@ export default function BottomNavigation() {
   return (
     <NavigationContainer>
       <TabList>
-        {tabs.map((tab) => {
+        {tabs.map(tab => {
           const isActive =
             tab.path === '/community'
               ? pathname.startsWith('/community')
               : tab.path === '/elo/management'
-              ? pathname.startsWith('/elo')
-              : tab.path === '/profile'
-              ? pathname.startsWith('/profile')
-              : pathname === tab.path;
+                ? pathname.startsWith('/elo')
+                : tab.path === '/profile'
+                  ? pathname.startsWith('/profile')
+                  : pathname === tab.path;
 
           return (
             <TabItem key={tab.label}>

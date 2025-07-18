@@ -1,9 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import type { WepinSDK, WepinSDKModule, WepinLogin, WepinLoginModule } from '@/types/wepin';
+import type { WepinSDK, WepinSDKModule, WepinLogin } from '@/types/wepin';
 
 interface WepinContextType {
   wepinLogin: WepinLogin | null;
@@ -12,7 +11,9 @@ interface WepinContextType {
   isLoggedIn: boolean;
   userInfo: any;
   accounts: any[];
-  login: () => Promise<{ idToken: string; wepinUser: any; accounts: any[] } | undefined>;
+  login: () => Promise<
+    { idToken: string; wepinUser: any; accounts: any[] } | undefined
+  >;
   logout: () => Promise<void>;
   getAccounts: () => Promise<any[]>;
   getBalance: (params: { network: string; address: string }) => Promise<any>;
@@ -25,7 +26,6 @@ interface WepinProviderProps {
 }
 
 export function WepinProvider({ children }: WepinProviderProps) {
-  const router = useRouter();
   const [wepinLogin, setWepinLogin] = useState<any | null>(null);
   const [wepinSDK, setWepinSDK] = useState<WepinSDK | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -80,7 +80,9 @@ export function WepinProvider({ children }: WepinProviderProps) {
     if (!wepinLogin) return undefined;
 
     try {
-      const oauthResult = await wepinLogin.loginWithOauthProvider({ provider: 'google' });
+      const oauthResult = await wepinLogin.loginWithOauthProvider({
+        provider: 'google',
+      });
 
       // 2. Firebase Token으로 위핀 로그인
       const wepinUser = await wepinLogin.loginWepin({
@@ -127,7 +129,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
       try {
         await wepinSDK.logout();
       } catch (error) {
-        console.log('Wepin SDK 로그아웃 실패, 계속 진행');
+        console.log('Wepin SDK 로그아웃 실패, 계속 진행', error);
       }
     }
 

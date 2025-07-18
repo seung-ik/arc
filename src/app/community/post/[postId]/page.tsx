@@ -1,118 +1,18 @@
 'use client';
 
-import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import BottomNavigation from '@/components/BottomNavigation';
+import styled from 'styled-components';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityLayout from '@/components/CommunityLayout';
-import MatchPostDetail from '@/components/MatchPostDetail';
+import BottomNavigation from '@/components/BottomNavigation';
 import GeneralPostDetail from '@/components/GeneralPostDetail';
-import MatchMyPostDetail from '@/components/MatchMyPostDetail';
 import GeneralMyPostDetail from '@/components/GeneralMyPostDetail';
+import MatchPostDetail from '@/components/MatchPostDetail';
+import MatchMyPostDetail from '@/components/MatchMyPostDetail';
 import MentorPostDetail from '@/components/MentorPostDetail';
 import MentorMyPostDetail from '@/components/MentorMyPostDetail';
-import { ROUTES } from '@/constants/routes';
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
-  padding-bottom: 80px;
-  position: relative;
-`;
-
-const Content = styled.div`
-  flex: 1;
-  width: 100%;
-  padding: ${(props) => props.theme.spacing.md};
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  color: ${(props) => props.theme.colors.textGray};
-`;
-
-const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  text-align: center;
-`;
-
-const ErrorMessage = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  color: ${(props) => props.theme.colors.textGray};
-  margin-bottom: ${(props) => props.theme.spacing.md};
-`;
-
-const BackButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.textWhite};
-  border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.lg};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.primaryHover};
-  }
-`;
-
-// 기본 포스트 인터페이스
-interface BasePost {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-}
-
-// 일반 포스트 인터페이스
-interface GeneralPost extends BasePost {
-  postType: 'general' | '일반';
-}
-
-// 매치 포스트 인터페이스
-interface MatchPost extends BasePost {
-  postType: 'match' | '매치';
-  elo: number;
-  location: string;
-  desiredSkillLevel: string;
-  validityPeriod: number;
-  participants?: string[];
-  maxParticipants?: number;
-}
-
-// 멘토 포스트 인터페이스
-interface MentorPost extends BasePost {
-  postType: 'mentor' | '멘토';
-  sport: string;
-  elo: number;
-  location: string;
-  tokenReward: string;
-}
-
-// 유니온 타입
-type Post = GeneralPost | MatchPost | MentorPost;
+import { Post, GeneralPost, MatchPost, MentorPost } from '@/types/post';
 
 // 임시 데이터 타입
 const mockGeneralPost: GeneralPost = {
@@ -150,7 +50,7 @@ const mockMatchPost: MatchPost = {
   elo: 1550,
   location: '강남 테니스장',
   desiredSkillLevel: '중급',
-  validityPeriod: 7,
+  validityPeriod: '7',
 };
 
 const mockMentorPost: MentorPost = {
@@ -174,12 +74,59 @@ const mockMentorPost: MentorPost = {
   tokenReward: '40',
 };
 
+const Container = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: ${props => props.theme.colors.background};
+  padding-bottom: 80px;
+  position: relative;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  color: ${props => props.theme.colors.textGray};
+`;
+
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  text-align: center;
+`;
+
+const ErrorMessage = styled.div`
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  color: ${props => props.theme.colors.textGray};
+  margin-bottom: ${props => props.theme.spacing.md};
+`;
+
+const BackButton = styled.button`
+  background-color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.textWhite};
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.primaryHover};
+  }
+`;
+
 export default function PostDetailPage() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const postId = params.postId as string;
-  const from = searchParams.get('from');
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -189,10 +136,8 @@ export default function PostDetailPage() {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        // 1. 먼저 from 파라미터 확인 (프로필에서 온 건지)
-        const fromParam = searchParams.get('from');
         // 2. 그 다음 type 파라미터 확인 (매치 타입인지)
         const typeParam = searchParams.get('type');
 
@@ -205,6 +150,7 @@ export default function PostDetailPage() {
           setPost(mockGeneralPost);
         }
       } catch (err) {
+        console.error(err);
         setError('게시글을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
@@ -249,7 +195,8 @@ export default function PostDetailPage() {
   const typeParam = searchParams.get('type');
 
   // 내 글인지 확인 (from=profile이거나 현재 사용자가 작성자인 경우)
-  const isMyPost = fromParam === 'profile' || post.authorId === 'current-user-id'; // TODO: 실제 사용자 ID로 변경
+  const isMyPost =
+    fromParam === 'profile' || post.authorId === 'current-user-id'; // TODO: 실제 사용자 ID로 변경
 
   const renderPostDetail = () => {
     if (isMyPost) {
@@ -257,28 +204,28 @@ export default function PostDetailPage() {
       switch (typeParam) {
         case 'match':
         case '매치':
-          return <MatchMyPostDetail post={post} />;
+          return <MatchMyPostDetail post={post as MatchPost} />;
         case 'mentor':
         case '멘토':
-          return <MentorMyPostDetail post={post} />;
+          return <MentorMyPostDetail post={post as MentorPost} />;
         case 'general':
         case '일반':
         default:
-          return <GeneralMyPostDetail post={post} />;
+          return <GeneralMyPostDetail post={post as GeneralPost} />;
       }
     } else {
-      // 다른 사람의 글인 경우 postType에 따라 다른 컴포넌트 렌더링
+      // 다른 사람 글인 경우 postType에 따라 다른 컴포넌트 렌더링
       switch (typeParam) {
         case 'match':
         case '매치':
-          return <MatchPostDetail post={post} />;
+          return <MatchPostDetail post={post as MatchPost} />;
         case 'mentor':
         case '멘토':
-          return <MentorPostDetail post={post} />;
+          return <MentorPostDetail post={post as MentorPost} />;
         case 'general':
         case '일반':
         default:
-          return <GeneralPostDetail post={post} />;
+          return <GeneralPostDetail post={post as GeneralPost} />;
       }
     }
   };

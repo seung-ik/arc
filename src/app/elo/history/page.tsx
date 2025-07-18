@@ -1,33 +1,29 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
 import MatchHistory from '@/components/MatchHistory';
 import EloTabCards from '@/components/EloTabCards';
-import CommunityLayout from '@/components/CommunityLayout';
 import AdBanner from '@/components/AdBanner';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   position: relative;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
 `;
 
 const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
-  padding-top: ${(props) => props.theme.spacing.lg};
+  padding-top: ${props => props.theme.spacing.lg};
 
   @media (min-width: 1200px) {
     width: 1100px;
     padding: 0;
-    padding-top: ${(props) => props.theme.spacing.md};
+    padding-top: ${props => props.theme.spacing.md};
   }
 `;
 

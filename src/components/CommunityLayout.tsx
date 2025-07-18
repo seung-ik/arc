@@ -5,7 +5,7 @@ const ContentWrapper = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
 
   @media (min-width: 1200px) {
     min-width: 1100px;

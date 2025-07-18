@@ -1,6 +1,5 @@
 'use client';
 
-import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import {
   PostHeader as PostHeaderStyled,
@@ -48,7 +47,9 @@ export default function PostHeader({
       </PostTitleRow>
       <PostMeta>
         <AuthorInfo>
-          <AuthorName onClick={() => handleAuthorClick(authorId)}>{authorName}</AuthorName>
+          <AuthorName onClick={() => handleAuthorClick(authorId)}>
+            {authorName}
+          </AuthorName>
           <PostDate>{date}</PostDate>
         </AuthorInfo>
         <PostTypeBadge>{postType}</PostTypeBadge>

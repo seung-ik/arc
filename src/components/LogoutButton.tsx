@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 
 const LogoutButtonStyled = styled.button`
-  background: ${(props) => props.theme.colors.error};
-  color: ${(props) => props.theme.colors.textWhite};
+  background: ${props => props.theme.colors.error};
+  color: ${props => props.theme.colors.textWhite};
   border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background 0.2s;
 
@@ -21,7 +21,7 @@ const LogoutButtonStyled = styled.button`
   }
 
   &:disabled {
-    background: ${(props) => props.theme.colors.textLightGray};
+    background: ${props => props.theme.colors.textLightGray};
     cursor: not-allowed;
   }
 `;

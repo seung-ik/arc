@@ -2,38 +2,13 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
 import PostHeader from '@/components/PostHeader';
 import MatchInfo from '@/components/MatchInfo';
 import MatchApplicationStatus from '@/components/MatchApplicationStatus';
 import { useModal } from '@/hooks/useModal';
 import TwoButtonModal from '@/components/TwoButtonModal';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-
-interface MatchPost {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-  // 매치 전용 필드들
-  elo?: number;
-  location?: string;
-  desiredSkillLevel?: string;
-  validityPeriod?: number;
-  participants?: string[];
-  maxParticipants?: number;
-}
+import { MatchPost } from '@/types/post';
 
 interface MatchPostDetailProps {
   post: MatchPost;
@@ -83,7 +58,6 @@ const CommentTextarea = styled.textarea`
 `;
 
 export default function MatchPostDetail({ post }: MatchPostDetailProps) {
-  const router = useRouter();
   const [isJoined, setIsJoined] = useState(false);
   const [comment, setComment] = useState('');
   const applicationModal = useModal();
@@ -118,13 +92,18 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
     setComment('');
   };
 
-  const isExpired = (validityPeriod: number) => validityPeriod <= 0;
+  const isExpired = (validityPeriod: string | number | undefined) => {
+    if (typeof validityPeriod === 'string') {
+      return parseInt(validityPeriod) <= 0;
+    }
+    return (validityPeriod || 0) <= 0;
+  };
 
   const modalContent = (
     <CommentTextarea
       placeholder="참가하고 싶은 이유나 간단한 메시지를 남겨주세요..."
       value={comment}
-      onChange={(e) => setComment(e.target.value)}
+      onChange={e => setComment(e.target.value)}
     />
   );
 
@@ -141,20 +120,27 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
         />
 
         <MatchInfo
-          elo={post.elo}
+          elo={typeof post.elo === 'string' ? parseInt(post.elo) : post.elo}
           location={post.location}
           desiredSkillLevel={post.desiredSkillLevel}
-          validityPeriod={post.validityPeriod}
+          validityPeriod={
+            typeof post.validityPeriod === 'string'
+              ? parseInt(post.validityPeriod)
+              : post.validityPeriod
+          }
         />
 
         <PostContent>{post.content}</PostContent>
 
-        <JoinButton onClick={handleJoin} disabled={isJoined || isExpired(post.validityPeriod || 0)}>
+        <JoinButton
+          onClick={handleJoin}
+          disabled={isJoined || isExpired(post.validityPeriod || 0)}
+        >
           {isJoined
             ? '참가 신청 완료'
             : isExpired(post.validityPeriod || 0)
-            ? '마감된 매치'
-            : '매치 참가하기'}
+              ? '마감된 매치'
+              : '매치 참가하기'}
         </JoinButton>
 
         <MatchApplicationStatus

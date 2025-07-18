@@ -9,12 +9,13 @@ import SearchInput from '@/components/SearchInput';
 import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
 import AdBanner from '@/components/AdBanner';
+import { Post } from '@/types/post';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
 `;
@@ -31,13 +32,13 @@ const PostList = styled.div`
 
 const NoResults = styled.div`
   text-align: center;
-  padding: ${(props) => props.theme.spacing.xl};
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  padding: ${props => props.theme.spacing.xl};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.base};
 `;
 
 // 공지사항 임시 데이터
-const mockPosts = [
+const mockPosts: Post[] = [
   {
     id: 1,
     title: '[공지] 종목별 후원 순위 안내',
@@ -50,6 +51,10 @@ const mockPosts = [
     category: '공지',
     viewCount: 1250,
     commentCount: 45,
+    likeCount: 0,
+    dislikeCount: 0,
+    isLiked: false,
+    isDisliked: false,
   },
   {
     id: 2,
@@ -63,6 +68,10 @@ const mockPosts = [
     category: '공지',
     viewCount: 890,
     commentCount: 23,
+    likeCount: 0,
+    dislikeCount: 0,
+    isLiked: false,
+    isDisliked: false,
   },
   {
     id: 3,
@@ -76,6 +85,10 @@ const mockPosts = [
     category: '공지',
     viewCount: 756,
     commentCount: 31,
+    likeCount: 0,
+    dislikeCount: 0,
+    isLiked: false,
+    isDisliked: false,
   },
 ];
 
@@ -93,11 +106,11 @@ export default function NoticePage() {
 
     const query = searchQuery.toLowerCase();
     return mockPosts.filter(
-      (post) =>
+      post =>
         post.title.toLowerCase().includes(query) ||
         post.content.toLowerCase().includes(query) ||
         post.authorName.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query),
+        post.category.toLowerCase().includes(query)
     );
   }, [searchQuery]);
 
@@ -133,9 +146,13 @@ export default function NoticePage() {
           <SearchInput onSearch={handleSearch} placeholder="공지사항 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) => <CommunityPost key={post.id} post={post} />)
+              currentPosts.map(post => (
+                <CommunityPost key={post.id} post={post} />
+              ))
             ) : (
-              <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
+              <NoResults>
+                {searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}
+              </NoResults>
             )}
           </PostList>
           <Pagination

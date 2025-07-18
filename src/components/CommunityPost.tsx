@@ -3,45 +3,18 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  commentCount?: number;
-  likeCount?: number;
-  dislikeCount?: number;
-  isLiked?: boolean;
-  isDisliked?: boolean;
-  // 매치 포스트 전용 필드
-  matchLocation?: string;
-  myElo?: string;
-  preferredElo?: string;
-  validityPeriod?: string;
-  // 멘토 포스트 전용 필드
-  sport?: string;
-  customSport?: string;
-  elo?: string;
-  location?: string;
-  tokenReward?: string;
-}
+import { Post } from '@/types/post';
 
 interface CommunityPostProps {
   post: Post;
 }
 
 const PostCard = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.2s;
@@ -56,13 +29,13 @@ const PostHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
+  margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
 const PostTitle = styled.h3`
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.semibold};
-  color: ${(props) => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.semibold};
+  color: ${props => props.theme.colors.textBlack};
   margin: 0;
   flex: 1;
   line-height: 1.4;
@@ -70,12 +43,12 @@ const PostTitle = styled.h3`
   transition: color 0.2s;
 
   &:hover {
-    color: ${(props) => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary};
   }
 `;
 
 const CategoryBadge = styled.span<{ $type: string }>`
-  background-color: ${(props) => {
+  background-color: ${props => {
     switch (props.$type) {
       case '일반':
         return props.theme.colors.postType.general.background;
@@ -87,7 +60,7 @@ const CategoryBadge = styled.span<{ $type: string }>`
         return props.theme.colors.postType.general.background;
     }
   }};
-  color: ${(props) => {
+  color: ${props => {
     switch (props.$type) {
       case '일반':
         return props.theme.colors.postType.general.text;
@@ -101,9 +74,9 @@ const CategoryBadge = styled.span<{ $type: string }>`
   }};
   padding: 2px 8px;
   border-radius: 12px;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  margin-left: ${(props) => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  margin-left: ${props => props.theme.spacing.sm};
   flex-shrink: 0;
 `;
 
@@ -111,12 +84,12 @@ const PostContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
 `;
 
 const ContentText = styled.p`
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
   margin: 0;
 
   display: -webkit-box;
@@ -131,13 +104,13 @@ const PostFooter = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: ${(props) => props.theme.spacing.xs};
+  gap: ${props => props.theme.spacing.xs};
   flex-shrink: 0;
   min-width: 180px;
 `;
 
 const AuthorId = styled.button`
-  color: ${(props) => props.theme.colors.primary};
+  color: ${props => props.theme.colors.primary};
   background: none;
   border: none;
   cursor: pointer;
@@ -147,54 +120,46 @@ const AuthorId = styled.button`
   transition: color 0.2s;
 
   &:hover {
-    color: ${(props) => props.theme.colors.primaryHover};
+    color: ${props => props.theme.colors.primaryHover};
   }
 `;
 
 const PostDate = styled.span`
-  color: ${(props) => props.theme.colors.textLightGray};
+  color: ${props => props.theme.colors.textLightGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
 `;
 
 const DateAuthorInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  color: ${(props) => props.theme.colors.textLightGray};
+  gap: ${props => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textLightGray};
 `;
 
 const MatchInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.sm};
-  margin-top: ${(props) => props.theme.spacing.xs};
+  gap: ${props => props.theme.spacing.sm};
+  margin-top: ${props => props.theme.spacing.xs};
 `;
 
 const EloBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${props => props.theme.colors.primary};
   color: white;
   padding: 2px 6px;
   border-radius: 8px;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const LocationBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.secondary};
+  background-color: ${props => props.theme.colors.secondary};
   color: white;
   padding: 2px 6px;
   border-radius: 8px;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-`;
-
-const SkillLevelBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.success};
-  color: white;
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 export default function CommunityPost({ post }: CommunityPostProps) {
@@ -209,15 +174,27 @@ export default function CommunityPost({ post }: CommunityPostProps) {
     e.stopPropagation(); // 게시글 클릭 이벤트와 충돌 방지
     // postType을 영어로 변환하여 type 파라미터로 전달
     const postType =
-      post.postType === '매치' ? 'match' : post.postType === '멘토' ? 'mentor' : 'general';
-    router.push(`${ROUTES.community.post(post.id.toString())}?type=${postType}`);
+      post.postType === '매치'
+        ? 'match'
+        : post.postType === '멘토'
+          ? 'mentor'
+          : 'general';
+    router.push(
+      `${ROUTES.community.post(post.id.toString())}?type=${postType}`
+    );
   };
 
   const handlePostClick = () => {
     // 게시글 상세 페이지로 이동 (type 파라미터 추가)
     const postType =
-      post.postType === '매치' ? 'match' : post.postType === '멘토' ? 'mentor' : 'general';
-    router.push(`${ROUTES.community.post(post.id.toString())}?type=${postType}`);
+      post.postType === '매치'
+        ? 'match'
+        : post.postType === '멘토'
+          ? 'mentor'
+          : 'general';
+    router.push(
+      `${ROUTES.community.post(post.id.toString())}?type=${postType}`
+    );
   };
 
   return (

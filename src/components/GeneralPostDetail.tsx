@@ -1,14 +1,11 @@
 'use client';
 
-import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
 import PostHeader from '@/components/PostHeader';
 import {
   Container,
   Content,
-  CategoryBadge,
   PostContent,
   PostActions,
   ActionButtons,
@@ -32,9 +29,8 @@ import {
   CommentContent,
   ReplyForm,
   ReplyTextarea,
-  ReplyCancelButton,
   ReplySubmitButton,
-  ToggleRepliesButton,
+  ReplyCancelButton,
   RepliesContainer,
   ReplyItem,
   ReplyContent,
@@ -42,24 +38,9 @@ import {
   ReplyMeta,
   ReplyDate,
   ReplyAuthor,
+  ToggleRepliesButton,
 } from '@/styles/PostDetailStyles';
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-}
+import { GeneralPost } from '@/types/post';
 
 interface Comment {
   id: number;
@@ -74,7 +55,7 @@ interface Comment {
 }
 
 interface GeneralPostDetailProps {
-  post: Post;
+  post: GeneralPost;
 }
 
 export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
@@ -83,7 +64,9 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
-  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
+  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(
+    new Set()
+  );
 
   const handleLike = () => {
     // TODO: 좋아요 처리
@@ -109,21 +92,23 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
       isLiked: false,
     };
 
-    setComments((prev) => [comment, ...prev]);
+    setComments(prev => [comment, ...prev]);
     setNewComment('');
   };
 
   const handleCommentLike = (commentId: number) => {
-    setComments((prev) =>
-      prev.map((comment) =>
+    setComments(prev =>
+      prev.map(comment =>
         comment.id === commentId
           ? {
               ...comment,
               isLiked: !comment.isLiked,
-              likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
+              likeCount: comment.isLiked
+                ? comment.likeCount - 1
+                : comment.likeCount + 1,
             }
-          : comment,
-      ),
+          : comment
+      )
     );
   };
 
@@ -151,15 +136,15 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
       isLiked: false,
     };
 
-    setComments((prev) =>
-      prev.map((comment) =>
+    setComments(prev =>
+      prev.map(comment =>
         comment.id === parentCommentId
           ? {
               ...comment,
               replies: [...(comment.replies || []), reply],
             }
-          : comment,
-      ),
+          : comment
+      )
     );
 
     setReplyContent('');
@@ -167,7 +152,7 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
   };
 
   const handleToggleReplies = (commentId: number) => {
-    setExpandedReplies((prev) => {
+    setExpandedReplies(prev => {
       const newSet = new Set(prev);
       if (newSet.has(commentId)) {
         newSet.delete(commentId);
@@ -198,11 +183,19 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
 
         <PostActions>
           <ActionButtons>
-            <ActionButton onClick={handleLike} $isActive={post.isLiked} $variant="like">
+            <ActionButton
+              onClick={handleLike}
+              $isActive={post.isLiked}
+              $variant="like"
+            >
               <ButtonText>좋아요</ButtonText>
               <ButtonCount>{post.likeCount}</ButtonCount>
             </ActionButton>
-            <ActionButton onClick={handleDislike} $isActive={post.isDisliked} $variant="dislike">
+            <ActionButton
+              onClick={handleDislike}
+              $isActive={post.isDisliked}
+              $variant="dislike"
+            >
               <ButtonText>싫어요</ButtonText>
               <ButtonCount>{post.dislikeCount}</ButtonCount>
             </ActionButton>
@@ -215,10 +208,13 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
           <CommentForm>
             <CommentTextarea
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={e => setNewComment(e.target.value)}
               placeholder="댓글을 입력하세요..."
             />
-            <CommentSubmitButton onClick={handleCommentSubmit} disabled={!newComment.trim()}>
+            <CommentSubmitButton
+              onClick={handleCommentSubmit}
+              disabled={!newComment.trim()}
+            >
               등록
             </CommentSubmitButton>
           </CommentForm>
@@ -226,11 +222,13 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
           <CommentList>
             {comments
               .sort((a, b) => b.likeCount - a.likeCount)
-              .map((comment) => (
+              .map(comment => (
                 <CommentItem key={comment.id}>
                   <CommentHeader>
                     <CommentMeta>
-                      <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
+                      <CommentAuthor
+                        onClick={() => handleAuthorClick(comment.authorId)}
+                      >
                         {comment.authorName}
                       </CommentAuthor>
                       <span>/</span>
@@ -244,7 +242,9 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
                         <span>❤️</span>
                         <span>{comment.likeCount}</span>
                       </CommentLikeButton>
-                      <ReplyButton onClick={() => handleReplyClick(comment.id)}>답글</ReplyButton>
+                      <ReplyButton onClick={() => handleReplyClick(comment.id)}>
+                        답글
+                      </ReplyButton>
                     </CommentActions>
                   </CommentHeader>
                   <CommentContent>{comment.content}</CommentContent>
@@ -253,10 +253,12 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
                     <ReplyForm>
                       <ReplyTextarea
                         value={replyContent}
-                        onChange={(e) => setReplyContent(e.target.value)}
+                        onChange={e => setReplyContent(e.target.value)}
                         placeholder="답글을 입력하세요..."
                       />
-                      <ReplyCancelButton onClick={handleReplyCancel}>취소</ReplyCancelButton>
+                      <ReplyCancelButton onClick={handleReplyCancel}>
+                        취소
+                      </ReplyCancelButton>
                       <ReplySubmitButton
                         onClick={() => handleReplySubmit(comment.id)}
                         disabled={!replyContent.trim()}
@@ -269,7 +271,9 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
                   {comment.replies && comment.replies.length > 0 && (
                     <>
                       {!expandedReplies.has(comment.id) ? (
-                        <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
+                        <ToggleRepliesButton
+                          onClick={() => handleToggleReplies(comment.id)}
+                        >
                           답글 {comment.replies.length}개 보기
                         </ToggleRepliesButton>
                       ) : (
@@ -277,9 +281,11 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
                           <RepliesContainer>
                             {comment.replies
                               .sort(
-                                (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+                                (a, b) =>
+                                  new Date(a.date).getTime() -
+                                  new Date(b.date).getTime()
                               )
-                              .map((reply) => (
+                              .map(reply => (
                                 <ReplyItem key={reply.id}>
                                   <ReplyContent>{reply.content}</ReplyContent>
                                   <ReplyFooter>
@@ -287,7 +293,9 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
                                       <ReplyDate>{reply.date}</ReplyDate>
                                       <span>/</span>
                                       <ReplyAuthor
-                                        onClick={() => handleAuthorClick(reply.authorId)}
+                                        onClick={() =>
+                                          handleAuthorClick(reply.authorId)
+                                        }
                                       >
                                         {reply.authorName}
                                       </ReplyAuthor>
@@ -296,7 +304,9 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
                                 </ReplyItem>
                               ))}
                           </RepliesContainer>
-                          <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
+                          <ToggleRepliesButton
+                            onClick={() => handleToggleReplies(comment.id)}
+                          >
                             답글 접기
                           </ToggleRepliesButton>
                         </>

@@ -3,9 +3,12 @@ import dynamic from 'next/dynamic';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 // 동적 import로 SSR 이슈 방지
-const Editor = dynamic(() => import('@toast-ui/react-editor').then((mod) => mod.Editor), {
-  ssr: false,
-});
+const Editor = dynamic(
+  () => import('@toast-ui/react-editor').then(mod => mod.Editor),
+  {
+    ssr: false,
+  }
+);
 
 export interface ToastEditorProps {
   value?: string;
@@ -41,7 +44,6 @@ const ToastEditor: React.FC<ToastEditorProps> = ({
         editorInstance.setMarkdown(value);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const handleChange = () => {

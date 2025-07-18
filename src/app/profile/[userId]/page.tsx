@@ -7,15 +7,16 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ProfileHeader from '@/components/ProfileHeader';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
+import { ProfilePost } from '@/types/post';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   padding-bottom: 80px;
-  margin-top: ${(props) => props.theme.spacing.xl};
+  margin-top: ${props => props.theme.spacing.xl};
 `;
 
 const Content = styled.div`
@@ -67,17 +68,23 @@ const mockOtherUserProfile: UserProfile = {
 };
 
 // 임시 글 데이터 (다른 유저의 글) - 기본값: 숨김
-const mockOtherUserPosts = [
+const mockOtherUserPosts: ProfilePost[] = [
   {
     id: 1,
     title: '테니스 라켓 구매 후기',
     content:
       '최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.',
+    authorId: 'user2',
+    authorName: '이영희',
     category: '후기',
     postType: '일반',
     date: '2024-01-15',
     viewCount: 89,
     commentCount: 31,
+    likeCount: 15,
+    dislikeCount: 2,
+    isLiked: false,
+    isDisliked: false,
     showInProfile: false, // 기본값: 숨김
   },
   {
@@ -85,11 +92,17 @@ const mockOtherUserPosts = [
     title: '바둑 기보 분석',
     content:
       '오늘 프로 기사와의 대국에서 배운 수를 분석해보았습니다. 특히 중반전에서의 포석이 인상적이었어요.',
+    authorId: 'user2',
+    authorName: '이영희',
     category: '분석',
     postType: '일반',
     date: '2024-01-14',
     viewCount: 56,
     commentCount: 18,
+    likeCount: 8,
+    dislikeCount: 0,
+    isLiked: false,
+    isDisliked: false,
     showInProfile: false, // 기본값: 숨김
   },
   {
@@ -97,11 +110,17 @@ const mockOtherUserPosts = [
     title: '당구 동호회 모집',
     content:
       '서울 강북 지역에서 당구를 치는 동호회를 만들려고 합니다. 실력에 관계없이 즐겁게 치실 분들 모집합니다.',
+    authorId: 'user2',
+    authorName: '이영희',
     category: '모집',
     postType: '일반',
     date: '2024-01-13',
     viewCount: 34,
     commentCount: 12,
+    likeCount: 5,
+    dislikeCount: 1,
+    isLiked: false,
+    isDisliked: false,
     showInProfile: false, // 기본값: 숨김
   },
 ];
@@ -117,7 +136,7 @@ export default function UserProfilePage() {
     const fetchUserProfile = async () => {
       try {
         // API 호출 시뮬레이션
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 500));
         setUserProfile(mockOtherUserProfile);
       } catch (error) {
         console.error('Failed to fetch user profile:', error);

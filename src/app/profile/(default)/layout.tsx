@@ -14,7 +14,11 @@ const ContentWrapper = styled.div`
   padding-bottom: 80px; /* BottomNavigation 높이만큼 패딩 */
 `;
 
-export default function ProfileLayout({ children }: { children: React.ReactNode }) {
+export default function ProfileLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <LayoutContainer>
       <ContentWrapper>{children}</ContentWrapper>

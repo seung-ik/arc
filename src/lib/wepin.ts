@@ -28,7 +28,9 @@ export const initializeWepin = async () => {
 // Wepin SDK 인스턴스 가져오기
 export const getWepinSDK = () => {
   if (!wepinSDK) {
-    throw new Error('Wepin SDK is not initialized. Call initializeWepin() first.');
+    throw new Error(
+      'Wepin SDK is not initialized. Call initializeWepin() first.'
+    );
   }
   return wepinSDK;
 };

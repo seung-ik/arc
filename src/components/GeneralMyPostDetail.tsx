@@ -1,70 +1,24 @@
 'use client';
 
-import styled from 'styled-components';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PostHeader from '@/components/PostHeader';
+import CommentSection from '@/components/CommentSection';
 import {
   Container,
   Content,
-  CategoryBadge,
   PostContent,
   PostActions,
   ActionButtons,
   ActionButton,
   ButtonText,
   ButtonCount,
-  CommentsSection,
-  CommentsHeader,
-  CommentForm,
-  CommentTextarea,
-  CommentSubmitButton,
-  CommentList,
-  CommentItem,
-  CommentHeader,
-  CommentMeta,
-  CommentAuthor,
-  CommentDate,
-  CommentActions,
-  CommentLikeButton,
-  ReplyButton,
-  CommentContent,
-  ReplyForm,
-  ReplyTextarea,
-  ReplyCancelButton,
-  ReplySubmitButton,
-  ToggleRepliesButton,
-  RepliesContainer,
-  ReplyItem,
-  ReplyContent,
-  ReplyFooter,
-  ReplyMeta,
-  ReplyDate,
-  ReplyAuthor,
   ManagementSection,
   ManagementTitle,
   ManagementButtons,
   ManagementButton,
 } from '@/styles/PostDetailStyles';
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-  // 프로필 노출 관련
-  showInProfile?: boolean;
-}
+import { GeneralPost } from '@/types/post';
 
 interface Comment {
   id: number;
@@ -79,16 +33,14 @@ interface Comment {
 }
 
 interface GeneralMyPostDetailProps {
-  post: Post;
+  post: GeneralPost;
 }
 
-export default function GeneralMyPostDetail({ post }: GeneralMyPostDetailProps) {
+export default function GeneralMyPostDetail({
+  post,
+}: GeneralMyPostDetailProps) {
   const router = useRouter();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyContent, setReplyContent] = useState('');
-  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
   const handleLike = () => {
     // TODO: 좋아요 처리
@@ -100,87 +52,58 @@ export default function GeneralMyPostDetail({ post }: GeneralMyPostDetailProps) 
     console.log('Dislike post:', post.id);
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-
+  const handleCommentSubmit = (content: string) => {
     const comment: Comment = {
       id: Date.now(),
       authorId: 'currentUser',
       authorName: '현재사용자',
-      content: newComment.trim(),
+      content: content,
       date: new Date().toISOString().split('T')[0],
       likeCount: 0,
       isLiked: false,
     };
 
-    setComments((prev) => [comment, ...prev]);
-    setNewComment('');
+    setComments(prev => [comment, ...prev]);
   };
 
   const handleCommentLike = (commentId: number) => {
-    setComments((prev) =>
-      prev.map((comment) =>
+    setComments(prev =>
+      prev.map(comment =>
         comment.id === commentId
           ? {
               ...comment,
               isLiked: !comment.isLiked,
-              likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
+              likeCount: comment.isLiked
+                ? comment.likeCount - 1
+                : comment.likeCount + 1,
             }
-          : comment,
-      ),
+          : comment
+      )
     );
   };
 
-  const handleReplyClick = (commentId: number) => {
-    setReplyingTo(commentId);
-    setReplyContent('');
-  };
-
-  const handleReplyCancel = () => {
-    setReplyingTo(null);
-    setReplyContent('');
-  };
-
-  const handleReplySubmit = (parentCommentId: number) => {
-    if (!replyContent.trim()) return;
-
+  const handleReplySubmit = (parentCommentId: number, content: string) => {
     const reply: Comment = {
       id: Date.now(),
       authorId: 'currentUser',
       authorName: '현재사용자',
-      content: replyContent.trim(),
+      content: content,
       date: new Date().toISOString().split('T')[0],
       parentId: parentCommentId,
       likeCount: 0,
       isLiked: false,
     };
 
-    setComments((prev) =>
-      prev.map((comment) =>
+    setComments(prev =>
+      prev.map(comment =>
         comment.id === parentCommentId
           ? {
               ...comment,
               replies: [...(comment.replies || []), reply],
             }
-          : comment,
-      ),
+          : comment
+      )
     );
-
-    setReplyContent('');
-    setReplyingTo(null);
-  };
-
-  const handleToggleReplies = (commentId: number) => {
-    setExpandedReplies((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
   };
 
   const handleAuthorClick = (authorId: string) => {
@@ -208,11 +131,19 @@ export default function GeneralMyPostDetail({ post }: GeneralMyPostDetailProps) 
 
         <PostActions>
           <ActionButtons>
-            <ActionButton onClick={handleLike} $isActive={post.isLiked} $variant="like">
+            <ActionButton
+              onClick={handleLike}
+              $isActive={post.isLiked}
+              $variant="like"
+            >
               <ButtonText>좋아요</ButtonText>
               <ButtonCount>{post.likeCount}</ButtonCount>
             </ActionButton>
-            <ActionButton onClick={handleDislike} $isActive={post.isDisliked} $variant="dislike">
+            <ActionButton
+              onClick={handleDislike}
+              $isActive={post.isDisliked}
+              $variant="dislike"
+            >
               <ButtonText>싫어요</ButtonText>
               <ButtonCount>{post.dislikeCount}</ButtonCount>
             </ActionButton>
@@ -228,104 +159,14 @@ export default function GeneralMyPostDetail({ post }: GeneralMyPostDetailProps) 
           </ManagementButtons>
         </ManagementSection>
 
-        <CommentsSection>
-          <CommentsHeader>댓글 ({post.commentCount})</CommentsHeader>
-
-          <CommentForm>
-            <CommentTextarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="댓글을 입력하세요..."
-            />
-            <CommentSubmitButton onClick={handleCommentSubmit} disabled={!newComment.trim()}>
-              등록
-            </CommentSubmitButton>
-          </CommentForm>
-
-          <CommentList>
-            {comments
-              .sort((a, b) => b.likeCount - a.likeCount)
-              .map((comment) => (
-                <CommentItem key={comment.id}>
-                  <CommentHeader>
-                    <CommentMeta>
-                      <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
-                        {comment.authorName}
-                      </CommentAuthor>
-                      <span>/</span>
-                      <CommentDate>{comment.date}</CommentDate>
-                    </CommentMeta>
-                    <CommentActions>
-                      <CommentLikeButton
-                        onClick={() => handleCommentLike(comment.id)}
-                        className={comment.isLiked ? 'liked' : ''}
-                      >
-                        <span>❤️</span>
-                        <span>{comment.likeCount}</span>
-                      </CommentLikeButton>
-                      <ReplyButton onClick={() => handleReplyClick(comment.id)}>답글</ReplyButton>
-                    </CommentActions>
-                  </CommentHeader>
-                  <CommentContent>{comment.content}</CommentContent>
-
-                  {replyingTo === comment.id && (
-                    <ReplyForm>
-                      <ReplyTextarea
-                        value={replyContent}
-                        onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder="답글을 입력하세요..."
-                      />
-                      <ReplyCancelButton onClick={handleReplyCancel}>취소</ReplyCancelButton>
-                      <ReplySubmitButton
-                        onClick={() => handleReplySubmit(comment.id)}
-                        disabled={!replyContent.trim()}
-                      >
-                        등록
-                      </ReplySubmitButton>
-                    </ReplyForm>
-                  )}
-
-                  {comment.replies && comment.replies.length > 0 && (
-                    <>
-                      {!expandedReplies.has(comment.id) ? (
-                        <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                          답글 {comment.replies.length}개 보기
-                        </ToggleRepliesButton>
-                      ) : (
-                        <>
-                          <RepliesContainer>
-                            {comment.replies
-                              .sort(
-                                (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-                              )
-                              .map((reply) => (
-                                <ReplyItem key={reply.id}>
-                                  <ReplyContent>{reply.content}</ReplyContent>
-                                  <ReplyFooter>
-                                    <ReplyMeta>
-                                      <ReplyDate>{reply.date}</ReplyDate>
-                                      <span>/</span>
-                                      <ReplyAuthor
-                                        onClick={() => handleAuthorClick(reply.authorId)}
-                                      >
-                                        {reply.authorName}
-                                      </ReplyAuthor>
-                                    </ReplyMeta>
-                                  </ReplyFooter>
-                                </ReplyItem>
-                              ))}
-                          </RepliesContainer>
-                          <ToggleRepliesButton onClick={() => handleToggleReplies(comment.id)}>
-                            답글 접기
-                          </ToggleRepliesButton>
-                        </>
-                      )}
-                    </>
-                  )}
-                </CommentItem>
-              ))}
-          </CommentList>
-        </CommentsSection>
+        <CommentSection
+          commentCount={post.commentCount}
+          comments={comments}
+          onCommentSubmit={handleCommentSubmit}
+          onCommentLike={handleCommentLike}
+          onReplySubmit={handleReplySubmit}
+          onAuthorClick={handleAuthorClick}
+        />
       </Content>
     </Container>
   );

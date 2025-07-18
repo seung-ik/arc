@@ -16,7 +16,7 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
   border-bottom: 1px solid #333;
   background-color: #1a1a1a;
 `;
@@ -24,10 +24,10 @@ const Header = styled.div`
 const BackButton = styled.button`
   background: none;
   border: none;
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
   cursor: pointer;
-  padding: ${(props) => props.theme.spacing.sm};
-  margin-right: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm};
+  margin-right: ${props => props.theme.spacing.md};
   color: #fff;
   transition: color 0.2s;
 
@@ -37,103 +37,105 @@ const BackButton = styled.button`
 `;
 
 const Title = styled.h1`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: #fff;
   margin: 0;
 `;
 
 const Content = styled.div`
   flex: 1;
-  padding: ${(props) => props.theme.spacing.lg};
+  padding: ${props => props.theme.spacing.lg};
 `;
 
 const TokenHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  gap: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
 const CoinTitle = styled.h2`
-  font-size: ${(props) => props.theme.typography.fontSizes.xl};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  font-size: ${props => props.theme.typography.fontSizes.xl};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: #fff;
   margin: 0;
 `;
 
 const TokenCount = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.xl};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  font-size: ${props => props.theme.typography.fontSizes.xl};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: #667eea;
   margin: 0;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  gap: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
 const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   flex: 1;
-  background-color: ${(props) => (props.$variant === 'secondary' ? '#2d3748' : '#667eea')};
+  background-color: ${props =>
+    props.$variant === 'secondary' ? '#2d3748' : '#667eea'};
   color: white;
   border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => (props.$variant === 'secondary' ? '#4a5568' : '#5a67d8')};
+    background-color: ${props =>
+      props.$variant === 'secondary' ? '#4a5568' : '#5a67d8'};
   }
 `;
 
 const Divider = styled.div`
   height: 1px;
   background-color: #333;
-  margin: ${(props) => props.theme.spacing.lg} 0;
+  margin: ${props => props.theme.spacing.lg} 0;
 `;
 
 const HistorySection = styled.div`
-  margin-top: ${(props) => props.theme.spacing.lg};
+  margin-top: ${props => props.theme.spacing.lg};
 `;
 
 const DateGroup = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
 const DateHeader = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   color: #888;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.sm} 0;
+  margin-bottom: ${props => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.sm} 0;
 `;
 
 const HistoryItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.sm} 0;
-  margin-bottom: ${(props) => props.theme.spacing.xs};
+  padding: ${props => props.theme.spacing.sm} 0;
+  margin-bottom: ${props => props.theme.spacing.xs};
   border-bottom: 1px solid #333;
 `;
 
 const HistoryTitle = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   color: #fff;
 `;
 
 const TokenAmount = styled.div<{ $isPositive: boolean }>`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => (props.$isPositive ? '#48bb78' : '#f56565')};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => (props.$isPositive ? '#48bb78' : '#f56565')};
 `;
 
 interface TokenHistoryItem {
@@ -221,23 +223,27 @@ export default function TokenHistoryPage() {
       }
       await wepinSDK.openWidget();
     } catch (e) {
+      console.error(e);
       alert('지갑 열기에 실패했습니다.');
     }
   };
 
   // 날짜별로 그룹화
-  const groupedHistory = mockTokenHistory.reduce((groups, item) => {
-    const date = item.date;
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(item);
-    return groups;
-  }, {} as Record<string, TokenHistoryItem[]>);
+  const groupedHistory = mockTokenHistory.reduce(
+    (groups, item) => {
+      const date = item.date;
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(item);
+      return groups;
+    },
+    {} as Record<string, TokenHistoryItem[]>
+  );
 
   // 날짜 순으로 정렬
   const sortedDates = Object.keys(groupedHistory).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
   );
 
   const formatDate = (dateString: string) => {
@@ -251,7 +257,10 @@ export default function TokenHistoryPage() {
     } else if (date.toDateString() === yesterday.toDateString()) {
       return '어제';
     } else {
-      return date.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+      return date.toLocaleDateString('ko-KR', {
+        month: 'long',
+        day: 'numeric',
+      });
     }
   };
 
@@ -278,10 +287,10 @@ export default function TokenHistoryPage() {
         <Divider />
 
         <HistorySection>
-          {sortedDates.map((date) => (
+          {sortedDates.map(date => (
             <DateGroup key={date}>
               <DateHeader>{formatDate(date)}</DateHeader>
-              {groupedHistory[date].map((item) => (
+              {groupedHistory[date].map(item => (
                 <HistoryItem key={item.id}>
                   <HistoryTitle>{item.title}</HistoryTitle>
                   <TokenAmount $isPositive={item.type === 'earned'}>

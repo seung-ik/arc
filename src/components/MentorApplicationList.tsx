@@ -62,7 +62,7 @@ const ApplicationList = styled.div`
 
 const ApplicationCard = styled.div<{ $status: string }>`
   border: 2px solid
-    ${(props) => {
+    ${props => {
       switch (props.$status) {
         case 'pending':
           return '#e3f2fd';
@@ -112,7 +112,7 @@ const StatusBadge = styled.span<{ $status: string }>`
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  background: ${(props) => {
+  background: ${props => {
     switch (props.$status) {
       case 'pending':
         return '#e3f2fd';
@@ -124,7 +124,7 @@ const StatusBadge = styled.span<{ $status: string }>`
         return '#f5f5f5';
     }
   }};
-  color: ${(props) => {
+  color: ${props => {
     switch (props.$status) {
       case 'pending':
         return '#1976d2';
@@ -169,7 +169,7 @@ const ActionButton = styled.button<{ $variant: 'approve' | 'reject' | 'pay' }>`
   transition: all 0.2s ease;
   border: none;
 
-  ${(props) => {
+  ${props => {
     if (props.$variant === 'approve') {
       return `
         background: #28a745;
@@ -211,7 +211,9 @@ export default function MentorApplicationList({
     }
   };
 
-  const pendingApplications = applications.filter((app) => app.status === 'pending');
+  const handlePayment = (applicationId: number) => {
+    onPayment?.(applicationId);
+  };
 
   return (
     <ApplicationsSection>
@@ -221,7 +223,7 @@ export default function MentorApplicationList({
       </ApplicationsHeader>
 
       <ApplicationList>
-        {applications.map((application) => (
+        {applications.map(application => (
           <ApplicationCard key={application.id} $status={application.status}>
             <ApplicationHeader>
               <MentorInfo>
@@ -236,17 +238,26 @@ export default function MentorApplicationList({
             <ApplicationComment>{application.comment}</ApplicationComment>
             {application.status === 'pending' && (
               <ApplicationActions>
-                <ActionButton onClick={() => onApprove(application.id)} $variant="approve">
+                <ActionButton
+                  onClick={() => onApprove(application.id)}
+                  $variant="approve"
+                >
                   승인
                 </ActionButton>
-                <ActionButton onClick={() => onReject(application.id)} $variant="reject">
+                <ActionButton
+                  onClick={() => onReject(application.id)}
+                  $variant="reject"
+                >
                   거절
                 </ActionButton>
               </ApplicationActions>
             )}
             {application.status === 'approved' && (
               <ApplicationActions>
-                <ActionButton onClick={() => onPayment(application.id)} $variant="pay">
+                <ActionButton
+                  onClick={() => handlePayment(application.id)}
+                  $variant="pay"
+                >
                   지불하기
                 </ActionButton>
               </ApplicationActions>

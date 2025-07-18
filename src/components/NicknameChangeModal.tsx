@@ -25,102 +25,102 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border-radius: ${(props) => props.theme.borderRadius.lg};
-  padding: ${(props) => props.theme.spacing.xl};
+  background-color: ${props => props.theme.colors.background};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing.xl};
   max-width: 400px;
   width: 90%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 `;
 
 const ModalTitle = styled.h2`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin-bottom: ${props => props.theme.spacing.md};
   text-align: center;
 `;
 
 const TokenInfo = styled.div`
-  background-color: ${(props) => props.theme.colors.primaryLight};
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  background-color: ${props => props.theme.colors.primaryLight};
+  border: 1px solid ${props => props.theme.colors.primary};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.lg};
   text-align: center;
 `;
 
 const TokenIcon = styled.span`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  margin-right: ${(props) => props.theme.spacing.xs};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  margin-right: ${props => props.theme.spacing.xs};
 `;
 
 const TokenText = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  color: ${(props) => props.theme.colors.primary};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.primary};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const TokenWarning = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  color: ${(props) => props.theme.colors.textGray};
-  margin-top: ${(props) => props.theme.spacing.xs};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textGray};
+  margin-top: ${props => props.theme.spacing.xs};
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin-bottom: ${(props) => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
+  margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: ${(props) => props.theme.spacing.md};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  background-color: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.md};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  background-color: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.textBlack};
   box-sizing: border-box;
 
   &:focus {
     outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary};
   }
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.textGray};
+    color: ${props => props.theme.colors.textGray};
   }
 `;
 
 const ErrorMessage = styled.div`
   color: #dc3545;
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  margin-top: ${(props) => props.theme.spacing.xs};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  margin-top: ${props => props.theme.spacing.xs};
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.sm};
 `;
 
 const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   flex: 1;
-  padding: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  border: 1px solid ${(props) => props.theme.colors.border};
+  padding: ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  border: 1px solid ${props => props.theme.colors.border};
   cursor: pointer;
   transition: all 0.2s;
 
-  ${(props) =>
+  ${props =>
     props.$variant === 'primary'
       ? `
     background-color: ${props.theme.colors.primary};
@@ -194,7 +194,7 @@ export default function NicknameChangeModal({
 
   return (
     <ModalOverlay onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+      <ModalContent onClick={e => e.stopPropagation()}>
         <ModalTitle>닉네임 변경</ModalTitle>
 
         <TokenInfo>
@@ -208,7 +208,7 @@ export default function NicknameChangeModal({
           <Input
             type="text"
             value={newNickname}
-            onChange={(e) => setNewNickname(e.target.value)}
+            onChange={e => setNewNickname(e.target.value)}
             placeholder="새 닉네임을 입력하세요"
             maxLength={10}
           />
@@ -217,7 +217,11 @@ export default function NicknameChangeModal({
 
         <ButtonGroup>
           <Button onClick={handleClose}>취소</Button>
-          <Button $variant="primary" onClick={handleSubmit} disabled={userTokens < 1}>
+          <Button
+            $variant="primary"
+            onClick={handleSubmit}
+            disabled={userTokens < 1}
+          >
             변경하기
           </Button>
         </ButtonGroup>

@@ -20,15 +20,15 @@ interface AuthActions {
 
 type AuthStore = AuthState & AuthActions;
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>(set => ({
   // State
   user: null,
   isLoading: false,
   error: null,
 
   // Actions
-  setUser: (user) => set({ user, error: null }),
-  setLoading: (loading) => set({ isLoading: loading }),
-  setError: (error) => set({ error, isLoading: false }),
+  setUser: user => set({ user, error: null }),
+  setLoading: loading => set({ isLoading: loading }),
+  setError: error => set({ error, isLoading: false }),
   logout: () => set({ user: null, error: null }),
 }));

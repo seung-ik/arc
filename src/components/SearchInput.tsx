@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 
 const SearchContainer = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const SearchInputWrapper = styled.div`
@@ -15,38 +15,38 @@ const SearchInputWrapper = styled.div`
 
 const SearchInputStyled = styled.input`
   width: 100%;
-  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   padding-left: 40px;
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  background-color: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.textBlack};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  background-color: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.textBlack};
   outline: none;
   transition: border-color 0.2s;
 
   &:focus {
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary};
   }
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.textGray};
+    color: ${props => props.theme.colors.textGray};
   }
 `;
 
 const SearchIcon = styled.div`
   position: absolute;
-  left: ${(props) => props.theme.spacing.sm};
-  color: ${(props) => props.theme.colors.textGray};
+  left: ${props => props.theme.spacing.sm};
+  color: ${props => props.theme.colors.textGray};
   font-size: 16px;
 `;
 
 const ClearButton = styled.button`
   position: absolute;
-  right: ${(props) => props.theme.spacing.sm};
+  right: ${props => props.theme.spacing.sm};
   background: none;
   border: none;
-  color: ${(props) => props.theme.colors.textGray};
+  color: ${props => props.theme.colors.textGray};
   cursor: pointer;
   font-size: 16px;
   padding: 4px;
@@ -57,7 +57,7 @@ const ClearButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.backgroundGray};
+    background-color: ${props => props.theme.colors.backgroundGray};
   }
 `;
 

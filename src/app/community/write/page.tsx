@@ -9,13 +9,15 @@ import CommunityLayout from '@/components/CommunityLayout';
 import { ROUTES } from '@/constants/routes';
 import dynamic from 'next/dynamic';
 
-const ToastEditor = dynamic(() => import('@/components/ToastEditor'), { ssr: false });
+const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {
+  ssr: false,
+});
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
 `;
@@ -23,40 +25,40 @@ const Container = styled.div`
 const Content = styled.div`
   flex: 1;
   width: 100%;
-  padding: ${(props) => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.sm};
 `;
 
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.sm} 0;
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} 0;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const Title = styled.h1`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
   margin: 0;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.sm};
 `;
 
 const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  border: 1px solid ${(props) => props.theme.colors.border};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  border: 1px solid ${props => props.theme.colors.border};
   cursor: pointer;
   transition: all 0.2s;
 
-  ${(props) =>
+  ${props =>
     props.$variant === 'primary'
       ? `
     background-color: ${props.theme.colors.primary};
@@ -77,68 +79,46 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.xs};
+  gap: ${props => props.theme.spacing.xs};
 `;
 
 const Label = styled.label`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  color: ${(props) => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
 `;
 
 const Input = styled.input`
-  padding: ${(props) => props.theme.spacing.sm};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  background-color: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.sm};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  background-color: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.textBlack};
 
   &:focus {
     outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary};
   }
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.textGray};
-  }
-`;
-
-const TextArea = styled.textarea`
-  padding: ${(props) => props.theme.spacing.md};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  background-color: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.textBlack};
-  resize: vertical;
-  min-height: 400px;
-  font-family: inherit;
-  line-height: 1.6;
-
-  &:focus {
-    outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
-  }
-
-  &::placeholder {
-    color: ${(props) => props.theme.colors.textGray};
+    color: ${props => props.theme.colors.textGray};
   }
 `;
 
 const ShortTextArea = styled.textarea`
-  padding: ${(props) => props.theme.spacing.sm};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  background-color: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.sm};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  background-color: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.textBlack};
   resize: vertical;
   min-height: 80px;
   max-height: 120px;
@@ -147,41 +127,41 @@ const ShortTextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary};
   }
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.textGray};
+    color: ${props => props.theme.colors.textGray};
   }
 `;
 
 const CharCount = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  color: ${(props) => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textGray};
   text-align: right;
-  margin-top: ${(props) => props.theme.spacing.xs};
+  margin-top: ${props => props.theme.spacing.xs};
 `;
 
 const Select = styled.select`
-  padding: ${(props) => props.theme.spacing.sm};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  background-color: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.sm};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  background-color: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.textBlack};
   cursor: pointer;
 
   &:focus {
     outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary};
   }
 `;
 
 const TopFormGroup = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const Modal = styled.div`
@@ -198,192 +178,171 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${(props) => props.theme.colors.background};
-  border-radius: ${(props) => props.theme.borderRadius.lg};
-  padding: ${(props) => props.theme.spacing.xl};
+  background-color: ${props => props.theme.colors.background};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing.xl};
   max-width: 400px;
   width: 90%;
   text-align: center;
 `;
 
 const ModalTitle = styled.h2`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const ModalMessage = styled.p`
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  color: ${(props) => props.theme.colors.textGray};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  color: ${props => props.theme.colors.textGray};
+  margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
 const ModalButtonGroup = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.sm};
   justify-content: center;
-`;
-
-const InfoBox = styled.div`
-  background: linear-gradient(
-    135deg,
-    ${(props) => props.theme.colors.primaryLight} 0%,
-    rgba(59, 130, 246, 0.05) 100%
-  );
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
-`;
-
-const InfoTitle = styled.h3`
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.primary};
-  margin: 0 0 ${(props) => props.theme.spacing.xs} 0;
-`;
-
-const InfoText = styled.p`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  color: ${(props) => props.theme.colors.textGray};
-  margin: 0;
-  line-height: 1.5;
 `;
 
 const MentorFields = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.md};
-  padding: ${(props) => props.theme.spacing.md};
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const FieldRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
 `;
 
 const FieldDescription = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.xs};
+  margin-bottom: ${props => props.theme.spacing.xs};
 `;
 
 const FieldLabel = styled.label`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin-bottom: ${(props) => props.theme.spacing.xs};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
+  margin-bottom: ${props => props.theme.spacing.xs};
   display: block;
 `;
 
 const FieldHelp = styled.span`
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  color: ${(props) => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textGray};
   font-style: italic;
 `;
 
 const MatchFields = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.theme.spacing.md};
-  padding: ${(props) => props.theme.spacing.md};
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const TimeLocationRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
 `;
 
 const ValidityPeriodSection = styled.div`
-  margin-top: ${(props) => props.theme.spacing.lg};
+  margin-top: ${props => props.theme.spacing.lg};
 `;
 
 const ValidityTitle = styled.h3`
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const ValidityCards = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const ValidityCard = styled.div<{ $selected?: boolean }>`
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
   border: 2px solid
-    ${(props) => (props.$selected ? props.theme.colors.primary : props.theme.colors.border)};
-  border-radius: ${(props) => props.theme.borderRadius.md};
+    ${props =>
+      props.$selected ? props.theme.colors.primary : props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
-  background-color: ${(props) =>
-    props.$selected ? props.theme.colors.primaryLight : props.theme.colors.background};
+  background-color: ${props =>
+    props.$selected
+      ? props.theme.colors.primaryLight
+      : props.theme.colors.background};
 
   &:hover {
-    border-color: ${(props) => props.theme.colors.primary};
-    background-color: ${(props) => props.theme.colors.primaryLight};
+    border-color: ${props => props.theme.colors.primary};
+    background-color: ${props => props.theme.colors.primaryLight};
   }
 `;
 
 const ValidityPeriod = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin-bottom: ${(props) => props.theme.spacing.xs};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin-bottom: ${props => props.theme.spacing.xs};
 `;
 
 const ValidityToken = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  color: ${(props) => props.theme.colors.primary};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.primary};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const TokenInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.md};
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  margin-top: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  margin-top: ${props => props.theme.spacing.md};
 `;
 
 const TokenLabel = styled.span`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  color: ${(props) => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.textGray};
 `;
 
 const TokenAmount = styled.span<{ $insufficient?: boolean }>`
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) =>
-    props.$insufficient ? props.theme.colors.error : props.theme.colors.primary};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props =>
+    props.$insufficient
+      ? props.theme.colors.error
+      : props.theme.colors.primary};
 `;
 
 const ModalButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: ${(props) => props.theme.spacing.xs} ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
-  border: 1px solid ${(props) => props.theme.colors.border};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  border: 1px solid ${props => props.theme.colors.border};
   cursor: pointer;
   transition: all 0.2s;
 
-  ${(props) =>
+  ${props =>
     props.$variant === 'primary'
       ? `
     background-color: ${props.theme.colors.primary};
@@ -425,14 +384,6 @@ const VALIDITY_PERIODS = [
   { value: '7', label: '7일', token: 5 },
 ];
 
-// 시간대 옵션
-const TIME_OPTIONS = [
-  { value: 'morning', label: '오전 (09:00-12:00)' },
-  { value: 'afternoon', label: '오후 (12:00-18:00)' },
-  { value: 'evening', label: '저녁 (18:00-21:00)' },
-  { value: 'flexible', label: '시간 협의 가능' },
-];
-
 function WritePostForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -458,7 +409,7 @@ function WritePostForm() {
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
@@ -480,7 +431,12 @@ function WritePostForm() {
 
     // 멘토 포스트 타입일 때 추가 필드 검증
     if (formData.postType === '멘토') {
-      if (!formData.sport || !formData.elo || !formData.location || !formData.tokenReward) {
+      if (
+        !formData.sport ||
+        !formData.elo ||
+        !formData.location ||
+        !formData.tokenReward
+      ) {
         alert('멘토링 요청에 필요한 모든 정보를 입력해주세요.');
         return;
       }
@@ -508,16 +464,16 @@ function WritePostForm() {
       formData.category === 'tennis'
         ? ROUTES.community.tennis
         : formData.category === 'badminton'
-        ? ROUTES.community.badminton
-        : formData.category === 'table-tennis'
-        ? ROUTES.community.tableTennis
-        : formData.category === 'billiards'
-        ? ROUTES.community.billiards
-        : formData.category === 'go'
-        ? ROUTES.community.go
-        : formData.category === 'chess'
-        ? ROUTES.community.chess
-        : ROUTES.community.root;
+          ? ROUTES.community.badminton
+          : formData.category === 'table-tennis'
+            ? ROUTES.community.tableTennis
+            : formData.category === 'billiards'
+              ? ROUTES.community.billiards
+              : formData.category === 'go'
+                ? ROUTES.community.go
+                : formData.category === 'chess'
+                  ? ROUTES.community.chess
+                  : ROUTES.community.root;
 
     router.push(categoryPath);
   };
@@ -562,11 +518,11 @@ function WritePostForm() {
                 <Select
                   id="category"
                   value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
+                  onChange={e => handleInputChange('category', e.target.value)}
                   required
                 >
                   <option value="">카테고리를 선택하세요</option>
-                  {CATEGORIES.map((category) => (
+                  {CATEGORIES.map(category => (
                     <option key={category.value} value={category.value}>
                       {category.label}
                     </option>
@@ -579,11 +535,11 @@ function WritePostForm() {
                 <Select
                   id="postType"
                   value={formData.postType}
-                  onChange={(e) => handleInputChange('postType', e.target.value)}
+                  onChange={e => handleInputChange('postType', e.target.value)}
                   required
                 >
                   <option value="">글타입을 선택하세요</option>
-                  {POST_TYPES.map((type) => (
+                  {POST_TYPES.map(type => (
                     <option key={type.value} value={type.value}>
                       {type.label}
                     </option>
@@ -596,7 +552,8 @@ function WritePostForm() {
               <>
                 <div
                   style={{
-                    background: 'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
+                    background:
+                      'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
                     border: '1px solid #2196f3',
                     borderRadius: '8px',
                     padding: '16px',
@@ -613,9 +570,17 @@ function WritePostForm() {
                   >
                     📚 멘토링 요청 안내
                   </h3>
-                  <p style={{ color: '#666', margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
-                    멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역, 보상 토큰 등을 상세히
-                    작성해주세요. 멘토가 요청을 보고 연락을 드릴 예정입니다.
+                  <p
+                    style={{
+                      color: '#666',
+                      margin: 0,
+                      fontSize: '14px',
+                      lineHeight: '1.5',
+                    }}
+                  >
+                    멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역,
+                    보상 토큰 등을 상세히 작성해주세요. 멘토가 요청을 보고
+                    연락을 드릴 예정입니다.
                   </p>
                 </div>
 
@@ -624,16 +589,20 @@ function WritePostForm() {
                     <FormGroup>
                       <FieldDescription>
                         <FieldLabel htmlFor="sport">종목 *</FieldLabel>
-                        <FieldHelp>멘토링을 받고 싶은 종목을 선택하거나 직접 입력하세요</FieldHelp>
+                        <FieldHelp>
+                          멘토링을 받고 싶은 종목을 선택하거나 직접 입력하세요
+                        </FieldHelp>
                       </FieldDescription>
                       <Select
                         id="sport"
                         value={formData.sport || ''}
-                        onChange={(e) => handleInputChange('sport', e.target.value)}
+                        onChange={e =>
+                          handleInputChange('sport', e.target.value)
+                        }
                         required
                       >
                         <option value="">종목 선택</option>
-                        {CATEGORIES.map((category) => (
+                        {CATEGORIES.map(category => (
                           <option key={category.value} value={category.value}>
                             {category.label}
                           </option>
@@ -644,7 +613,9 @@ function WritePostForm() {
                         <Input
                           type="text"
                           value={formData.customSport || ''}
-                          onChange={(e) => handleInputChange('customSport', e.target.value)}
+                          onChange={e =>
+                            handleInputChange('customSport', e.target.value)
+                          }
                           placeholder="종목을 직접 입력하세요"
                           style={{ marginTop: '8px' }}
                           required
@@ -660,7 +631,7 @@ function WritePostForm() {
                       <Select
                         id="elo"
                         value={formData.elo || ''}
-                        onChange={(e) => handleInputChange('elo', e.target.value)}
+                        onChange={e => handleInputChange('elo', e.target.value)}
                         required
                       >
                         <option value="">실력 선택</option>
@@ -682,7 +653,9 @@ function WritePostForm() {
                         id="location"
                         type="text"
                         value={formData.location || ''}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
+                        onChange={e =>
+                          handleInputChange('location', e.target.value)
+                        }
                         placeholder="예: 서울 강남구"
                         required
                       />
@@ -690,21 +663,25 @@ function WritePostForm() {
 
                     <FormGroup>
                       <FieldDescription>
-                        <FieldLabel htmlFor="tokenReward">보상 토큰 *</FieldLabel>
-                        <FieldHelp>멘토에게 지급할 토큰 수량 (숫자만 입력)</FieldHelp>
+                        <FieldLabel htmlFor="tokenReward">
+                          보상 토큰 *
+                        </FieldLabel>
+                        <FieldHelp>
+                          멘토에게 지급할 토큰 수량 (숫자만 입력)
+                        </FieldHelp>
                       </FieldDescription>
                       <Input
                         id="tokenReward"
                         type="number"
                         value={formData.tokenReward || ''}
-                        onChange={(e) => {
+                        onChange={e => {
                           const value = e.target.value;
                           // 숫자만 허용
                           if (value === '' || /^\d+$/.test(value)) {
                             handleInputChange('tokenReward', value);
                           }
                         }}
-                        onKeyPress={(e) => {
+                        onKeyPress={e => {
                           // 숫자와 백스페이스, 화살표 키만 허용
                           if (
                             !/[0-9]/.test(e.key) &&
@@ -730,7 +707,8 @@ function WritePostForm() {
               <>
                 <div
                   style={{
-                    background: 'linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%)',
+                    background:
+                      'linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%)',
                     border: '1px solid #4caf50',
                     borderRadius: '8px',
                     padding: '16px',
@@ -747,9 +725,17 @@ function WritePostForm() {
                   >
                     🏓 매칭 요청 안내
                   </h3>
-                  <p style={{ color: '#666', margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
-                    매칭을 원하는 장소, 상대 실력을 설정하고 유효기간을 선택하세요. AI 추천 시스템을
-                    통해 적합한 상대를 찾아드립니다.
+                  <p
+                    style={{
+                      color: '#666',
+                      margin: 0,
+                      fontSize: '14px',
+                      lineHeight: '1.5',
+                    }}
+                  >
+                    매칭을 원하는 장소, 상대 실력을 설정하고 유효기간을
+                    선택하세요. AI 추천 시스템을 통해 적합한 상대를
+                    찾아드립니다.
                   </p>
                 </div>
 
@@ -757,13 +743,17 @@ function WritePostForm() {
                   <FormGroup>
                     <FieldDescription>
                       <FieldLabel htmlFor="matchLocation">선호 장소</FieldLabel>
-                      <FieldHelp>매칭을 원하는 장소를 입력하세요 (선택사항)</FieldHelp>
+                      <FieldHelp>
+                        매칭을 원하는 장소를 입력하세요 (선택사항)
+                      </FieldHelp>
                     </FieldDescription>
                     <Input
                       id="matchLocation"
                       type="text"
                       value={formData.matchLocation}
-                      onChange={(e) => handleInputChange('matchLocation', e.target.value)}
+                      onChange={e =>
+                        handleInputChange('matchLocation', e.target.value)
+                      }
                       placeholder="예: 강남구 테니스장, 협의 가능"
                     />
                   </FormGroup>
@@ -778,7 +768,9 @@ function WritePostForm() {
                         id="myElo"
                         type="number"
                         value={formData.myElo}
-                        onChange={(e) => handleInputChange('myElo', e.target.value)}
+                        onChange={e =>
+                          handleInputChange('myElo', e.target.value)
+                        }
                         placeholder="예: 1200"
                         min="0"
                       />
@@ -786,13 +778,17 @@ function WritePostForm() {
 
                     <FormGroup>
                       <FieldDescription>
-                        <FieldLabel htmlFor="preferredElo">희망 상대 실력</FieldLabel>
+                        <FieldLabel htmlFor="preferredElo">
+                          희망 상대 실력
+                        </FieldLabel>
                         <FieldHelp>희망하는 상대의 실력 범위</FieldHelp>
                       </FieldDescription>
                       <Select
                         id="preferredElo"
                         value={formData.preferredElo}
-                        onChange={(e) => handleInputChange('preferredElo', e.target.value)}
+                        onChange={e =>
+                          handleInputChange('preferredElo', e.target.value)
+                        }
                       >
                         <option value="">실력 무관</option>
                         <option value="similar">비슷한 실력</option>
@@ -807,11 +803,13 @@ function WritePostForm() {
                 <ValidityPeriodSection>
                   <ValidityTitle>유효기간 선택 *</ValidityTitle>
                   <ValidityCards>
-                    {VALIDITY_PERIODS.map((period) => (
+                    {VALIDITY_PERIODS.map(period => (
                       <ValidityCard
                         key={period.value}
                         $selected={formData.validityPeriod === period.value}
-                        onClick={() => handleInputChange('validityPeriod', period.value)}
+                        onClick={() =>
+                          handleInputChange('validityPeriod', period.value)
+                        }
                       >
                         <ValidityPeriod>{period.label}</ValidityPeriod>
                         <ValidityToken>{period.token} 토큰</ValidityToken>
@@ -823,8 +821,9 @@ function WritePostForm() {
                     <TokenLabel>필요 토큰:</TokenLabel>
                     <TokenAmount $insufficient={false}>
                       {formData.validityPeriod
-                        ? VALIDITY_PERIODS.find((p) => p.value === formData.validityPeriod)
-                            ?.token || 0
+                        ? VALIDITY_PERIODS.find(
+                            p => p.value === formData.validityPeriod
+                          )?.token || 0
                         : 0}{' '}
                       토큰
                     </TokenAmount>
@@ -839,13 +838,13 @@ function WritePostForm() {
                 id="title"
                 type="text"
                 value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
+                onChange={e => handleInputChange('title', e.target.value)}
                 placeholder={
                   formData.postType === '멘토'
                     ? '예: 테니스 초보자 멘토링 요청합니다'
                     : formData.postType === '매치'
-                    ? '예: 테니스 매칭 구합니다'
-                    : '제목을 입력하세요'
+                      ? '예: 테니스 매칭 구합니다'
+                      : '제목을 입력하세요'
                 }
                 required
               />
@@ -858,7 +857,7 @@ function WritePostForm() {
                   <ShortTextArea
                     id="content"
                     value={formData.content}
-                    onChange={(e) => {
+                    onChange={e => {
                       const value = e.target.value;
                       if (value.length <= 80) {
                         handleInputChange('content', value);
@@ -877,7 +876,7 @@ function WritePostForm() {
               ) : (
                 <ToastEditor
                   value={formData.content}
-                  onChange={(value) => handleInputChange('content', value)}
+                  onChange={value => handleInputChange('content', value)}
                   height="400px"
                   placeholder="내용을 입력하세요"
                   initialEditType="wysiwyg"
@@ -892,9 +891,13 @@ function WritePostForm() {
         <Modal>
           <ModalContent>
             <ModalTitle>작성을 취소하시겠습니까?</ModalTitle>
-            <ModalMessage>작성 중인 내용이 있습니다. 정말로 취소하시겠습니까?</ModalMessage>
+            <ModalMessage>
+              작성 중인 내용이 있습니다. 정말로 취소하시겠습니까?
+            </ModalMessage>
             <ModalButtonGroup>
-              <ModalButton onClick={handleContinueWriting}>계속 작성</ModalButton>
+              <ModalButton onClick={handleContinueWriting}>
+                계속 작성
+              </ModalButton>
               <ModalButton $variant="primary" onClick={handleConfirmCancel}>
                 취소하기
               </ModalButton>

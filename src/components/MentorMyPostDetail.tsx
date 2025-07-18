@@ -2,34 +2,10 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import PostHeader from '@/components/PostHeader';
 import MentorApplicationList from '@/components/MentorApplicationList';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-
-interface MentorPost {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-  // 멘티 전용 필드들
-  sport?: string;
-  elo?: number;
-  location?: string;
-  tokenReward?: string;
-  // 프로필 노출 관련
-  showInProfile?: boolean;
-}
+import { MentorPost } from '@/types/post';
 
 interface MentorApplication {
   id: number;
@@ -113,7 +89,7 @@ const ManagementButton = styled.button<{ $variant: string }>`
   transition: all 0.2s ease;
   border: none;
 
-  ${(props) => {
+  ${props => {
     switch (props.$variant) {
       case 'edit':
         return `
@@ -144,55 +120,46 @@ const ManagementButton = styled.button<{ $variant: string }>`
 `;
 
 export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
-  const router = useRouter();
-
-  // Mock data - 실제로는 API에서 가져올 데이터
   const [applications, setApplications] = useState<MentorApplication[]>([
     {
       id: 1,
-      mentorId: 'mentor123',
-      mentorName: '테니스고수',
-      mentorElo: 1750,
+      mentorId: 'mentor1',
+      mentorName: '홍길동',
+      mentorElo: 1800,
       status: 'pending',
-      comment: '안녕하세요! 10년 경력의 테니스 선수입니다. 체계적으로 가르쳐드릴 수 있어요.',
-      date: '2024-01-20',
+      comment: '멘토링 신청합니다!',
+      date: '2024-06-01',
     },
     {
       id: 2,
-      mentorId: 'mentor456',
-      mentorName: '테니스마스터',
-      mentorElo: 1850,
+      mentorId: 'mentor2',
+      mentorName: '이몽룡',
+      mentorElo: 1700,
       status: 'approved',
-      comment: '함께 치면서 팁 드릴 수 있습니다. 주말에 가능해요!',
-      date: '2024-01-19',
+      comment: '경험 많아요.',
+      date: '2024-06-02',
     },
   ]);
 
-  const handleEdit = () => {
-    // TODO: 수정 처리
-    console.log('Edit post:', post.id);
+  const handleApprove = (applicationId: number) => {
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === applicationId ? { ...app, status: 'approved' } : app
+      )
+    );
+  };
+
+  const handleReject = (applicationId: number) => {
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === applicationId ? { ...app, status: 'rejected' } : app
+      )
+    );
   };
 
   const handleDelete = () => {
     // TODO: 삭제 처리
     console.log('Delete post:', post.id);
-  };
-
-  const handleToggleProfile = () => {
-    // TODO: 프로필 노출 토글 처리
-    console.log('Toggle profile visibility:', post.id);
-  };
-
-  const handleApprove = (applicationId: number) => {
-    setApplications((prev) =>
-      prev.map((app) => (app.id === applicationId ? { ...app, status: 'approved' as const } : app)),
-    );
-  };
-
-  const handleReject = (applicationId: number) => {
-    setApplications((prev) =>
-      prev.map((app) => (app.id === applicationId ? { ...app, status: 'rejected' as const } : app)),
-    );
   };
 
   const handlePayment = (applicationId: number) => {

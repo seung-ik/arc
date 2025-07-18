@@ -5,23 +5,23 @@ import Modal from './Modal';
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
 `;
 
 const CancelButton = styled.button`
-  background-color: ${(props) => props.theme.colors.secondaryLight};
-  color: ${(props) => props.theme.colors.textGray};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md} ${(props) => props.theme.spacing.lg};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  background-color: ${props => props.theme.colors.secondaryLight};
+  color: ${props => props.theme.colors.textGray};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.border};
-    color: ${(props) => props.theme.colors.textBlack};
+    background-color: ${props => props.theme.colors.border};
+    color: ${props => props.theme.colors.textBlack};
   }
 
   &:active {
@@ -30,18 +30,18 @@ const CancelButton = styled.button`
 `;
 
 const ConfirmButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.textWhite};
+  background-color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.textWhite};
   border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md} ${(props) => props.theme.spacing.lg};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primaryHover};
+    background-color: ${props => props.theme.colors.primaryHover};
   }
 
   &:active {
@@ -49,7 +49,7 @@ const ConfirmButton = styled.button`
   }
 
   &:disabled {
-    background-color: ${(props) => props.theme.colors.textLightGray};
+    background-color: ${props => props.theme.colors.textLightGray};
     cursor: not-allowed;
     transform: none;
   }

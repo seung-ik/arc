@@ -11,60 +11,60 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.background};
-  gap: ${(props) => props.theme.spacing.xl};
+  background-color: ${props => props.theme.colors.background};
+  gap: ${props => props.theme.spacing.xl};
 `;
 
 const Title = styled.h1`
-  color: ${(props) => props.theme.colors.textBlack};
-  font-size: ${(props) => props.theme.typography.fontSizes['3xl']};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes['3xl']};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
 `;
 
 const Subtitle = styled.p`
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.normal};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.normal};
 `;
 
 const ColorExample = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
   flex-wrap: wrap;
   justify-content: center;
 `;
 
 const ColorBox = styled.div<{ bgColor: string; textColor: string }>`
-  background-color: ${(props) => props.bgColor};
-  color: ${(props) => props.textColor};
-  padding: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  background-color: ${props => props.bgColor};
+  color: ${props => props.textColor};
+  padding: ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   min-width: 120px;
   text-align: center;
 `;
 
 const ModalExample = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.md};
   flex-wrap: wrap;
   justify-content: center;
 `;
 
 const ModalButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.textWhite};
+  background-color: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.textWhite};
   border: none;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.md} ${(props) => props.theme.spacing.lg};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primaryHover};
+    background-color: ${props => props.theme.colors.primaryHover};
   }
 
   &:active {
@@ -109,8 +109,12 @@ export default function ColorsPage() {
 
       <Subtitle>모달 예시</Subtitle>
       <ModalExample>
-        <ModalButton onClick={oneButtonModal.openModal}>One Button Modal</ModalButton>
-        <ModalButton onClick={twoButtonModal.openModal}>Two Button Modal</ModalButton>
+        <ModalButton onClick={oneButtonModal.openModal}>
+          One Button Modal
+        </ModalButton>
+        <ModalButton onClick={twoButtonModal.openModal}>
+          Two Button Modal
+        </ModalButton>
       </ModalExample>
 
       <OneButtonModal

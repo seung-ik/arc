@@ -13,12 +13,13 @@ import CommunityLayout from '@/components/CommunityLayout';
 import WriteButton from '@/components/WriteButton';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { MatchPost, Post } from '@/types/post';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
 `;
@@ -35,9 +36,9 @@ const PostList = styled.div`
 
 const NoResults = styled.div`
   text-align: center;
-  padding: ${(props) => props.theme.spacing.xl};
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  padding: ${props => props.theme.spacing.xl};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.base};
 `;
 
 // 배드민턴 관련 임시 게시글 데이터 (일반, 매치, 멘토 타입)
@@ -131,7 +132,8 @@ const mockPosts = [
   {
     id: 6,
     title: '배드민턴 스트로크 분석',
-    content: '프로 선수들의 스트로크를 분석해보았습니다. 각 선수별 특징과 배울 점을 정리해봤어요.',
+    content:
+      '프로 선수들의 스트로크를 분석해보았습니다. 각 선수별 특징과 배울 점을 정리해봤어요.',
     authorId: 'user555',
     authorName: '배드민턴고수',
     date: '2024-01-03',
@@ -149,7 +151,8 @@ const mockPosts = [
   {
     id: 7,
     title: '배드민턴 매칭 구합니다',
-    content: '배드민턴 동호인과 함께 치고 싶습니다. 실력은 비슷하거나 조금 높은 분이면 좋겠어요.',
+    content:
+      '배드민턴 동호인과 함께 치고 싶습니다. 실력은 비슷하거나 조금 높은 분이면 좋겠어요.',
     authorId: 'user456',
     authorName: '배드민턴러버',
     date: '2024-01-23',
@@ -169,7 +172,8 @@ const mockPosts = [
   {
     id: 8,
     title: '배드민턴 더블스 파트너 구합니다',
-    content: '배드민턴 더블스 파트너를 구합니다. 중급 실력이고 주말에 자주 치실 분 찾습니다.',
+    content:
+      '배드민턴 더블스 파트너를 구합니다. 중급 실력이고 주말에 자주 치실 분 찾습니다.',
     authorId: 'user789',
     authorName: '배드민턴마스터',
     date: '2024-01-20',
@@ -189,7 +193,8 @@ const mockPosts = [
   {
     id: 9,
     title: '배드민턴 연습 상대 구합니다',
-    content: '배드민턴 연습 상대를 구합니다. 초보자도 환영하고 함께 실력 향상하실 분 찾습니다.',
+    content:
+      '배드민턴 연습 상대를 구합니다. 초보자도 환영하고 함께 실력 향상하실 분 찾습니다.',
     authorId: 'user202',
     authorName: '배드민턴학도',
     date: '2024-01-18',
@@ -255,7 +260,8 @@ const mockPosts = [
   {
     id: 12,
     title: '배드민턴 고급자 멘토링 요청합니다',
-    content: '배드민턴 실력을 더욱 향상시키고 싶습니다. 고급 기술과 전략을 배우고 싶어요.',
+    content:
+      '배드민턴 실력을 더욱 향상시키고 싶습니다. 고급 기술과 전략을 배우고 싶어요.',
     authorId: 'user505',
     authorName: '배드민턴학도',
     date: '2024-01-02',
@@ -290,11 +296,11 @@ export default function BadmintonPage() {
 
     const query = searchQuery.toLowerCase();
     return mockPosts.filter(
-      (post) =>
+      post =>
         post.title.toLowerCase().includes(query) ||
         post.content.toLowerCase().includes(query) ||
         post.authorName.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query),
+        post.category.toLowerCase().includes(query)
     );
   }, [searchQuery]);
 
@@ -332,18 +338,23 @@ export default function BadmintonPage() {
           onClick={handleAdClick}
         />
         <Content>
-          <SearchInput onSearch={handleSearch} placeholder="배드민턴 게시글 검색..." />
+          <SearchInput
+            onSearch={handleSearch}
+            placeholder="배드민턴 게시글 검색..."
+          />
           <PostList>
             {currentPosts.length > 0 ? (
-              currentPosts.map((post) =>
+              currentPosts.map(post =>
                 post.postType === '매치' ? (
-                  <MatchPostCard key={post.id} post={post} />
+                  <MatchPostCard key={post.id} post={post as MatchPost} />
                 ) : (
-                  <CommunityPost key={post.id} post={post} />
-                ),
+                  <CommunityPost key={post.id} post={post as Post} />
+                )
               )
             ) : (
-              <NoResults>{searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}</NoResults>
+              <NoResults>
+                {searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}
+              </NoResults>
             )}
           </PostList>
           <Pagination

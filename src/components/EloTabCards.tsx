@@ -7,8 +7,8 @@ import { ROUTES } from '@/constants/routes';
 
 const TabContainer = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.sm};
-  background: ${(props) => props.theme.colors.background};
+  gap: ${props => props.theme.spacing.sm};
+  background: ${props => props.theme.colors.background};
   width: 100%;
 
   /* 화면 넓을 때: 반반씩 꽉 채우기 */
@@ -20,7 +20,7 @@ const TabContainer = styled.div`
   @media (min-width: 1200px) {
     width: 1100px;
     padding: 0;
-    padding-top: ${(props) => props.theme.spacing.md};
+    padding-top: ${props => props.theme.spacing.md};
   }
 `;
 
@@ -28,34 +28,37 @@ const TabCard = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${(props) => props.theme.spacing.sm};
-  background-color: ${(props) => props.theme.colors.background};
+  gap: ${props => props.theme.spacing.sm};
+  background-color: ${props => props.theme.colors.background};
   border: 1.5px solid
-    ${(props) => (props.$active ? props.theme.colors.primary : props.theme.colors.border)};
-  border-radius: ${(props) => props.theme.borderRadius.md};
+    ${props =>
+      props.$active ? props.theme.colors.primary : props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   text-align: left;
   cursor: pointer;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
   outline: none;
   word-break: keep-all;
   word-wrap: break-word;
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border-color: ${(props) => props.theme.colors.primary};
+    border-color: ${props => props.theme.colors.primary};
   }
 
   /* 화면 넓을 때: 반반씩 꽉 채우기 */
   @media (min-width: 768px) {
     flex: 1 1 50%;
-    padding: ${(props) => props.theme.spacing.md};
+    padding: ${props => props.theme.spacing.md};
     min-width: 200px;
   }
 
   @media (max-width: 767px) {
     flex: 1 1 50%;
-    padding: ${(props) => props.theme.spacing.sm};
+    padding: ${props => props.theme.spacing.sm};
   }
 `;
 
@@ -65,12 +68,12 @@ const TabIcon = styled.div`
 
   /* 화면 넓을 때 */
   @media (min-width: 768px) {
-    margin-right: ${(props) => props.theme.spacing.md};
+    margin-right: ${props => props.theme.spacing.md};
   }
 
   /* 화면 작을 때 */
   @media (max-width: 767px) {
-    margin-right: ${(props) => props.theme.spacing.sm};
+    margin-right: ${props => props.theme.spacing.sm};
   }
 `;
 
@@ -82,26 +85,26 @@ const TabTextBox = styled.div`
 `;
 
 const TabTitle = styled.div`
-  color: ${(props) => props.theme.colors.textBlack};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
   margin-bottom: 0;
   word-break: keep-all;
   word-wrap: break-word;
 
   /* 화면 넓을 때 */
   @media (min-width: 768px) {
-    font-size: ${(props) => props.theme.typography.fontSizes.base};
+    font-size: ${props => props.theme.typography.fontSizes.base};
   }
 
   /* 화면 작을 때 */
   @media (max-width: 767px) {
-    font-size: ${(props) => props.theme.typography.fontSizes.sm};
+    font-size: ${props => props.theme.typography.fontSizes.sm};
   }
 `;
 
 const TabDesc = styled.div`
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
   word-break: keep-all;
   word-wrap: break-word;
 
@@ -150,7 +153,7 @@ export default function EloTabCards() {
 
   return (
     <TabContainer>
-      {tabs.map((tab) => (
+      {tabs.map(tab => (
         <TabCard
           key={tab.key}
           $active={tab.active}

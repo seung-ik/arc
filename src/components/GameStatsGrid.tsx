@@ -13,9 +13,9 @@ const GridContainer = styled.div`
 `;
 
 const GridTitle = styled.h2`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
   margin: 0 0 16px 0;
   padding-left: 4px;
 `;
@@ -36,8 +36,12 @@ export default function GameStatsGrid({ gameStats }: GameStatsGridProps) {
     <GridContainer>
       <GridTitle>종목별 ELO</GridTitle>
       <Grid>
-        {Object.values(GAME_TYPES).map((gameType) => (
-          <GameStatCard key={gameType} gameType={gameType} gameStat={gameStats[gameType]} />
+        {Object.values(GAME_TYPES).map(gameType => (
+          <GameStatCard
+            key={gameType}
+            gameType={gameType}
+            gameStat={gameStats[gameType]}
+          />
         ))}
       </Grid>
     </GridContainer>
