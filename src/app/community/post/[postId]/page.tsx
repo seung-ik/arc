@@ -10,6 +10,7 @@ import MatchPostDetail from '@/components/MatchPostDetail';
 import GeneralPostDetail from '@/components/GeneralPostDetail';
 import MatchMyPostDetail from '@/components/MatchMyPostDetail';
 import GeneralMyPostDetail from '@/components/GeneralMyPostDetail';
+import MentorPostDetail from '@/components/MentorPostDetail';
 import MentorMyPostDetail from '@/components/MentorMyPostDetail';
 import { ROUTES } from '@/constants/routes';
 
@@ -227,10 +228,11 @@ export default function PostDetailPage() {
         case 'match':
         case '매치':
           return <MatchPostDetail post={post} />;
-        case 'general':
-        case '일반':
         case 'mentor':
         case '멘토':
+          return <MentorPostDetail post={post} />;
+        case 'general':
+        case '일반':
         default:
           return <GeneralPostDetail post={post} />;
       }
