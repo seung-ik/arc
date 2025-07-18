@@ -164,6 +164,9 @@ export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
             <ManagementButton onClick={handleDelete} $variant="delete">
               삭제
             </ManagementButton>
+            <ManagementButton onClick={handleDelete} $variant="edit">
+              마감
+            </ManagementButton>
           </ManagementButtons>
         </ManagementSection>
 
