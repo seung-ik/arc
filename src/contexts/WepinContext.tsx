@@ -26,6 +26,7 @@ interface WepinProviderProps {
 }
 
 export function WepinProvider({ children }: WepinProviderProps) {
+  
   const [wepinLogin, setWepinLogin] = useState<any | null>(null);
   const [wepinSDK, setWepinSDK] = useState<WepinSDK | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -60,12 +61,38 @@ export function WepinProvider({ children }: WepinProviderProps) {
         setIsInitialized(true);
 
         // 로그인 상태 확인
-        const status = await widgetInstance.getStatus();
-        if (status === 'login' || status === 'login_before_register') {
-          setIsLoggedIn(true);
+        try {
+          const status = await widgetInstance.getStatus();
+          console.log('Wepin 로그인 상태:', status);
 
-          const userAccounts = await widgetInstance.getAccounts();
-          setAccounts(userAccounts || []);
+          if (status === 'login') {
+            console.log('기존 사용자 로그인 상태 확인');
+            setIsLoggedIn(true);
+
+            // 기존 사용자 계정 정보 조회
+            try {
+              const userAccounts = await widgetInstance.getAccounts();
+              console.log('기존 사용자 계정 정보 조회 성공:', userAccounts);
+              setAccounts(userAccounts || []);
+            } catch (accountsError) {
+              console.warn('기존 사용자 계정 정보 조회 실패:', accountsError);
+              setAccounts([]);
+            }
+          } else if (status === 'login_before_register') {
+            console.log('새로운 사용자 - 지갑 생성 필요');
+            setIsLoggedIn(true);
+
+            // 새로운 사용자는 지갑이 아직 생성되지 않았으므로 빈 배열로 설정
+            setAccounts([]);
+          } else {
+            console.log('사용자가 로그인되어 있지 않습니다. 상태:', status);
+            setIsLoggedIn(false);
+            setAccounts([]);
+          }
+        } catch (statusError) {
+          console.warn('로그인 상태 확인 실패:', statusError);
+          setIsLoggedIn(false);
+          setAccounts([]);
         }
       } catch (error) {
         console.error('Failed to initialize Wepin libraries:', error);
@@ -96,15 +123,32 @@ export function WepinProvider({ children }: WepinProviderProps) {
       let userAccounts: any[] = [];
       if (wepinSDK) {
         wepinSDK.setUserInfo(wepinUser);
-        userAccounts = await wepinSDK.getAccounts();
+
+        // 계정 정보 조회 시도
+        try {
+          userAccounts = await wepinSDK.getAccounts();
+        } catch (accountsError) {
+          console.log(accountsError);
+          // 계정 조회 실패 시 새로운 사용자 등록 시도
+          try {
+            await wepinSDK.register();
+
+            // 등록 후 바로 계정 정보 조회 시도
+            try {
+              userAccounts = await wepinSDK.getAccounts();
+            } catch (finalAccountsError) {
+              console.log(finalAccountsError);
+              userAccounts = [];
+            }
+          } catch (registerError) {
+            console.warn('사용자 등록 실패:', registerError);
+            userAccounts = [];
+          }
+        }
+
         setIsLoggedIn(true);
         setUserInfo(wepinUser);
         setAccounts(userAccounts);
-
-        const statusAfterSetUser = await wepinSDK.getStatus();
-        if (statusAfterSetUser === 'login_before_register') {
-          await wepinSDK.register();
-        }
       }
 
       return {
@@ -137,8 +181,17 @@ export function WepinProvider({ children }: WepinProviderProps) {
   };
 
   const getAccounts = async () => {
-    if (!wepinSDK) return [];
-    return await wepinSDK.getAccounts();
+    if (!wepinSDK) {
+      console.warn('Wepin SDK가 초기화되지 않았습니다.');
+      return [];
+    }
+
+    try {
+      return await wepinSDK.getAccounts();
+    } catch (error) {
+      console.warn('계정 정보 조회 실패:', error);
+      return [];
+    }
   };
 
   const getBalance = async (params: { network: string; address: string }) => {
