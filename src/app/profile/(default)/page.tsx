@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import ProfileHeader from '@/components/ProfileHeader';
 import TokenDisplay from '@/components/TokenDisplay';
@@ -12,8 +13,8 @@ import NicknameChangeModal from '@/components/NicknameChangeModal';
 import NicknameModal from '@/components/NicknameModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 import { ROUTES } from '@/constants/routes';
-import { useRouter } from 'next/navigation';
 import { useWepin } from '@/contexts/WepinContext';
+import FullPageLoading from '@/components/FullPageLoading';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -44,6 +45,39 @@ const LogoutButton = styled.button`
     background-color: ${props => props.theme.colors.error};
     color: white;
   }
+`;
+
+const ProfileTopWrapper = styled.div`
+  display: flex;
+  gap: 32px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 32px 16px 24px 16px;
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 24px;
+`;
+
+const ProfileLeftCol = styled.div`
+  min-width: 180px;
+  max-width: 220px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+`;
+
+const ProfileRightCol = styled.div`
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
 `;
 
 // 임시 데이터 - 실제로는 API에서 가져올 예정
@@ -262,12 +296,6 @@ export default function ProfilePage() {
     fetchUserProfile();
   }, []);
 
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined' && !localStorage.getItem('nicknameSet')) {
-  //     setShowNicknameModal(true);
-  //   }
-  // }, []);
-
   const handleHarvest = (postId: number) => {
     setPosts(prevPosts =>
       prevPosts.map(post =>
@@ -327,93 +355,26 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) {
-    return (
-      <Container>
-        <Content>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100vh',
-              fontSize: '18px',
-              color: '#666',
-            }}
-          >
-            로딩 중...
-          </div>
-        </Content>
-      </Container>
-    );
+  if (loading|| !userProfile) {
+    return <FullPageLoading />;
   }
 
-  if (!userProfile) {
-    return (
-      <Container>
-        <Content>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100vh',
-              fontSize: '18px',
-              color: '#666',
-            }}
-          >
-            프로필을 불러올 수 없습니다.
-          </div>
-        </Content>
-      </Container>
-    );
-  }
+
 
   return (
     <Container>
       <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
       <Content>
-        <div
-          style={{
-            display: 'flex',
-            gap: '32px',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            padding: '32px 16px 0 16px',
-            flexWrap: 'wrap',
-            maxWidth: '600px',
-            margin: '0 auto',
-          }}
-        >
-          <div
-            style={{
-              minWidth: 180,
-              maxWidth: 220,
-              flex: '0 0 auto',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-            }}
-          >
+        <ProfileTopWrapper>
+          <ProfileLeftCol>
             <ProfileHeader
               name={userProfile.name}
               profileImage={userProfile.profileImage}
               isMyProfile={true}
               onNicknameChange={handleNicknameChange}
             />
-          </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: 240,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 16,
-              justifyContent: 'center',
-            }}
-          >
+          </ProfileLeftCol>
+          <ProfileRightCol>
             <TokenDisplay
               tokens={userProfile.tokens ?? 0}
               harvestableTokens={harvestableTokens}
@@ -421,12 +382,8 @@ export default function ProfilePage() {
               harvestButtonText="수확하기"
               onViewHistory={handleViewTokenHistory}
             />
-          </div>
-        </div>
-
-        <div
-          style={{ marginTop: 32, borderTop: '1px solid #eee', paddingTop: 24 }}
-        />
+          </ProfileRightCol>
+        </ProfileTopWrapper>
 
         <GameStatsGrid gameStats={userProfile.gameStats} />
 
