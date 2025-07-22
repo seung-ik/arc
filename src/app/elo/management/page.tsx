@@ -11,6 +11,7 @@ import AdBanner from '@/components/AdBanner';
 import MatchPostCard from '@/components/MatchPostCard';
 import { useRouter } from 'next/navigation';
 import { MatchPost } from '@/types/post';
+import PendingMatchCard from '@/components/PendingMatchCard';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -73,102 +74,7 @@ const SectionTitle = styled.h2`
   letter-spacing: -0.5px;
 `;
 
-const LoadingBar = styled.div`
-  width: 100%;
-  height: 4px;
-  background-color: ${props => props.theme.colors.border};
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: ${props => props.theme.spacing.sm};
-`;
 
-const LoadingProgress = styled.div`
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    ${props => props.theme.colors.primary},
-    ${props => props.theme.colors.primaryHover}
-  );
-  border-radius: 2px;
-  animation: loading 2s ease-in-out infinite;
-
-  @keyframes loading {
-    0% {
-      width: 0%;
-      margin-left: 0%;
-    }
-    50% {
-      width: 100%;
-      margin-left: 0%;
-    }
-    100% {
-      width: 0%;
-      margin-left: 100%;
-    }
-  }
-`;
-
-const PendingMatchCard = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
-
-const PendingMatchHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${props => props.theme.spacing.sm};
-`;
-
-const PendingMatchInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing.sm};
-`;
-
-const PendingOpponentId = styled.span`
-  font-weight: 600;
-  color: ${props => props.theme.colors.textBlack};
-`;
-
-const PendingSportBadge = styled.span`
-  background-color: ${props => props.theme.colors.secondary};
-  color: white;
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-`;
-
-const PendingStatus = styled.span`
-  color: ${props => props.theme.colors.primary};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: 600;
-`;
-
-const PendingResult = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing.sm};
-  margin-bottom: ${props => props.theme.spacing.sm};
-`;
-
-const PendingResultBadge = styled.span<{ $isWin: boolean }>`
-  background-color: ${props => (props.$isWin ? '#28a745' : '#dc3545')};
-  color: white;
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: 600;
-`;
-
-const PendingDate = styled.span`
-  color: ${props => props.theme.colors.textGray};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-`;
 
 interface PendingMatch {
   id: number;
@@ -347,43 +253,26 @@ export default function ManagementPage() {
           <>
             <SectionTitle>내가 보낸 요청</SectionTitle>
             {pendingMatches.map(match => (
-              <PendingMatchCard key={match.id}>
-                <PendingMatchHeader>
-                  <PendingMatchInfo>
-                    <PendingOpponentId>{match.opponentId}</PendingOpponentId>
-                    <PendingSportBadge>{match.sport}</PendingSportBadge>
-                  </PendingMatchInfo>
-                  <PendingStatus>대기중</PendingStatus>
-                </PendingMatchHeader>
-
-                <PendingResult>
-                  <PendingResultBadge $isWin={match.isWin}>
-                    {match.result}
-                  </PendingResultBadge>
-                  <PendingDate>{match.date}</PendingDate>
-                </PendingResult>
-
-                <LoadingBar>
-                  <LoadingProgress />
-                </LoadingBar>
-              </PendingMatchCard>
+              <PendingMatchCard match={match} key={match.id} />
             ))}
           </>
         )}
 
-        <SectionTitle>나에게 온 요청</SectionTitle>
-        <MatchManagement
-          matches={receivedMatches}
-          onAccept={handleAccept}
-          onReject={handleReject}
-        />
+        {receivedMatches.length > 0 && (
+          <>
+            <SectionTitle>나에게 온 요청</SectionTitle>
+            <MatchManagement
+              matches={receivedMatches}
+              onAccept={handleAccept}
+              onReject={handleReject}
+            />
+          </>
+        )}
 
         <SectionTitle>추천매치</SectionTitle>
         {recommendedMatchPosts.map((post, index) => (
           <div key={post.id}>
             <MatchPostCard post={post as MatchPost} onClick={handleChallenge} />
-
-            {/* 2번째 매치 후에 광고 배너 추가 */}
             {index === 1 && (
               <AdBanner
                 title="프리미엄 구장 할인"
