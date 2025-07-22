@@ -14,6 +14,7 @@ import WriteButton from '@/components/WriteButton';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { MatchPost, Post } from '@/types/post';
+import PopularPosts from '@/components/PopularPosts';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -88,7 +89,7 @@ const mockPosts = [
     category: 'chess',
     postType: '일반',
     viewCount: 345,
-    commentCount: 67,
+    commentCount: 34,
     likeCount: 89,
     dislikeCount: 4,
     isLiked: true,
@@ -139,9 +140,26 @@ const mockPosts = [
     category: 'go',
     postType: '일반',
     viewCount: 276,
-    commentCount: 42,
+    commentCount: 12,
     likeCount: 71,
     dislikeCount: 1,
+    isLiked: false,
+    isDisliked: false,
+  },
+  {
+    id: 8,
+    title: '당구 실력 향상 팁 공유',
+    content:
+      '당구를 시작한 지 2년이 되었는데, 실력 향상에 도움이 되었던 팁들을 공유합니다. 기본 자세와 그립이 가장 중요하고, 연습할 때는 꾸준함이 핵심입니다.',
+    authorId: 'user303',
+    authorName: '당구마스터',
+    date: '2024-01-15',
+    category: 'billiards',
+    postType: '일반',
+    viewCount: 234,
+    commentCount: 0,
+    likeCount: 67,
+    dislikeCount: 3,
     isLiked: false,
     isDisliked: false,
   },
@@ -169,7 +187,7 @@ const mockPosts = [
     isDisliked: false,
   },
   {
-    id: 8,
+    id: 13,
     title: '배드민턴 매칭 구합니다',
     content:
       '배드민턴 동호인과 함께 치고 싶습니다. 실력은 비슷하거나 조금 높은 분이면 좋겠어요.',
@@ -309,6 +327,22 @@ export default function CommunityPage() {
   const endIndex = startIndex + POSTS_PER_PAGE;
   const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
+  // 인기글(일반글 중 좋아요 순 상위 3개)
+  const popularFreePosts = useMemo(() => {
+    return mockPosts
+      .filter(post => post.postType === '일반')
+      .sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0))
+      .slice(0, 3)
+      .map(post => ({
+        id: post.id,
+        title: post.title,
+        author: post.authorName,
+        views: post.viewCount ?? 0,
+        likes: post.likeCount ?? 0,
+        commentCount: post.commentCount ?? 0,
+      }));
+  }, []);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
@@ -334,6 +368,7 @@ export default function CommunityPage() {
       <CommunityLayout>
         <AdBanner onClick={handleAdClick} />
         <Content>
+          <PopularPosts posts={popularFreePosts} />
           <SearchInput onSearch={handleSearch} placeholder="게시글 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (

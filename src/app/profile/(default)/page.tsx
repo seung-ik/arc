@@ -9,6 +9,7 @@ import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
 import { ProfilePost } from '@/types/post';
 import NicknameChangeModal from '@/components/NicknameChangeModal';
+import NicknameModal from '@/components/NicknameModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 import { ROUTES } from '@/constants/routes';
 import { useRouter } from 'next/navigation';
@@ -242,6 +243,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
+  const [showNicknameModal, setShowNicknameModal] = useState(true);
 
   useEffect(() => {
     // 실제로는 API 호출을 여기서 할 예정
@@ -259,6 +261,12 @@ export default function ProfilePage() {
 
     fetchUserProfile();
   }, []);
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && !localStorage.getItem('nicknameSet')) {
+  //     setShowNicknameModal(true);
+  //   }
+  // }, []);
 
   const handleHarvest = (postId: number) => {
     setPosts(prevPosts =>
@@ -299,6 +307,11 @@ export default function ProfilePage() {
       console.log('닉네임이 변경되었습니다:', newNickname);
       console.log('1 토큰이 소각되었습니다.');
     }
+  };
+
+  const handleFirstNicknameSubmit = (nickname: string) => {
+    setShowNicknameModal(false);
+    setUserProfile(prev => prev ? { ...prev, name: nickname } : null);
   };
 
   const handleViewTokenHistory = () => {
@@ -431,6 +444,7 @@ export default function ProfilePage() {
         currentNickname={userProfile.name}
         userTokens={userProfile.tokens ?? 0}
       />
+      <NicknameModal open={showNicknameModal} onSubmit={handleFirstNicknameSubmit} />
     </Container>
   );
 }
