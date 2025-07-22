@@ -26,8 +26,6 @@ const ContentContainer = styled.div`
     padding-top: ${props => props.theme.spacing.md};
   }
 `;
-
-export default function HistoryPage() {
   // 목업 데이터
   const historyMatches = [
     {
@@ -72,6 +70,7 @@ export default function HistoryPage() {
     },
   ];
 
+export default function HistoryPage() {
   const handleAdClick = () => {
     console.log('광고 배너 클릭됨');
     // 실제로는 광고 링크로 이동하거나 모달을 열 수 있음
