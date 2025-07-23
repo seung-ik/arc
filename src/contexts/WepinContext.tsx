@@ -11,7 +11,7 @@ interface WepinContextType {
   isLoggedIn: boolean;
   userInfo: any;
   accounts: any[];
-  login: () => Promise<
+  loginByWepin: () => Promise<
     { idToken: string; wepinUser: any; accounts: any[] } | undefined
   >;
   logout: () => Promise<void>;
@@ -103,7 +103,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
     };
   }, []);
 
-  const login = async () => {
+  const loginByWepin = async () => {
     if (!wepinLogin) return undefined;
 
     try {
@@ -209,7 +209,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
         isLoggedIn,
         userInfo,
         accounts,
-        login,
+        loginByWepin,
         logout,
         getAccounts,
         getBalance,
