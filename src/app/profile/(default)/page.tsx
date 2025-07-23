@@ -13,8 +13,8 @@ import NicknameChangeModal from '@/components/NicknameChangeModal';
 import NicknameModal from '@/components/NicknameModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 import { ROUTES } from '@/constants/routes';
-import { useWepin } from '@/contexts/WepinContext';
 import FullPageLoading from '@/components/FullPageLoading';
+import { useLogoutAll } from '@/hooks/useLogoutAll';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -271,7 +271,7 @@ const mockMyPosts: ProfilePost[] = [
 ];
 export default function ProfilePage() {
   const router = useRouter();
-  const { logout } = useWepin();
+  const logoutAll = useLogoutAll();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState(mockMyPosts);
   const [loading, setLoading] = useState(true);
@@ -339,7 +339,7 @@ export default function ProfilePage() {
 
   const handleFirstNicknameSubmit = (nickname: string) => {
     setShowNicknameModal(false);
-    setUserProfile(prev => prev ? { ...prev, name: nickname } : null);
+    setUserProfile(prev => (prev ? { ...prev, name: nickname } : null));
   };
 
   const handleViewTokenHistory = () => {
@@ -347,19 +347,12 @@ export default function ProfilePage() {
   };
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      router.push(ROUTES.auth.login);
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    await logoutAll();
   };
 
-  if (loading|| !userProfile) {
+  if (loading || !userProfile) {
     return <FullPageLoading />;
   }
-
-
 
   return (
     <Container>
@@ -401,7 +394,10 @@ export default function ProfilePage() {
         currentNickname={userProfile.name}
         userTokens={userProfile.tokens ?? 0}
       />
-      <NicknameModal open={showNicknameModal} onSubmit={handleFirstNicknameSubmit} />
+      <NicknameModal
+        open={showNicknameModal}
+        onSubmit={handleFirstNicknameSubmit}
+      />
     </Container>
   );
 }
