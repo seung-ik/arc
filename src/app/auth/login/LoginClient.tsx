@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useWepin } from '@/contexts/WepinContext';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
+import { useLoginApi } from '@/api/useAuth';
 
 const LoginContainer = styled.div`
   min-height: 100vh;
@@ -46,11 +47,10 @@ const LoginButton = styled.button`
   }
 `;
 
-
-
 export default function LoginClient() {
   const router = useRouter();
   const { isInitialized, loginByWepin } = useWepin();
+  const { mutate: login } = useLoginApi();
 
   const handleGoogleLogin = async () => {
     if (!isInitialized) {
@@ -62,11 +62,27 @@ export default function LoginClient() {
       // Wepin SDK를 통한 구글 로그인 및 지갑 생성
       const data = await loginByWepin();
       console.log(data);
+      // data 전체 + 추가 값 합쳐서 파라미터로 전달
+      const params = {
+        // ...data,
+        // extraInfo: '추가 데이터 예시',
+        // loginType: 'wepin',
+        // timestamp: Date.now(),
+        email: '123',
+        password: '123',
+      };
 
-      // 로그인 성공 시 메인 페이지로 이동
-      router.push(ROUTES.elo.root);
+      login(params, {
+        onSuccess: (res: any) => {
+          localStorage.setItem('accessToken', res.token);
+          router.push(ROUTES.elo.root);
+        },
+        onError: (err: any) => {
+          console.error('Login failed:', err);
+        },
+      });
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('Wepin login failed:', error);
     }
   };
 

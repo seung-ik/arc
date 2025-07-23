@@ -17,6 +17,7 @@
     "@wepin/login-js": "^0.0.35",
     "@wepin/provider-js": "^0.0.35",
     "@wepin/sdk-js": "^0.0.35",
+    "axios": "^1.11.0",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

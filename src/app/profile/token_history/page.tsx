@@ -201,7 +201,7 @@ const mockTokenHistory: TokenHistoryItem[] = [
 
 export default function TokenHistoryPage() {
   const router = useRouter();
-  const { isInitialized, isLoggedIn, wepinSDK, login } = useWepin();
+  const { isInitialized, isLoggedIn, wepinSDK, loginByWepin } = useWepin();
 
   const handleBack = () => {
     router.push(ROUTES.profile.root);
@@ -219,7 +219,7 @@ export default function TokenHistoryPage() {
     }
     try {
       if (!isLoggedIn) {
-        await login();
+        await loginByWepin();
       }
       await wepinSDK.openWidget();
     } catch (e) {
