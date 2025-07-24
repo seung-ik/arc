@@ -61,26 +61,30 @@ export default function LoginClient() {
     try {
       // Wepin SDK를 통한 구글 로그인 및 지갑 생성
       const data = await loginByWepin();
-      console.log(data);
+      console.dir(data);
       // data 전체 + 추가 값 합쳐서 파라미터로 전달
-      const params = {
-        // ...data,
-        // extraInfo: '추가 데이터 예시',
-        // loginType: 'wepin',
-        // timestamp: Date.now(),
-        email: '123',
-        password: '123',
-      };
+      // console.log(data);
+      console.log(data?.idToken);
+      console.log(data?.wepinUser.userInfo.email);
+      console.log(data?.accounts);
+      if (data) {
+        const params = {
+          idToken: data.idToken,
+          email: data.wepinUser.userInfo.email,
+          accounts: data.accounts,
+        };
 
-      login(params, {
-        onSuccess: (res: any) => {
-          localStorage.setItem('accessToken', res.token);
-          router.push(ROUTES.elo.root);
-        },
-        onError: (err: any) => {
-          console.error('Login failed:', err);
-        },
-      });
+        login(params, {
+          onSuccess: res => {
+            console.log(res);
+            // localStorage.setItem('accessToken', res.token);
+            router.push(ROUTES.elo.root);
+          },
+          onError: err => {
+            console.error('Login failed:', err);
+          },
+        });
+      }
     } catch (error) {
       console.error('Wepin login failed:', error);
     }

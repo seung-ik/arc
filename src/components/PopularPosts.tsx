@@ -26,7 +26,7 @@ const PopularPostCard = styled.div`
   border-radius: 12px;
   padding: 10px 16px;
   width: 100%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
   height: 38px;
@@ -92,13 +92,16 @@ const Author = styled.span`
 const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
   return (
     <PopularPostsWrapper>
-      {posts.map((post) => (
+      {posts.map(post => (
         <PopularPostCard key={post.id}>
           <TagAndTitle>
             <LeftGroup>
               <Badge>인기글</Badge>
               <Title>{post.title}</Title>
-              <Comment>({typeof post.commentCount === 'number' ? post.commentCount : 0})</Comment>
+              <Comment>
+                ({typeof post.commentCount === 'number' ? post.commentCount : 0}
+                )
+              </Comment>
             </LeftGroup>
             <Author>by {post.author}</Author>
           </TagAndTitle>
@@ -108,4 +111,4 @@ const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
   );
 };
 
-export default PopularPosts; 
+export default PopularPosts;

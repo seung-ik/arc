@@ -3,9 +3,9 @@ import api from '@/lib/axios';
 
 // 1. 파라미터 타입 정의
 export interface LoginParams {
+  idToken: string;
   email: string;
-  password: string;
-  // 필요시 추가 필드
+  accounts: { network: string; address: string }[];
 }
 
 // 2. 리스폰스 타입 정의

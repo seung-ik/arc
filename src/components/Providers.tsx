@@ -1,40 +1,40 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
-import { WepinProvider, useWepin } from '@/contexts/WepinContext';
-import { useAuthStore } from '@/stores/authStore';
-import { useLoginApi } from '@/api/useAuth';
-import { useLogoutAll } from '@/hooks/useLogoutAll';
+import { useState } from 'react';
+import { WepinProvider } from '@/contexts/WepinContext';
+// import { useAuthStore } from '@/stores/authStore';
+// import { useLoginApi } from '@/api/useAuth';
+// import { useLogoutAll } from '@/hooks/useLogoutAll';
 
-function AuthSyncer() {
-  const { isInitialized, isLoggedIn: isWepinLoggedIn, userInfo } = useWepin();
-  const { setUser } = useAuthStore();
-  const { mutate: login } = useLoginApi();
-  const logoutAll = useLogoutAll();
+// function AuthSyncer() {
+//   const { isInitialized, isLoggedIn: isWepinLoggedIn, userInfo } = useWepin();
+//   const { setUser } = useAuthStore();
+//   const { mutate: login } = useLoginApi();
+//   const logoutAll = useLogoutAll();
 
-  useEffect(() => {
-    const syncAuth = async () => {
-      if (!isInitialized) return;
-      if (isWepinLoggedIn && userInfo) {
-        login(userInfo, {
-          onSuccess: (res: any) => {
-            localStorage.setItem('accessToken', res.token);
-            setUser({ address: res.user?.address || '', isLoggedIn: true });
-          },
-          onError: () => {
-            logoutAll();
-          },
-        });
-      } else {
-        logoutAll();
-      }
-    };
-    syncAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialized, isWepinLoggedIn, userInfo]);
-  return null;
-}
+//   useEffect(() => {
+//     const syncAuth = async () => {
+//       if (!isInitialized) return;
+//       if (isWepinLoggedIn && userInfo) {
+//         login(userInfo, {
+//           onSuccess: (res: any) => {
+//             localStorage.setItem('accessToken', res.token);
+//             setUser({ address: res.user?.address || '', isLoggedIn: true });
+//           },
+//           onError: () => {
+//             logoutAll();
+//           },
+//         });
+//       } else {
+//         logoutAll();
+//       }
+//     };
+//     syncAuth();
+//   }, []);
+
+//   return null;
+// }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -52,7 +52,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WepinProvider>
-        <AuthSyncer />
+        {/* <AuthSyncer /> */}
         {children}
       </WepinProvider>
     </QueryClientProvider>
