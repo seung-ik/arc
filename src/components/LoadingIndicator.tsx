@@ -14,8 +14,8 @@ const Wrapper = styled.div`
   color: #666;
 `;
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ message = '로딩 중...' }) => (
-  <Wrapper>{message}</Wrapper>
-);
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
+  message = '로딩 중...',
+}) => <Wrapper>{message}</Wrapper>;
 
-export default LoadingIndicator; 
+export default LoadingIndicator;

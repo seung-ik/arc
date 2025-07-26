@@ -38,7 +38,10 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ open, onSubmit }) => {
         <input
           type="text"
           value={nickname}
-          onChange={e => { setNickname(e.target.value); setError(''); }}
+          onChange={e => {
+            setNickname(e.target.value);
+            setError('');
+          }}
           placeholder="닉네임을 입력하세요"
           style={{ width: '100%', padding: 8, marginTop: 16, marginBottom: 8 }}
         />
@@ -51,4 +54,4 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ open, onSubmit }) => {
   );
 };
 
-export default NicknameModal; 
+export default NicknameModal;

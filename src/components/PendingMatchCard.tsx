@@ -125,7 +125,9 @@ const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => (
     </PendingMatchHeader>
 
     <PendingResult>
-      <PendingResultBadge $isWin={match.isWin}>{match.result}</PendingResultBadge>
+      <PendingResultBadge $isWin={match.isWin}>
+        {match.result}
+      </PendingResultBadge>
       <PendingDate>{match.date}</PendingDate>
     </PendingResult>
 
@@ -135,4 +137,4 @@ const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => (
   </PendingMatchCardWrapper>
 );
 
-export default PendingMatchCard; 
+export default PendingMatchCard;

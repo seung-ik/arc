@@ -21,4 +21,4 @@ const FullPageLoading: React.FC = () => (
   </Container>
 );
 
-export default FullPageLoading; 
+export default FullPageLoading;

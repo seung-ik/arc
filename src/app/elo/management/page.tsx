@@ -74,8 +74,6 @@ const SectionTitle = styled.h2`
   letter-spacing: -0.5px;
 `;
 
-
-
 interface PendingMatch {
   id: number;
   opponentId: string;

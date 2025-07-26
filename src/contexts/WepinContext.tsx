@@ -26,7 +26,6 @@ interface WepinProviderProps {
 }
 
 export function WepinProvider({ children }: WepinProviderProps) {
-  
   const [wepinLogin, setWepinLogin] = useState<any | null>(null);
   const [wepinSDK, setWepinSDK] = useState<WepinSDK | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
