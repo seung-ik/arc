@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 
 export function useLogoutAll() {
-  const { logout: storeLogout } = useAuthStore();
+  const { reset: storeLogout } = useAuthStore();
   const { logout: wepinLogout } = useWepin();
   // const { mutateAsync: logoutApi } = useLogoutApi();
   const router = useRouter();

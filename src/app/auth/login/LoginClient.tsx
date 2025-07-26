@@ -84,10 +84,10 @@ export default function LoginClient() {
                 availableToken: data.user.availableToken,
                 email: data.user.email,
                 id: data.user.id,
-                nickname: data.user.nickname,
-                profileImageUrl: data.user.profileImageUrl,
-                tokenAmount: data.user.tokenAmount,
-                walletAddress: data.user.walletAddress,
+                nickname: data.user.nickname ?? '',
+                profileImageUrl: data.user.profileImageUrl ?? '',
+                tokenAmount: data.user.tokenAmount ?? '',
+                walletAddress: data.user.walletAddress ?? '',
                 isLoggedIn: true,
               });
 

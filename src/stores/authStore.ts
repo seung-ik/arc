@@ -1,34 +1,55 @@
 import { create } from 'zustand';
 
 interface User {
-  address: string;
+  availableToken: string;
+  email: string;
+  id: number;
+  nickname: string;
+  profileImageUrl: string;
+  tokenAmount: string;
+  walletAddress: string;
   isLoggedIn: boolean;
 }
 
-interface AuthState {
-  user: User | null;
+interface AuthState extends User {
   isLoading: boolean;
-  error: string | null;
 }
 
 interface AuthActions {
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  logout: () => void;
+  reset: () => void;
 }
 
 type AuthStore = AuthState & AuthActions;
 
 export const useAuthStore = create<AuthStore>(set => ({
   // State
-  user: null,
+  availableToken: '',
+  email: '',
+  id: 0,
+  nickname: '',
+  profileImageUrl: '',
+  tokenAmount: '',
+  walletAddress: '',
+  isLoggedIn: false,
   isLoading: false,
-  error: null,
-
   // Actions
-  setUser: user => set({ user, error: null }),
-  setLoading: loading => set({ isLoading: loading }),
-  setError: error => set({ error, isLoading: false }),
-  logout: () => set({ user: null, error: null }),
+  setUser: (user: User | null) =>
+    set(state => ({
+      ...state,
+      ...user,
+    })),
+  setLoading: (loading: boolean) => set({ isLoading: loading }),
+  reset: () =>
+    set({
+      availableToken: '',
+      email: '',
+      id: 0,
+      nickname: '',
+      profileImageUrl: '',
+      tokenAmount: '',
+      walletAddress: '',
+      isLoggedIn: false,
+    }),
 }));
