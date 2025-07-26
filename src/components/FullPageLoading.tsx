@@ -1,3 +1,5 @@
+'use client';
+
 import styled from 'styled-components';
 import LoadingIndicator from './LoadingIndicator';
 import React from 'react';

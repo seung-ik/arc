@@ -146,7 +146,7 @@ export default function EloTabCards() {
   ];
 
   return (
-    <TabContainer>
+    <TabContainer suppressHydrationWarning>
       {tabs.map(tab => (
         <TabCard
           key={tab.key}

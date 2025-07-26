@@ -1,40 +1,41 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
-import { WepinProvider } from '@/contexts/WepinContext';
-// import { useAuthStore } from '@/stores/authStore';
-// import { useLoginApi } from '@/api/useAuth';
-// import { useLogoutAll } from '@/hooks/useLogoutAll';
+import { useEffect, useState } from 'react';
+import { useWepin, WepinProvider } from '@/contexts/WepinContext';
+import { useLogoutAll } from '@/hooks/useLogoutAll';
+import { usePathname } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
-// function AuthSyncer() {
-//   const { isInitialized, isLoggedIn: isWepinLoggedIn, userInfo } = useWepin();
-//   const { setUser } = useAuthStore();
-//   const { mutate: login } = useLoginApi();
-//   const logoutAll = useLogoutAll();
+function AuthSyncer() {
+  const { isInitialized, isLoggedIn: isWepinLoggedIn } = useWepin();
 
-//   useEffect(() => {
-//     const syncAuth = async () => {
-//       if (!isInitialized) return;
-//       if (isWepinLoggedIn && userInfo) {
-//         login(userInfo, {
-//           onSuccess: (res: any) => {
-//             localStorage.setItem('accessToken', res.token);
-//             setUser({ address: res.user?.address || '', isLoggedIn: true });
-//           },
-//           onError: () => {
-//             logoutAll();
-//           },
-//         });
-//       } else {
-//         logoutAll();
-//       }
-//     };
-//     syncAuth();
-//   }, []);
+  const pathname = usePathname();
+  const logoutAll = useLogoutAll();
 
-//   return null;
-// }
+  useEffect(() => {
+    const syncAuth = async () => {
+      const token = localStorage.getItem('ACCESS_TOKEN');
+      if (!isInitialized) return;
+      if (isWepinLoggedIn && !token) {
+        // logoutAll();
+      } else {
+        // TODO: me 호출 > 위핀내 정보랑 me 호출해서 다르면 로그아웃 시켜야 될거같음?
+      }
+    };
+    syncAuth();
+  }, [isWepinLoggedIn, isInitialized]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('ACCESS_TOKEN');
+    if (!token && pathname !== ROUTES.auth.login) {
+      logoutAll();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  return null;
+}
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -52,7 +53,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WepinProvider>
-        {/* <AuthSyncer /> */}
+        <AuthSyncer />
         {children}
       </WepinProvider>
     </QueryClientProvider>

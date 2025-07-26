@@ -6,6 +6,8 @@ import { useWepin } from '@/contexts/WepinContext';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
 import { useLoginApi } from '@/api/useAuth';
+import { useAuthStore } from '@/stores/authStore';
+import { useLogoutAll } from '@/hooks/useLogoutAll';
 
 const LoginContainer = styled.div`
   min-height: 100vh;
@@ -51,6 +53,8 @@ export default function LoginClient() {
   const router = useRouter();
   const { isInitialized, loginByWepin } = useWepin();
   const { mutate: login } = useLoginApi();
+  const { setUser } = useAuthStore();
+  const logoutAll = useLogoutAll();
 
   const handleGoogleLogin = async () => {
     if (!isInitialized) {
@@ -61,12 +65,7 @@ export default function LoginClient() {
     try {
       // Wepin SDK를 통한 구글 로그인 및 지갑 생성
       const data = await loginByWepin();
-      console.dir(data);
-      // data 전체 + 추가 값 합쳐서 파라미터로 전달
-      // console.log(data);
-      console.log(data?.idToken);
-      console.log(data?.wepinUser.userInfo.email);
-      console.log(data?.accounts);
+
       if (data) {
         const params = {
           idToken: data.idToken,
@@ -75,10 +74,27 @@ export default function LoginClient() {
         };
 
         login(params, {
-          onSuccess: res => {
-            console.log(res);
-            // localStorage.setItem('accessToken', res.token);
-            router.push(ROUTES.elo.root);
+          onSuccess: ({ data, success, message }) => {
+            if (success === true) {
+              // API 요청 시 헤더에 사용할 토큰 저장
+              localStorage.setItem('ACCESS_TOKEN', data.accessToken);
+
+              // userStore에 사용자 정보 저장
+              setUser({
+                availableToken: data.user.availableToken,
+                email: data.user.email,
+                id: data.user.id,
+                nickname: data.user.nickname,
+                profileImageUrl: data.user.profileImageUrl,
+                tokenAmount: data.user.tokenAmount,
+                walletAddress: data.user.walletAddress,
+                isLoggedIn: true,
+              });
+
+              router.push(ROUTES.elo.root);
+            } else {
+              alert(message);
+            }
           },
           onError: err => {
             console.error('Login failed:', err);
@@ -86,6 +102,7 @@ export default function LoginClient() {
         });
       }
     } catch (error) {
+      logoutAll();
       console.error('Wepin login failed:', error);
     }
   };

@@ -10,13 +10,20 @@ export interface LoginParams {
 
 // 2. 리스폰스 타입 정의
 export interface LoginResponse {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-    // 기타 유저 정보
+  success: boolean;
+  message: string;
+  data: {
+    accessToken: string;
+    user: {
+      availableToken: string;
+      email: string;
+      id: number;
+      nickname: string | null;
+      profileImageUrl: string | null;
+      tokenAmount: string;
+      walletAddress: string;
+    };
   };
-  // 필요시 추가 필드
 }
 
 export function useLoginApi() {
