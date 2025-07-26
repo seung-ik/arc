@@ -7,7 +7,7 @@ import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import MatchPostCard from '@/components/MatchPostCard';
 import AdBanner from '@/components/AdBanner';
-import SearchInput from '@/components/SearchInput';
+
 import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
 import WriteButton from '@/components/WriteButton';
@@ -301,25 +301,11 @@ const mockPosts = [
 const POSTS_PER_PAGE = 12;
 
 export default function CommunityPage() {
-  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
 
-  // 검색 필터링
-  const filteredPosts = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return mockPosts;
-    }
-
-    const query = searchQuery.toLowerCase();
-    return mockPosts.filter(
-      post =>
-        post.title.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query) ||
-        post.authorName.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
+  // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
+  const filteredPosts = mockPosts;
 
   // 페이지네이션
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
@@ -343,11 +329,6 @@ export default function CommunityPage() {
       }));
   }, []);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -369,7 +350,6 @@ export default function CommunityPage() {
         <AdBanner onClick={handleAdClick} />
         <Content>
           <PopularPosts posts={popularFreePosts} />
-          <SearchInput onSearch={handleSearch} placeholder="게시글 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
               currentPosts.map(post =>
@@ -380,9 +360,7 @@ export default function CommunityPage() {
                 )
               )
             ) : (
-              <NoResults>
-                {searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}
-              </NoResults>
+              <NoResults>게시글이 없습니다.</NoResults>
             )}
           </PostList>
           <Pagination

@@ -1,84 +1,130 @@
 'use client';
 
 import styled from 'styled-components';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
 import { ROUTES } from '@/constants/routes';
 
-const CategoryContainer = styled.div`
+const HeaderContainer = styled.div`
   background-color: ${props => props.theme.colors.background};
-  border-bottom: 1px solid ${props => props.theme.colors.border};
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: ${props => props.theme.spacing.sm} 0;
-`;
-
-const TabList = styled.ul`
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 태블릿 이상에서는 중앙 정렬 */
-  @media (min-width: 768px) {
-    justify-content: center;
-  }
-`;
-
-const TabItem = styled.li`
-  flex-shrink: 0;
-  margin: 0;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
-
-  /* 태블릿 이상에서는 구분선 숨김 */
-  @media (min-width: 768px) {
-    border-bottom: none;
-  }
-`;
-
-const TabLink = styled.div<{ $isActive: boolean }>`
-  display: block;
   padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  text-decoration: none;
-  color: ${props =>
-    props.$isActive ? props.theme.colors.primary : props.theme.colors.textGray};
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  font-weight: ${props =>
-    props.$isActive
-      ? props.theme.typography.fontWeights.medium
-      : props.theme.typography.fontWeights.normal};
-  border-bottom: 2px solid
-    ${props => (props.$isActive ? props.theme.colors.primary : 'transparent')};
+  border-bottom: 5px solid ${props => props.theme.colors.borderLight};
+`;
+
+const HeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
+`;
+
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.md};
+`;
+
+const CategoryDropdown = styled.div`
+  position: relative;
+  cursor: pointer;
+`;
+
+const CategoryButton = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.xs};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  background-color: ${props => props.theme.colors.background};
+  font-size: ${props => props.theme.typography.fontSizes.xl};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
   transition: all 0.2s;
-  white-space: nowrap;
-  text-align: center;
-  min-width: 70px;
   cursor: pointer;
 
   &:hover {
-    color: ${props => props.theme.colors.primary};
+    background-color: ${props => props.theme.colors.backgroundGray};
   }
+`;
 
-  @media (max-width: 768px) {
-    padding: ${props => props.theme.spacing.xs}
-      ${props => props.theme.spacing.sm};
-    min-width: 60px;
-    font-size: ${props => props.theme.typography.fontSizes.xs};
+const DropdownArrow = styled.span<{ $isOpen: boolean }>`
+  transition: transform 0.2s;
+  transform: rotate(${props => (props.$isOpen ? '90deg' : '-90deg')});
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+`;
+
+const DropdownMenu = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: ${props => props.theme.colors.background};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  opacity: ${props => (props.$isOpen ? 1 : 0)};
+  visibility: ${props => (props.$isOpen ? 'visible' : 'hidden')};
+  transform: translateY(${props => (props.$isOpen ? '0' : '-10px')});
+  transition: all 0.2s;
+  z-index: 1001;
+  margin-top: ${props => props.theme.spacing.xs};
+  min-width: 200px;
+  padding: ${props => props.theme.spacing.sm} 0;
+`;
+
+const DropdownItem = styled.div`
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.backgroundGray};
   }
+`;
+
+const IconButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: ${props => props.theme.colors.textBlack};
+
+  &:hover {
+    background-color: ${props => props.theme.colors.backgroundGray};
+  }
+`;
+
+const NotificationBadge = styled.div`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: ${props => props.theme.colors.error};
+  border-radius: 50%;
+`;
+
+const NotificationContainer = styled.div`
+  position: relative;
 `;
 
 interface Category {
@@ -90,7 +136,10 @@ interface Category {
 
 export default function CategoryTabs() {
   const pathname = usePathname();
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 현재 카테고리를 pathname에서 추출
   const pathSegments = pathname.split('/');
@@ -147,19 +196,74 @@ export default function CategoryTabs() {
     fetchCategories();
   }, []);
 
+  // 현재 선택된 카테고리 라벨 찾기
+  const currentCategoryLabel =
+    categories.find(cat => cat.id === currentCategory)?.label || '자유글';
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleCategoryClick = (category: Category) => {
+    router.push(category.path);
+    setIsDropdownOpen(false);
+  };
+
+  const handleSearchClick = () => {
+    router.push('/search');
+  };
+
+  const handleNotificationClick = () => {
+    console.log('알림 클릭');
+    // 알림 페이지로 이동하거나 알림 모달을 열 수 있음
+  };
+
   return (
-    <CategoryContainer>
-      <TabList>
-        {categories.map(category => (
-          <TabItem key={category.id}>
-            <Link href={category.path}>
-              <TabLink $isActive={currentCategory === category.id}>
-                {category.label}
-              </TabLink>
-            </Link>
-          </TabItem>
-        ))}
-      </TabList>
-    </CategoryContainer>
+    <HeaderContainer>
+      <HeaderContent>
+        <LeftSection>
+          <CategoryDropdown ref={dropdownRef}>
+            <CategoryButton
+              $isOpen={isDropdownOpen}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              {currentCategoryLabel}
+              <DropdownArrow $isOpen={isDropdownOpen}>‹</DropdownArrow>
+            </CategoryButton>
+            <DropdownMenu $isOpen={isDropdownOpen}>
+              {categories.map(category => (
+                <DropdownItem
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  {category.label}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </CategoryDropdown>
+        </LeftSection>
+
+        <RightSection>
+          <IconButton onClick={handleSearchClick}>🔍</IconButton>
+          <NotificationContainer>
+            <IconButton onClick={handleNotificationClick}>🔔</IconButton>
+            <NotificationBadge />
+          </NotificationContainer>
+        </RightSection>
+      </HeaderContent>
+    </HeaderContainer>
   );
 }
