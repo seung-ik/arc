@@ -12,9 +12,9 @@ const NavigationContainer = styled.nav`
   left: 0;
   right: 0;
   background-color: ${props => props.theme.colors.background};
-  border-top: 1px solid ${props => props.theme.colors.border};
+  // border-top: 1px solid ${props => props.theme.colors.border};
   z-index: 9999;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.2);
   max-width: 768px;
   margin: 0 auto;
 `;
