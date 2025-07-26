@@ -8,6 +8,7 @@ import { MatchPost } from '@/types/post';
 interface MatchPostCardProps {
   post: MatchPost;
   onClick?: (postId: number) => void;
+  isCard?: boolean;
 }
 
 const MatchContainer = styled.div`
@@ -22,6 +23,22 @@ const MatchContainer = styled.div`
 
   &:last-child {
     border-bottom: none;
+  }
+`;
+
+const CardContainer = styled.div`
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
   }
 `;
 
@@ -121,7 +138,11 @@ const calculateValidityPeriod = (
   }
 };
 
-export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
+export default function MatchPostCard({
+  post,
+  onClick,
+  isCard,
+}: MatchPostCardProps) {
   const router = useRouter();
 
   const handleClick = () => {
@@ -149,8 +170,10 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
 
   const status = getStatus();
 
+  const Container = isCard ? CardContainer : MatchContainer;
+
   return (
-    <MatchContainer onClick={handleClick}>
+    <Container onClick={handleClick}>
       <MatchHeader>
         <TitleSection>
           <MatchTag>매치</MatchTag>
@@ -165,6 +188,6 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
         {post.myElo && <EloBadge>ELO {post.myElo}</EloBadge>}
         <StatusText>{status}</StatusText>
       </MatchInfo>
-    </MatchContainer>
+    </Container>
   );
 }

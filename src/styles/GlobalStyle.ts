@@ -103,6 +103,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* Internet Explorer 10+ */
+    background: #f0f0f0;
   }
 
   body::-webkit-scrollbar {

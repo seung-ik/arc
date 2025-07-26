@@ -11,16 +11,10 @@ const TabContainer = styled.div`
   background: ${props => props.theme.colors.background};
   width: 100%;
 
-  /* 화면 넓을 때: 반반씩 꽉 채우기 */
+  // /* 화면 넓을 때: 반반씩 꽉 채우기 */
   @media (min-width: 768px) {
     flex-wrap: nowrap;
     overflow-x: visible;
-  }
-
-  @media (min-width: 1200px) {
-    width: 1100px;
-    padding: 0;
-    padding-top: ${props => props.theme.spacing.md};
   }
 `;
 

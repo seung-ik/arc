@@ -56,12 +56,6 @@ const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
   overflow-y: auto;
-
-  @media (min-width: 1200px) {
-    min-width: 1100px;
-    max-width: 1100px;
-    padding-top: ${props => props.theme.spacing.md};
-  }
 `;
 
 const SectionTitle = styled.h2`
@@ -270,7 +264,11 @@ export default function ManagementPage() {
         <SectionTitle>추천매치</SectionTitle>
         {recommendedMatchPosts.map((post, index) => (
           <div key={post.id}>
-            <MatchPostCard post={post as MatchPost} onClick={handleChallenge} />
+            <MatchPostCard
+              post={post as MatchPost}
+              onClick={handleChallenge}
+              isCard={true}
+            />
             {index === 1 && (
               <AdBanner
                 title="프리미엄 구장 할인"

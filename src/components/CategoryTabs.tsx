@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { ROUTES } from '@/constants/routes';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 const HeaderContainer = styled.div`
   background-color: ${props => props.theme.colors.background};
@@ -58,9 +60,9 @@ const CategoryButton = styled.div<{ $isOpen: boolean }>`
 
 const DropdownArrow = styled.span<{ $isOpen: boolean }>`
   transition: transform 0.2s;
-  transform: rotate(${props => (props.$isOpen ? '90deg' : '-90deg')});
   font-size: ${props => props.theme.typography.fontSizes.lg};
   font-weight: ${props => props.theme.typography.fontWeights.bold};
+  margin-left: 2px;
 `;
 
 const DropdownMenu = styled.div<{ $isOpen: boolean }>`
@@ -115,8 +117,8 @@ const IconButton = styled.button`
 
 const NotificationBadge = styled.div`
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: 4px;
+  right: 4px;
   width: 8px;
   height: 8px;
   background-color: ${props => props.theme.colors.error};
@@ -137,7 +139,50 @@ interface Category {
 export default function CategoryTabs() {
   const pathname = usePathname();
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
+
+  // 초기 카테고리 데이터를 바로 설정 (서버/클라이언트 동일)
+  const initialCategories: Category[] = [
+    {
+      id: 'trending',
+      label: '자유글',
+      path: ROUTES.community.root,
+      order: 1,
+    },
+    {
+      id: 'tennis',
+      label: '테니스',
+      path: ROUTES.community.tennis,
+      order: 2,
+    },
+    {
+      id: 'badminton',
+      label: '배드민턴',
+      path: ROUTES.community.badminton,
+      order: 3,
+    },
+    {
+      id: 'table-tennis',
+      label: '탁구',
+      path: ROUTES.community.tableTennis,
+      order: 4,
+    },
+    {
+      id: 'billiards',
+      label: '당구',
+      path: ROUTES.community.billiards,
+      order: 5,
+    },
+    { id: 'go', label: '바둑', path: ROUTES.community.go, order: 6 },
+    { id: 'chess', label: '체스', path: ROUTES.community.chess, order: 7 },
+    {
+      id: 'notice',
+      label: '공지사항',
+      path: ROUTES.community.notice,
+      order: 8,
+    },
+  ];
+
+  const [categories] = useState<Category[]>(initialCategories);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -145,56 +190,6 @@ export default function CategoryTabs() {
   const pathSegments = pathname.split('/');
   const currentCategory =
     pathSegments.length > 2 ? pathSegments[2] : 'trending';
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const mockCategories: Category[] = [
-        {
-          id: 'trending',
-          label: '자유글',
-          path: ROUTES.community.root,
-          order: 1,
-        },
-        {
-          id: 'tennis',
-          label: '테니스',
-          path: ROUTES.community.tennis,
-          order: 2,
-        },
-        {
-          id: 'badminton',
-          label: '배드민턴',
-          path: ROUTES.community.badminton,
-          order: 3,
-        },
-        {
-          id: 'table-tennis',
-          label: '탁구',
-          path: ROUTES.community.tableTennis,
-          order: 4,
-        },
-        {
-          id: 'billiards',
-          label: '당구',
-          path: ROUTES.community.billiards,
-          order: 5,
-        },
-        { id: 'go', label: '바둑', path: ROUTES.community.go, order: 6 },
-        { id: 'chess', label: '체스', path: ROUTES.community.chess, order: 7 },
-        {
-          id: 'notice',
-          label: '공지사항',
-          path: ROUTES.community.notice,
-          order: 8,
-        },
-      ];
-
-      const sortedCategories = mockCategories.sort((a, b) => a.order - b.order);
-      setCategories(sortedCategories);
-    };
-
-    fetchCategories();
-  }, []);
 
   // 현재 선택된 카테고리 라벨 찾기
   const currentCategoryLabel =
@@ -240,8 +235,15 @@ export default function CategoryTabs() {
               $isOpen={isDropdownOpen}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              {currentCategoryLabel}
-              <DropdownArrow $isOpen={isDropdownOpen}>‹</DropdownArrow>
+              <span suppressHydrationWarning>{currentCategoryLabel}</span>
+              <DropdownArrow $isOpen={isDropdownOpen}>
+                <Image
+                  src={ICONS.ARROW_DOWN}
+                  alt="dropdown arrow"
+                  width={16}
+                  height={16}
+                />
+              </DropdownArrow>
             </CategoryButton>
             <DropdownMenu $isOpen={isDropdownOpen}>
               {categories.map(category => (
@@ -258,9 +260,18 @@ export default function CategoryTabs() {
         </LeftSection>
 
         <RightSection>
-          <IconButton onClick={handleSearchClick}>🔍</IconButton>
+          <IconButton onClick={handleSearchClick}>
+            <Image src={ICONS.SEARCH} alt="search" />
+          </IconButton>
           <NotificationContainer>
-            <IconButton onClick={handleNotificationClick}>🔔</IconButton>
+            <IconButton onClick={handleNotificationClick}>
+              <Image
+                src={ICONS.BELL}
+                alt="notification"
+                width={24}
+                height={24}
+              />
+            </IconButton>
             <NotificationBadge />
           </NotificationContainer>
         </RightSection>

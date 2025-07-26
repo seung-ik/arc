@@ -7,7 +7,18 @@ import SHOP_SPORTS from '@/assets/images/business/shop_sports.png';
 import SHOP_UNDER from '@/assets/images/business/shop_under.png';
 import SHOP_BADMINTON from '@/assets/images/business/shop_badminton.png';
 
-export const businessImages = {
+// UI 아이콘들
+import SEARCH from '@/assets/images/icons/search.svg';
+import BELL from '@/assets/images/icons/bell.svg';
+import PLUS_CIRCLE from '@/assets/images/icons/plus_circle.svg';
+import ARROW_DOWN from '@/assets/images/icons/arrow_down.svg';
+
+// 탭 아이콘들
+import TAB_COMMUNITY from '@/assets/images/icons/tab_community.svg';
+import TAB_USER from '@/assets/images/icons/tab_user.svg';
+import TAB_ELO from '@/assets/images/icons/tab_elo.svg';
+
+export const BUSINESS_IMAGES = {
   EX_1: SHOP_TENNIS,
   EX_2: SHOP_TABLE_TENNIS,
   EX_3: SHOP_BADUK,
@@ -19,7 +30,19 @@ export const businessImages = {
 } as const;
 
 // UI 아이콘들
-export const uiIcons = {} as const;
+export const ICONS = {
+  SEARCH,
+  BELL,
+  PLUS_CIRCLE,
+  ARROW_DOWN,
+} as const;
+
+// 탭 아이콘들
+export const TAB_ICONS = {
+  COMMUNITY: TAB_COMMUNITY,
+  USER: TAB_USER,
+  ELO: TAB_ELO,
+} as const;
 
 // 스포츠 아이콘들
 export const sportsIcons = {} as const;

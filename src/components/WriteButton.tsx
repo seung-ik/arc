@@ -1,17 +1,14 @@
 import styled from 'styled-components';
+import { ICONS } from '@/assets';
 
 const WriteButtonContainer = styled.button`
   position: fixed;
   right: 24px;
   bottom: 75px;
   z-index: 100;
-  width: 56px;
+  width: px;
   height: 56px;
   border-radius: 50%;
-  background: #007aff;
-  color: #fff;
-  font-size: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   border: none;
   cursor: pointer;
   display: flex;
@@ -20,9 +17,7 @@ const WriteButtonContainer = styled.button`
   transition: all 0.2s;
 
   &:hover {
-    background: #0056cc;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   &:active {
@@ -35,5 +30,21 @@ interface WriteButtonProps {
 }
 
 export default function WriteButton({ onClick }: WriteButtonProps) {
-  return <WriteButtonContainer onClick={onClick}>+</WriteButtonContainer>;
+  return (
+    <WriteButtonContainer onClick={onClick}>
+      <div
+        style={{
+          width: 56,
+          height: 56,
+          backgroundColor: '#007aff',
+          WebkitMaskImage: `url(${ICONS.PLUS_CIRCLE.src})`,
+          WebkitMaskRepeat: 'no-repeat',
+          WebkitMaskSize: 'contain',
+          maskImage: `url(${ICONS.PLUS_CIRCLE.src})`,
+          maskRepeat: 'no-repeat',
+          maskSize: 'contain',
+        }}
+      />
+    </WriteButtonContainer>
+  );
 }

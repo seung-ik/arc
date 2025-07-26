@@ -277,7 +277,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
-  const [showNicknameModal, setShowNicknameModal] = useState(true);
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
 
   useEffect(() => {
     // 실제로는 API 호출을 여기서 할 예정

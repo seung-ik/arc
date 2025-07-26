@@ -4,6 +4,7 @@ import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyle from '@/styles/GlobalStyle';
 import ThemeWrapper from '@/components/ThemeWrapper';
 import Providers from '@/components/Providers';
+import { GlobalWrapper } from '@/components/style';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,7 +35,7 @@ export default function RootLayout({
           <ThemeWrapper>
             <Providers>
               <GlobalStyle />
-              {children}
+              <GlobalWrapper>{children}</GlobalWrapper>
             </Providers>
           </ThemeWrapper>
         </StyledComponentsRegistry>

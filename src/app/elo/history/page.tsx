@@ -19,12 +19,6 @@ const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
   padding-top: ${props => props.theme.spacing.lg};
-
-  @media (min-width: 1200px) {
-    width: 1100px;
-    padding: 0;
-    padding-top: ${props => props.theme.spacing.md};
-  }
 `;
 // 목업 데이터
 const historyMatches = [

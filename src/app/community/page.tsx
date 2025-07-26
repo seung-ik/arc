@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
@@ -331,22 +331,20 @@ export default function CommunityPage() {
   const hasMorePosts = visiblePosts < filteredPosts.length;
 
   // 인기글(일반글 중 좋아요 순 상위 3개)
-  const popularFreePosts = useMemo(() => {
-    return mockPosts
-      .filter(post => post.postType === '일반')
-      .sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0))
-      .slice(0, 3)
-      .map(post => ({
-        id: post.id,
-        title: post.title,
-        author: post.authorName,
-        views: post.viewCount ?? 0,
-        likes: post.likeCount ?? 0,
-        commentCount: post.commentCount ?? 0,
-        date: post.date,
-        content: post.content,
-      }));
-  }, []);
+  const popularFreePosts = mockPosts
+    .filter(post => post.postType === '일반')
+    .sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0))
+    .slice(0, 3)
+    .map(post => ({
+      id: post.id,
+      title: post.title,
+      author: post.authorName,
+      views: post.viewCount ?? 0,
+      likes: post.likeCount ?? 0,
+      commentCount: post.commentCount ?? 0,
+      date: post.date,
+      content: post.content,
+    }));
 
   const handleLoadMore = () => {
     setVisiblePosts(prev => prev + POSTS_PER_PAGE);

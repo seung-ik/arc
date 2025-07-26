@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { TAB_ICONS } from '@/assets';
 
 const NavigationContainer = styled.nav`
   position: fixed;
@@ -14,6 +15,8 @@ const NavigationContainer = styled.nav`
   border-top: 1px solid ${props => props.theme.colors.border};
   z-index: 9999;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 768px;
+  margin: 0 auto;
 `;
 
 const TabList = styled.ul`
@@ -34,8 +37,7 @@ const TabLink = styled.div<{ $isActive: boolean }>`
   justify-content: center;
   padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   text-decoration: none;
-  color: ${props =>
-    props.$isActive ? props.theme.colors.primary : props.theme.colors.textGray};
+  color: ${props => (props.$isActive ? '#000000' : '#999999')};
   font-size: ${props => props.theme.typography.fontSizes.sm};
   font-weight: ${props =>
     props.$isActive
@@ -46,7 +48,7 @@ const TabLink = styled.div<{ $isActive: boolean }>`
   cursor: pointer;
 
   &:hover {
-    color: ${props => props.theme.colors.primary};
+    color: #000000;
   }
 `;
 
@@ -68,9 +70,13 @@ export default function BottomNavigation() {
   const pathname = usePathname();
 
   const tabs = [
-    { path: ROUTES.elo.management, label: 'Elo', icon: '🏆' },
-    { path: ROUTES.profile.root, label: 'Profile', icon: '👤' },
-    { path: ROUTES.community.root, label: 'Community', icon: '💬' },
+    { path: ROUTES.elo.management, label: '매치', icon: TAB_ICONS.ELO },
+    { path: ROUTES.profile.root, label: '내 정보', icon: TAB_ICONS.USER },
+    {
+      path: ROUTES.community.root,
+      label: '커뮤니티',
+      icon: TAB_ICONS.COMMUNITY,
+    },
   ];
 
   return (
@@ -90,7 +96,21 @@ export default function BottomNavigation() {
             <TabItem key={tab.label}>
               <Link href={tab.path}>
                 <TabLink $isActive={isActive}>
-                  <TabIcon>{tab.icon}</TabIcon>
+                  <TabIcon>
+                    <div
+                      style={{
+                        width: 24,
+                        height: 24,
+                        backgroundColor: isActive ? '#000000' : '#999999',
+                        WebkitMaskImage: `url(${tab.icon.src})`,
+                        WebkitMaskRepeat: 'no-repeat',
+                        WebkitMaskSize: 'contain',
+                        maskImage: `url(${tab.icon.src})`,
+                        maskRepeat: 'no-repeat',
+                        maskSize: 'contain',
+                      }}
+                    />
+                  </TabIcon>
                   <TabLabel>{tab.label}</TabLabel>
                 </TabLink>
               </Link>
