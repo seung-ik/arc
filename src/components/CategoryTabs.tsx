@@ -250,6 +250,7 @@ export default function CategoryTabs() {
                   onClick={() => handleCategoryClick(category)}
                 >
                   {category.label}
+                  {category.id === 'notice' && ' *'}
                 </DropdownItem>
               ))}
             </DropdownMenu>

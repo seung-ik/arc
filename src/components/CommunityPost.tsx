@@ -7,47 +7,33 @@ import { Post } from '@/types/post';
 
 interface CommunityPostProps {
   post: Post;
+  onClick?: (postId: number) => void;
 }
 
-const PostCard = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md};
-  margin-bottom: ${props => props.theme.spacing.md};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+const PostContainer = styled.div`
+  padding: ${props => props.theme.spacing.md} 0;
+  border-bottom: 1px solid ${props => props.theme.colors.borderLight};
+  border-top: 1px solid ${props => props.theme.colors.borderLight};
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 
   &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
+    background-color: ${props => props.theme.colors.backgroundGray};
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
 const PostHeader = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: ${props => props.theme.spacing.sm};
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
+  margin-bottom: ${props => props.theme.spacing.xs};
 `;
 
-const PostTitle = styled.h3`
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.semibold};
-  color: ${props => props.theme.colors.textBlack};
-  margin: 0;
-  flex: 1;
-  line-height: 1.4;
-  cursor: pointer;
-  transition: color 0.2s;
-
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-  }
-`;
-
-const CategoryBadge = styled.span<{ $type: string }>`
+const CategoryTag = styled.span<{ $type: string }>`
   background-color: ${props => {
     switch (props.$type) {
       case '일반':
@@ -57,7 +43,7 @@ const CategoryBadge = styled.span<{ $type: string }>`
       case '멘토':
         return props.theme.colors.postType.mentor.background;
       default:
-        return props.theme.colors.postType.general.background;
+        return props.theme.colors.backgroundGray;
     }
   }};
   color: ${props => {
@@ -69,157 +55,93 @@ const CategoryBadge = styled.span<{ $type: string }>`
       case '멘토':
         return props.theme.colors.postType.mentor.text;
       default:
-        return props.theme.colors.postType.general.text;
+        return props.theme.colors.textGray;
     }
   }};
   padding: 2px 8px;
   border-radius: 12px;
   font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
-  margin-left: ${props => props.theme.spacing.sm};
   flex-shrink: 0;
 `;
 
-const PostContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: ${props => props.theme.spacing.md};
+const PostTitle = styled.h3`
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
+  margin: 0;
+  line-height: 1.4;
 `;
 
 const ContentText = styled.p`
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.sm};
-  margin: 0;
+  margin: 0 0 ${props => props.theme.spacing.sm} 0;
+  line-height: 1.4;
 
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
 `;
 
 const PostFooter = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: ${props => props.theme.spacing.xs};
-  flex-shrink: 0;
-  min-width: 180px;
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textLightGray};
 `;
 
-const AuthorId = styled.button`
-  color: ${props => props.theme.colors.primary};
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-size: inherit;
-  text-decoration: underline;
-  transition: color 0.2s;
-
-  &:hover {
-    color: ${props => props.theme.colors.primaryHover};
-  }
+const AuthorName = styled.span`
+  color: ${props => props.theme.colors.textGray};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const PostDate = styled.span`
   color: ${props => props.theme.colors.textLightGray};
-  font-size: ${props => props.theme.typography.fontSizes.sm};
 `;
 
-const DateAuthorInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing.sm};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
+const ViewCount = styled.span`
   color: ${props => props.theme.colors.textLightGray};
 `;
 
-const MatchInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing.sm};
-  margin-top: ${props => props.theme.spacing.xs};
-`;
-
-const EloBadge = styled.span`
-  background-color: ${props => props.theme.colors.primary};
-  color: white;
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-`;
-
-const LocationBadge = styled.span`
-  background-color: ${props => props.theme.colors.secondary};
-  color: white;
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-`;
-
-export default function CommunityPost({ post }: CommunityPostProps) {
+export default function CommunityPost({ post, onClick }: CommunityPostProps) {
   const router = useRouter();
 
-  const handleAuthorClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 게시글 클릭 이벤트와 충돌 방지
-    router.push(`${ROUTES.profile.user(post.authorId)}`);
+  const handleClick = () => {
+    if (onClick) {
+      onClick(post.id);
+    } else {
+      router.push(
+        `${ROUTES.community.post(post.id.toString())}?type=${post.postType}`
+      );
+    }
   };
 
-  const handleTitleClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 게시글 클릭 이벤트와 충돌 방지
-    // postType을 영어로 변환하여 type 파라미터로 전달
-    const postType =
-      post.postType === '매치'
-        ? 'match'
-        : post.postType === '멘토'
-          ? 'mentor'
-          : 'general';
-    router.push(
-      `${ROUTES.community.post(post.id.toString())}?type=${postType}`
-    );
-  };
-
-  const handlePostClick = () => {
-    // 게시글 상세 페이지로 이동 (type 파라미터 추가)
-    const postType =
-      post.postType === '매치'
-        ? 'match'
-        : post.postType === '멘토'
-          ? 'mentor'
-          : 'general';
-    router.push(
-      `${ROUTES.community.post(post.id.toString())}?type=${postType}`
-    );
-  };
+  // 제목에 댓글수 포함
+  const titleWithComments =
+    post.commentCount && post.commentCount > 0
+      ? `${post.title} (${post.commentCount})`
+      : post.title;
 
   return (
-    <PostCard onClick={handlePostClick}>
+    <PostContainer onClick={handleClick}>
       <PostHeader>
-        <PostTitle onClick={handleTitleClick}>{post.title}</PostTitle>
-        <CategoryBadge $type={post.postType}>{post.postType}</CategoryBadge>
+        <CategoryTag $type={post.postType}>{post.postType}</CategoryTag>
+        <PostTitle>{titleWithComments}</PostTitle>
       </PostHeader>
 
-      <PostContent>
-        <ContentText>{post.content}</ContentText>
-        <PostFooter>
-          <DateAuthorInfo>
-            <PostDate>{post.date}</PostDate>
-            <span>•</span>
-            <AuthorId onClick={handleAuthorClick}>{post.authorName}</AuthorId>
-          </DateAuthorInfo>
-          {post.postType === '매치' && post.myElo && post.matchLocation && (
-            <MatchInfo>
-              <EloBadge>ELO {post.myElo}</EloBadge>
-              <LocationBadge>{post.matchLocation}</LocationBadge>
-            </MatchInfo>
-          )}
-        </PostFooter>
-      </PostContent>
-    </PostCard>
+      <ContentText>{post.content}</ContentText>
+
+      <PostFooter>
+        <AuthorName>{post.authorName}</AuthorName>
+        <span>•</span>
+        <PostDate>{post.date}</PostDate>
+        <span>•</span>
+        <ViewCount>조회 {post.viewCount || 0}</ViewCount>
+      </PostFooter>
+    </PostContainer>
   );
 }

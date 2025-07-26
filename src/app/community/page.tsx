@@ -6,9 +6,8 @@ import { useState, useMemo } from 'react';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import MatchPostCard from '@/components/MatchPostCard';
-import AdBanner from '@/components/AdBanner';
+import BusinessBanner from '@/components/BusinessBanner';
 
-import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
 import WriteButton from '@/components/WriteButton';
 import { useRouter } from 'next/navigation';
@@ -39,6 +38,26 @@ const NoResults = styled.div`
   padding: ${props => props.theme.spacing.xl};
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.base};
+`;
+
+const LoadMoreButton = styled.button`
+  background-color: ${props => props.theme.colors.backgroundGray};
+  color: ${props => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  border: 1px solid ${props => props.theme.colors.textGray};
+  cursor: pointer;
+  margin: ${props => props.theme.spacing.md} auto;
+  display: block;
+  width: 80%;
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.borderLight};
+    border-color: ${props => props.theme.colors.textBlack};
+  }
 `;
 
 // 커뮤니티 글 임시 데이터 (일반, 매치, 멘토 타입)
@@ -301,17 +320,15 @@ const mockPosts = [
 const POSTS_PER_PAGE = 12;
 
 export default function CommunityPage() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visiblePosts, setVisiblePosts] = useState(POSTS_PER_PAGE);
   const router = useRouter();
 
   // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
   const filteredPosts = mockPosts;
 
-  // 페이지네이션
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
-  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+  // 더보기 기능
+  const currentPosts = filteredPosts.slice(0, visiblePosts);
+  const hasMorePosts = visiblePosts < filteredPosts.length;
 
   // 인기글(일반글 중 좋아요 순 상위 3개)
   const popularFreePosts = useMemo(() => {
@@ -326,16 +343,18 @@ export default function CommunityPage() {
         views: post.viewCount ?? 0,
         likes: post.likeCount ?? 0,
         commentCount: post.commentCount ?? 0,
+        date: post.date,
+        content: post.content,
       }));
   }, []);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  const handleLoadMore = () => {
+    setVisiblePosts(prev => prev + POSTS_PER_PAGE);
   };
 
-  const handleAdClick = () => {
-    console.log('광고 배너 클릭됨');
-    // 실제로는 광고 링크로 이동하거나 모달을 열 수 있음
+  const handleAdClick = (business: any) => {
+    console.log('업장 배너 클릭됨:', business.name);
+    // 실제로는 업장 상세 페이지로 이동하거나 모달을 열 수 있음
   };
 
   const handleWriteClick = () => {
@@ -347,9 +366,9 @@ export default function CommunityPage() {
     <Container>
       <CategoryTabs />
       <CommunityLayout>
-        <AdBanner onClick={handleAdClick} />
         <Content>
           <PopularPosts posts={popularFreePosts} />
+          <BusinessBanner onClick={handleAdClick} />
           <PostList>
             {currentPosts.length > 0 ? (
               currentPosts.map(post =>
@@ -363,11 +382,9 @@ export default function CommunityPage() {
               <NoResults>게시글이 없습니다.</NoResults>
             )}
           </PostList>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {hasMorePosts && (
+            <LoadMoreButton onClick={handleLoadMore}>더보기</LoadMoreButton>
+          )}
         </Content>
       </CommunityLayout>
       <WriteButton onClick={handleWriteClick} />

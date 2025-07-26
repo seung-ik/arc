@@ -22,7 +22,7 @@ export interface LoginResponse {
 export function useLoginApi() {
   return useMutation<LoginResponse, Error, LoginParams>({
     mutationFn: params =>
-      api.post<LoginResponse>('/login', params).then(res => res.data),
+      api.post<LoginResponse>('/auth/login', params).then(res => res.data),
   });
 }
 

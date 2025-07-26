@@ -8,6 +8,8 @@ interface Post {
   views: number;
   likes: number;
   commentCount: number;
+  date: string;
+  content: string;
 }
 
 interface PopularPostsProps {
@@ -17,96 +19,108 @@ interface PopularPostsProps {
 const PopularPostsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
-const PopularPostCard = styled.div`
-  background: #e6f0fa;
-  border-radius: 12px;
-  padding: 10px 16px;
-  width: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+const PopularPostContainer = styled.div`
+  padding: ${props => props.theme.spacing.md} 0;
+  border-bottom: 1px solid ${props => props.theme.colors.borderLight};
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.backgroundGray};
+  }
+`;
+
+const PostHeader = styled.div`
   display: flex;
   align-items: center;
-  height: 38px;
+  gap: ${props => props.theme.spacing.sm};
+  margin-bottom: ${props => props.theme.spacing.xs};
 `;
 
-const TagAndTitle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-`;
-
-const LeftGroup = styled.span`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  overflow: hidden;
-`;
-
-const Badge = styled.span`
-  background: #ff5252;
+const PopularTag = styled.span`
+  background-color: #ff5252;
   color: white;
-  font-weight: 700;
-  font-size: 12px;
-  border-radius: 8px;
   padding: 2px 8px;
-  letter-spacing: 1px;
-  display: inline-block;
-  white-space: nowrap;
+  border-radius: 12px;
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   flex-shrink: 0;
 `;
 
-const Title = styled.span`
-  color: #d32f2f;
-  font-weight: 700;
-  font-size: 16px;
-  word-break: break-all;
-  display: inline-block;
-  white-space: nowrap;
+const PostTitle = styled.h3`
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
+  margin: 0;
+  line-height: 1.4;
+`;
+
+const ContentText = styled.p`
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  margin: 0 0 ${props => props.theme.spacing.sm} 0;
+  line-height: 1.4;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 40vw;
 `;
 
-const Comment = styled.span`
-  color: #888;
-  font-size: 14px;
-  margin-left: 2px;
-  white-space: nowrap;
-  flex-shrink: 0;
+const PostFooter = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.textLightGray};
 `;
 
-const Author = styled.span`
-  font-size: 13px;
-  color: #333;
-  white-space: nowrap;
-  flex-shrink: 0;
+const AuthorName = styled.span`
+  color: ${props => props.theme.colors.textGray};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+`;
+
+const PostDate = styled.span`
+  color: ${props => props.theme.colors.textLightGray};
+`;
+
+const ViewCount = styled.span`
+  color: ${props => props.theme.colors.textLightGray};
 `;
 
 const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
   return (
     <PopularPostsWrapper>
-      {posts.map(post => (
-        <PopularPostCard key={post.id}>
-          <TagAndTitle>
-            <LeftGroup>
-              <Badge>인기글</Badge>
-              <Title>{post.title}</Title>
-              <Comment>
-                ({typeof post.commentCount === 'number' ? post.commentCount : 0}
-                )
-              </Comment>
-            </LeftGroup>
-            <Author>by {post.author}</Author>
-          </TagAndTitle>
-        </PopularPostCard>
-      ))}
+      {posts.map(post => {
+        // 제목에 댓글수 포함
+        const titleWithComments =
+          post.commentCount && post.commentCount > 0
+            ? `${post.title} (${post.commentCount})`
+            : post.title;
+
+        return (
+          <PopularPostContainer key={post.id}>
+            <PostHeader>
+              <PopularTag>인기글</PopularTag>
+              <PostTitle>{titleWithComments}</PostTitle>
+            </PostHeader>
+
+            <ContentText>{post.content}</ContentText>
+
+            <PostFooter>
+              <AuthorName>{post.author}</AuthorName>
+              <span>•</span>
+              <PostDate>{post.date}</PostDate>
+              <span>•</span>
+              <ViewCount>조회 {post.views || 0}</ViewCount>
+            </PostFooter>
+          </PopularPostContainer>
+        );
+      })}
     </PopularPostsWrapper>
   );
 };

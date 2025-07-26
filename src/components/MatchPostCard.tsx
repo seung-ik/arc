@@ -10,19 +10,18 @@ interface MatchPostCardProps {
   onClick?: (postId: number) => void;
 }
 
-const MatchCard = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md};
-  margin-bottom: ${props => props.theme.spacing.md};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+const MatchContainer = styled.div`
+  padding: ${props => props.theme.spacing.md} 0;
+  border-bottom: 1px solid ${props => props.theme.colors.borderLight};
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 
   &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
+    background-color: ${props => props.theme.colors.backgroundGray};
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
@@ -33,23 +32,34 @@ const MatchHeader = styled.div`
   margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
-const MatchTitle = styled.h3`
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.semibold};
-  color: ${props => props.theme.colors.textBlack};
-  margin: 0;
+const TitleSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
   flex: 1;
-  line-height: 1.4;
 `;
 
-const MatchBadge = styled.span`
+const MatchTag = styled.span`
   background-color: ${props => props.theme.colors.postType.match.background};
   color: ${props => props.theme.colors.postType.match.text};
   padding: 2px 8px;
   border-radius: 12px;
   font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
-  margin-left: ${props => props.theme.spacing.sm};
+  flex-shrink: 0;
+`;
+
+const MatchTitle = styled.h3`
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin: 0;
+  line-height: 1.4;
+`;
+
+const LocationText = styled.span`
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
   flex-shrink: 0;
 `;
 
@@ -57,7 +67,6 @@ const MatchInfo = styled.div`
   display: flex;
   align-items: center;
   gap: ${props => props.theme.spacing.sm};
-  margin-bottom: ${props => props.theme.spacing.xs};
 `;
 
 const EloBadge = styled.span`
@@ -69,18 +78,13 @@ const EloBadge = styled.span`
   font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
-const LocationBadge = styled.span`
-  background-color: ${props => props.theme.colors.secondary};
+const StatusText = styled.span`
+  background-color: ${props => props.theme.colors.success};
   color: white;
   padding: 2px 6px;
   border-radius: 8px;
   font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-`;
-
-const ValidityPeriod = styled.span`
-  color: ${props => props.theme.colors.textLightGray};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
   margin-left: auto;
 `;
 
@@ -124,29 +128,43 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
     if (onClick) {
       onClick(post.id);
     } else {
-      // 기본적으로 상세 페이지로 이동 (type=match 쿼리 추가)
       router.push(`${ROUTES.community.post(post.id.toString())}?type=match`);
     }
   };
 
-  const validityText = post.validityPeriod
-    ? calculateValidityPeriod(post.date, post.validityPeriod)
-    : post.date;
+  // 상태 결정 (유효기간 기반)
+  const getStatus = () => {
+    if (!post.validityPeriod) return '진행중';
+
+    const validityText = calculateValidityPeriod(
+      post.date,
+      post.validityPeriod
+    );
+    if (validityText === '만료됨') {
+      return '만료됨';
+    } else {
+      return '진행중';
+    }
+  };
+
+  const status = getStatus();
 
   return (
-    <MatchCard onClick={handleClick}>
+    <MatchContainer onClick={handleClick}>
       <MatchHeader>
-        <MatchTitle>{post.title}</MatchTitle>
-        <MatchBadge>매치</MatchBadge>
+        <TitleSection>
+          <MatchTag>매치</MatchTag>
+          <MatchTitle>{post.title}</MatchTitle>
+        </TitleSection>
+        {post.matchLocation && (
+          <LocationText>{post.matchLocation}</LocationText>
+        )}
       </MatchHeader>
 
       <MatchInfo>
         {post.myElo && <EloBadge>ELO {post.myElo}</EloBadge>}
-        {post.matchLocation && (
-          <LocationBadge>{post.matchLocation}</LocationBadge>
-        )}
-        <ValidityPeriod>{validityText}</ValidityPeriod>
+        <StatusText>{status}</StatusText>
       </MatchInfo>
-    </MatchCard>
+    </MatchContainer>
   );
 }

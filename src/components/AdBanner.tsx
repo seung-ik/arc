@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 const BannerContainer = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin-top: ${props => props.theme.spacing.md};
-  margin-bottom: ${props => props.theme.spacing.md};
+  margin-top: ${props => props.theme.spacing.xs};
+  margin-bottom: ${props => props.theme.spacing.xs};
   border-radius: ${props => props.theme.borderRadius.md};
   padding: ${props => props.theme.spacing.md};
   color: white;
