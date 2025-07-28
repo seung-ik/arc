@@ -1,8 +1,8 @@
 'use client';
 
+import React from 'react';
 import styled from 'styled-components';
 import LoadingIndicator from './LoadingIndicator';
-import React from 'react';
 
 const Container = styled.div`
   min-height: 100vh;

@@ -1,17 +1,14 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState } from 'react';
 
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import MatchPostCard from '@/components/MatchPostCard';
 import BusinessBanner from '@/components/BusinessBanner';
-
 import CommunityLayout from '@/components/CommunityLayout';
-import WriteButton from '@/components/WriteButton';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
+import { PAGINATION, POSTS } from '@/constants/pagination';
+import { usePagination } from '@/hooks/usePagination';
 import { MatchPost, Post } from '@/types/post';
 import PopularPosts from '@/components/PopularPosts';
 
@@ -317,24 +314,27 @@ const mockPosts = [
   },
 ];
 
-const POSTS_PER_PAGE = 12;
-
 export default function CommunityPage() {
-  const [visiblePosts, setVisiblePosts] = useState(POSTS_PER_PAGE);
-  const router = useRouter();
+  // const router = useRouter();
 
   // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
   const filteredPosts = mockPosts;
 
-  // 더보기 기능
-  const currentPosts = filteredPosts.slice(0, visiblePosts);
-  const hasMorePosts = visiblePosts < filteredPosts.length;
+  // 페이지네이션 훅 사용
+  const {
+    currentItems: currentPosts,
+    loadMore,
+    hasNextPage: hasMorePosts,
+  } = usePagination({
+    items: filteredPosts,
+    itemsPerPage: PAGINATION.POSTS_PER_PAGE,
+  });
 
   // 인기글(일반글 중 좋아요 순 상위 3개)
   const popularFreePosts = mockPosts
     .filter(post => post.postType === '일반')
     .sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0))
-    .slice(0, 3)
+    .slice(0, POSTS.POPULAR_POSTS_COUNT)
     .map(post => ({
       id: post.id,
       title: post.title,
@@ -347,7 +347,7 @@ export default function CommunityPage() {
     }));
 
   const handleLoadMore = () => {
-    setVisiblePosts(prev => prev + POSTS_PER_PAGE);
+    loadMore();
   };
 
   const handleAdClick = (business: any) => {
@@ -355,10 +355,6 @@ export default function CommunityPage() {
     // 실제로는 업장 상세 페이지로 이동하거나 모달을 열 수 있음
   };
 
-  const handleWriteClick = () => {
-    console.log('자유글 글쓰기 버튼 클릭됨');
-    router.push(ROUTES.community.write);
-  };
 
   return (
     <Container>
@@ -385,7 +381,6 @@ export default function CommunityPage() {
           )}
         </Content>
       </CommunityLayout>
-      <WriteButton onClick={handleWriteClick} />
     </Container>
   );
 }

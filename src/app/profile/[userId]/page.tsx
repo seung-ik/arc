@@ -201,7 +201,7 @@ export default function UserProfilePage() {
           isMyProfile={false}
         />
 
-        <GameStatsGrid gameStats={userProfile.gameStats} />
+        <GameStatsGrid />
 
         <ProfilePostList posts={mockOtherUserPosts} isMyProfile={false} />
       </Content>

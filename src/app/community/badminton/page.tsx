@@ -1,19 +1,15 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState, useMemo } from 'react';
-import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
 import MatchPostCard from '@/components/MatchPostCard';
-import AdBanner from '@/components/AdBanner';
-import SearchInput from '@/components/SearchInput';
-import Pagination from '@/components/Pagination';
+import BusinessBanner from '@/components/BusinessBanner';
 import CommunityLayout from '@/components/CommunityLayout';
-import WriteButton from '@/components/WriteButton';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
+import { PAGINATION, POSTS } from '@/constants/pagination';
+import { usePagination } from '@/hooks/usePagination';
 import { MatchPost, Post } from '@/types/post';
+import PopularPosts from '@/components/PopularPosts';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -39,6 +35,26 @@ const NoResults = styled.div`
   padding: ${props => props.theme.spacing.xl};
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.base};
+`;
+
+const LoadMoreButton = styled.button`
+  background-color: ${props => props.theme.colors.backgroundGray};
+  color: ${props => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  border: 1px solid ${props => props.theme.colors.textGray};
+  cursor: pointer;
+  margin: ${props => props.theme.spacing.md} auto;
+  display: block;
+  width: 80%;
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.borderLight};
+    border-color: ${props => props.theme.colors.textBlack};
+  }
 `;
 
 // 배드민턴 관련 임시 게시글 데이터 (일반, 매치, 멘토 타입)
@@ -281,67 +297,51 @@ const mockPosts = [
   },
 ];
 
-const POSTS_PER_PAGE = 12;
-
 export default function BadmintonPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const router = useRouter();
+  // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
+  const filteredPosts = mockPosts;
 
-  // 검색 필터링
-  const filteredPosts = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return mockPosts;
-    }
+  // 페이지네이션 훅 사용
+  const {
+    currentItems: currentPosts,
+    loadMore,
+    hasNextPage: hasMorePosts,
+  } = usePagination({
+    items: filteredPosts,
+    itemsPerPage: PAGINATION.POSTS_PER_PAGE,
+  });
 
-    const query = searchQuery.toLowerCase();
-    return mockPosts.filter(
-      post =>
-        post.title.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query) ||
-        post.authorName.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
+  // 인기글(일반글 중 좋아요 순 상위 3개)
+  const popularFreePosts = mockPosts
+    .filter(post => post.postType === '일반')
+    .sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0))
+    .slice(0, POSTS.POPULAR_POSTS_COUNT)
+    .map(post => ({
+      id: post.id,
+      title: post.title,
+      author: post.authorName,
+      views: post.viewCount ?? 0,
+      likes: post.likeCount ?? 0,
+      commentCount: post.commentCount ?? 0,
+      date: post.date,
+      content: post.content,
+    }));
 
-  // 페이지네이션
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
-  const currentPosts = filteredPosts.slice(startIndex, endIndex);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+  const handleLoadMore = () => {
+    loadMore();
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleAdClick = () => {
-    console.log('배드민턴 광고 배너 클릭됨');
-  };
-
-  const handleWriteClick = () => {
-    console.log('배드민턴 글쓰기 버튼 클릭됨');
-    router.push(`${ROUTES.community.write}?category=badminton`);
+  const handleAdClick = (business: any) => {
+    console.log('배드민턴 업장 배너 클릭됨:', business.name);
   };
 
   return (
     <Container>
       <CategoryTabs />
       <CommunityLayout>
-        <AdBanner
-          title="🏸 배드민턴 대회 참가 신청"
-          description="배드민턴 종목 대회에 참가하고 상금을 받아보세요!"
-          onClick={handleAdClick}
-        />
         <Content>
-          <SearchInput
-            onSearch={handleSearch}
-            placeholder="배드민턴 게시글 검색..."
-          />
+          <PopularPosts posts={popularFreePosts} />
+          <BusinessBanner onClick={handleAdClick} />
           <PostList>
             {currentPosts.length > 0 ? (
               currentPosts.map(post =>
@@ -352,20 +352,14 @@ export default function BadmintonPage() {
                 )
               )
             ) : (
-              <NoResults>
-                {searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}
-              </NoResults>
+              <NoResults>게시글이 없습니다.</NoResults>
             )}
           </PostList>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {hasMorePosts && (
+            <LoadMoreButton onClick={handleLoadMore}>더보기</LoadMoreButton>
+          )}
         </Content>
       </CommunityLayout>
-      <WriteButton onClick={handleWriteClick} />
-      <BottomNavigation />
     </Container>
   );
 }
