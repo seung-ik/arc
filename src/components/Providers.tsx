@@ -17,7 +17,7 @@ function AuthSyncer() {
 
   const pathname = usePathname();
   const logoutAll = useLogoutAll();
-  const user = useAuthStore();
+  const auth = useAuthStore();
 
   useEffect(() => {
     const syncAuth = async () => {
@@ -41,10 +41,10 @@ function AuthSyncer() {
   }, [pathname]);
 
   useEffect(() => {
-    if (user.isLoggedIn && !user.nickname) {
+    if (auth.isLoggedIn && !auth.userProfile.nickname) {
       setShowNicknameModal(true);
     }
-  }, [user]);
+  }, [auth]);
 
   const handleNicknameSubmit = (nickname: string) => {
     initNickname(
@@ -54,9 +54,9 @@ function AuthSyncer() {
           console.log(response);
           setShowNicknameModal(false);
           // 유저 정보 업데이트
-          user.setUser({
-            ...user,
-            nickname: response.data.nickname || '',
+          auth.setProfile({
+            ...auth.userProfile,
+            nickname: response.data.nickname,
           });
         },
         onError: error => {

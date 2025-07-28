@@ -53,7 +53,7 @@ export default function LoginClient() {
   const router = useRouter();
   const { isInitialized, loginByWepin } = useWepin();
   const { mutate: login } = useLoginApi();
-  const { setUser } = useAuthStore();
+  const { setProfile, setIsLoggedIn } = useAuthStore();
   const logoutAll = useLogoutAll();
 
   const handleGoogleLogin = async () => {
@@ -80,16 +80,16 @@ export default function LoginClient() {
               localStorage.setItem('ACCESS_TOKEN', data.accessToken);
 
               // userStore에 사용자 정보 저장
-              setUser({
+              setProfile({
                 availableToken: data.user.availableToken,
                 email: data.user.email,
                 id: data.user.id,
-                nickname: data.user.nickname ?? '',
-                profileImageUrl: data.user.profileImageUrl ?? '',
-                tokenAmount: data.user.tokenAmount ?? '',
-                walletAddress: data.user.walletAddress ?? '',
-                isLoggedIn: true,
+                nickname: data.user.nickname,
+                profileImageUrl: data.user.profileImageUrl,
+                tokenAmount: data.user.tokenAmount,
+                walletAddress: data.user.walletAddress,
               });
+              setIsLoggedIn(true);
 
               router.push(ROUTES.elo.root);
             } else {

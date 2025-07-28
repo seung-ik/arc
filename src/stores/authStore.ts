@@ -1,23 +1,18 @@
 import { create } from 'zustand';
+import { User, UserElo } from '@/api/useUser';
 
-interface User {
-  availableToken: string;
-  email: string;
-  id: number;
-  nickname: string;
-  profileImageUrl: string;
-  tokenAmount: string;
-  walletAddress: string;
+interface AuthState {
   isLoggedIn: boolean;
-}
-
-interface AuthState extends User {
   isLoading: boolean;
+  userElos: UserElo[];
+  userProfile: User;
 }
 
 interface AuthActions {
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
+  setProfile: (profile: User) => void;
+  setUserElos: (userElos: UserElo[]) => void;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setIsLoading: (isLoading: boolean) => void;
   reset: () => void;
 }
 
@@ -25,31 +20,52 @@ type AuthStore = AuthState & AuthActions;
 
 export const useAuthStore = create<AuthStore>(set => ({
   // State
-  availableToken: '',
-  email: '',
-  id: 0,
-  nickname: '',
-  profileImageUrl: '',
-  tokenAmount: '',
-  walletAddress: '',
   isLoggedIn: false,
   isLoading: false,
+  userElos: [],
+  userProfile: {
+    id: 0,
+    nickname: null,
+    email: '',
+    profileImageUrl: null,
+    availableToken: '',
+    tokenAmount: '',
+    walletAddress: '',
+  },
   // Actions
-  setUser: (user: User | null) =>
+  setProfile: (profile: User) =>
     set(state => ({
       ...state,
-      ...user,
+      userProfile: profile,
     })),
-  setLoading: (loading: boolean) => set({ isLoading: loading }),
+  setUserElos: (userElos: UserElo[]) =>
+    set(state => ({
+      ...state,
+      userElos,
+    })),
+  setIsLoggedIn: (isLoggedIn: boolean) =>
+    set(state => ({
+      ...state,
+      isLoggedIn,
+    })),
+  setIsLoading: (isLoading: boolean) =>
+    set(state => ({
+      ...state,
+      isLoading,
+    })),
   reset: () =>
     set({
-      availableToken: '',
-      email: '',
-      id: 0,
-      nickname: '',
-      profileImageUrl: '',
-      tokenAmount: '',
-      walletAddress: '',
       isLoggedIn: false,
+      isLoading: false,
+      userElos: [],
+      userProfile: {
+        id: 0,
+        nickname: null,
+        email: '',
+        profileImageUrl: null,
+        availableToken: '',
+        tokenAmount: '',
+        walletAddress: '',
+      },
     }),
 }));

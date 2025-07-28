@@ -18,13 +18,13 @@ interface InitNicknameParams {
 }
 
 // 스포츠 카테고리 타입
-interface SportCategory {
+export interface SportCategory {
   id: number;
   name: string;
 }
 
 // 유저 ELO 정보 타입
-interface UserElo {
+export interface UserElo {
   id: number;
   sportCategory: SportCategory;
   eloPoint: number;
