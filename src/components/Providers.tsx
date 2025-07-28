@@ -7,18 +7,17 @@ import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
-import { useInitNicknameApi, useProfileApi } from '@/api/useUser';
+import { useInitNicknameApi } from '@/api/useUser';
 import NicknameModal from './NicknameModal';
 
 function AuthSyncer() {
   const { isInitialized, isLoggedIn: isWepinLoggedIn } = useWepin();
   const { mutate: initNickname } = useInitNicknameApi();
-  const { data: profileData } = useProfileApi();
   const [showNicknameModal, setShowNicknameModal] = useState(false);
 
   const pathname = usePathname();
   const logoutAll = useLogoutAll();
-  const auth = useAuthStore();
+  const { isLoggedIn, userProfile, setProfile } = useAuthStore();
 
   useEffect(() => {
     const syncAuth = async () => {
@@ -42,10 +41,12 @@ function AuthSyncer() {
   }, [pathname]);
 
   useEffect(() => {
-    if (profileData && auth.isLoggedIn && !auth.userProfile.nickname) {
+    console.log('isLoggedIn', isLoggedIn);
+    console.log('userProfile.nickname', userProfile.nickname);
+    if (isLoggedIn && !userProfile.nickname) {
       setShowNicknameModal(true);
     }
-  }, [profileData, auth]);
+  }, [isLoggedIn, userProfile.nickname]);
 
   const handleNicknameSubmit = (nickname: string) => {
     initNickname(
@@ -55,8 +56,8 @@ function AuthSyncer() {
           console.log(response);
           setShowNicknameModal(false);
           // 유저 정보 업데이트
-          auth.setProfile({
-            ...auth.userProfile,
+          setProfile({
+            ...userProfile,
             nickname: response.data.nickname,
           });
         },
