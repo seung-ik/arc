@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import api from '@/lib/axios';
+import { User } from './useUser';
 
 // 1. 파라미터 타입 정의
 export interface LoginParams {
@@ -14,15 +15,7 @@ export interface LoginResponse {
   message: string;
   data: {
     accessToken: string;
-    user: {
-      availableToken: string;
-      email: string;
-      id: number;
-      nickname: string | null;
-      profileImageUrl: string | null;
-      tokenAmount: string;
-      walletAddress: string;
-    };
+    user: User;
   };
 }
 

@@ -10,11 +10,11 @@ import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
 import { ProfilePost } from '@/types/post';
 import NicknameChangeModal from '@/components/NicknameChangeModal';
-import NicknameModal from '@/components/NicknameModal';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
+import { useAuthStore } from '@/stores/authStore';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -272,12 +272,15 @@ const mockMyPosts: ProfilePost[] = [
 export default function ProfilePage() {
   const router = useRouter();
   const logoutAll = useLogoutAll();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  // const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState(mockMyPosts);
   const [loading, setLoading] = useState(true);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
-  const [showNicknameModal, setShowNicknameModal] = useState(false);
+
+  const user = useAuthStore();
+
+  console.log(user);
 
   useEffect(() => {
     // 실제로는 API 호출을 여기서 할 예정
@@ -337,11 +340,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleFirstNicknameSubmit = (nickname: string) => {
-    setShowNicknameModal(false);
-    setUserProfile(prev => (prev ? { ...prev, name: nickname } : null));
-  };
-
   const handleViewTokenHistory = () => {
     router.push(ROUTES.profile.tokenHistory);
   };
@@ -361,16 +359,16 @@ export default function ProfilePage() {
         <ProfileTopWrapper>
           <ProfileLeftCol>
             <ProfileHeader
-              name={userProfile.name}
-              profileImage={userProfile.profileImage}
+              name={user.nickname}
+              profileImage={user.profileImageUrl}
               isMyProfile={true}
               onNicknameChange={handleNicknameChange}
             />
           </ProfileLeftCol>
           <ProfileRightCol>
             <TokenDisplay
-              tokens={userProfile.tokens ?? 0}
-              harvestableTokens={harvestableTokens}
+              tokens={Number(user.tokenAmount) ?? 0}
+              harvestableTokens={Number(user.availableToken) ?? 0}
               onHarvestAll={handleHarvestAll}
               harvestButtonText="수확하기"
               onViewHistory={handleViewTokenHistory}
@@ -391,12 +389,8 @@ export default function ProfilePage() {
         isOpen={isNicknameModalOpen}
         onClose={() => setIsNicknameModalOpen(false)}
         onSubmit={handleNicknameSubmit}
-        currentNickname={userProfile.name}
-        userTokens={userProfile.tokens ?? 0}
-      />
-      <NicknameModal
-        open={showNicknameModal}
-        onSubmit={handleFirstNicknameSubmit}
+        currentNickname={user.nickname}
+        userTokens={Number(user.tokenAmount) ?? 0}
       />
     </Container>
   );

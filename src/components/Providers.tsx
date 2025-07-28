@@ -6,12 +6,18 @@ import { useWepin, WepinProvider } from '@/contexts/WepinContext';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { useAuthStore } from '@/stores/authStore';
+import { useInitNicknameApi } from '@/api/useUser';
+import NicknameModal from './NicknameModal';
 
 function AuthSyncer() {
   const { isInitialized, isLoggedIn: isWepinLoggedIn } = useWepin();
+  const { mutate: initNickname } = useInitNicknameApi();
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
 
   const pathname = usePathname();
   const logoutAll = useLogoutAll();
+  const user = useAuthStore();
 
   useEffect(() => {
     const syncAuth = async () => {
@@ -34,7 +40,37 @@ function AuthSyncer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  return null;
+  useEffect(() => {
+    if (user.isLoggedIn && !user.nickname) {
+      setShowNicknameModal(true);
+    }
+  }, [user]);
+
+  const handleNicknameSubmit = (nickname: string) => {
+    initNickname(
+      { nickname },
+      {
+        onSuccess: response => {
+          console.log(response);
+          setShowNicknameModal(false);
+          // 유저 정보 업데이트
+          user.setUser({
+            ...user,
+            nickname: response.data.nickname || '',
+          });
+        },
+        onError: error => {
+          console.error('닉네임 설정 실패:', error);
+        },
+      }
+    );
+  };
+
+  return (
+    <>
+      <NicknameModal open={showNicknameModal} onSubmit={handleNicknameSubmit} />
+    </>
+  );
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {

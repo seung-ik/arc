@@ -148,72 +148,12 @@ const DeleteButton = styled.button`
   }
 `;
 
-const BottomActions = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: ${props => props.theme.colors.background};
-  border-top: 1px solid ${props => props.theme.colors.border};
-  padding: ${props => props.theme.spacing.md};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const CancelButton = styled.button`
-  background: none;
-  border: none;
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  color: ${props => props.theme.colors.textGray};
-  cursor: pointer;
-  padding: 0;
-
-  &:hover {
-    color: ${props => props.theme.colors.textBlack};
-  }
-`;
-
-const ActionIcons = styled.div`
-  display: flex;
-  gap: ${props => props.theme.spacing.md};
-`;
-
-const ActionIcon = styled.button`
-  width: 40px;
-  height: 40px;
-  border: 2px solid ${props => props.theme.colors.success};
-  border-radius: 50%;
-  background: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: ${props => props.theme.typography.fontSizes.lg};
-  color: ${props => props.theme.colors.success};
-
-  &:hover {
-    background-color: ${props => props.theme.colors.success};
-    color: ${props => props.theme.colors.textWhite};
-  }
-`;
-
 // 최근 검색어 데이터
 const mockRecentSearches = [
-  { id: 1, text: '산풍기 모타 고장', date: '07.26.' },
-  { id: 2, text: '모란기원', date: '07.25.' },
-  { id: 3, text: '램투램', date: '07.22.' },
-  { id: 4, text: '가산 바버샵', date: '07.12.' },
-  { id: 5, text: '오븐마루', date: '07.11.' },
-  { id: 6, text: '가산디지털단지역', date: '07.06.' },
-  { id: 7, text: '온수역', date: '07.05.' },
-  { id: 8, text: '모니터 포장해서 보내는 방법', date: '07.03.' },
-  { id: 9, text: '수아당', date: '06.29.' },
-  { id: 10, text: '신논현역 햄버거', date: '06.28.' },
-  { id: 11, text: '길찾기', date: '06.25.' },
-  { id: 12, text: '릴라드', date: '06.20.' },
-  { id: 13, text: '지인시어터', date: '06.15.' },
-  { id: 14, text: '서울시이사지원금', date: '06.10.' },
+  { id: 1, text: '테니스 코트 예약', date: '07.26.' },
+  { id: 2, text: '배드민턴 대회', date: '07.25.' },
+  { id: 3, text: '체스 강사', date: '07.22.' },
+  { id: 4, text: '탁구 친구', date: '07.12.' },
 ];
 
 export default function SearchPage() {
@@ -262,10 +202,6 @@ export default function SearchPage() {
     router.back();
   };
 
-  const handleCancelClick = () => {
-    router.back();
-  };
-
   const handleDeleteAll = () => {
     setRecentSearches([]);
   };
@@ -279,18 +215,6 @@ export default function SearchPage() {
     // 검색 실행
     console.log('검색어:', text);
     // router.push(`/search/results?q=${encodeURIComponent(text)}`);
-  };
-
-  const handleVoiceSearch = () => {
-    console.log('음성 검색');
-  };
-
-  const handleImageSearch = () => {
-    console.log('이미지 검색');
-  };
-
-  const handleLocationSearch = () => {
-    console.log('위치 검색');
   };
 
   return (
@@ -334,15 +258,6 @@ export default function SearchPage() {
           ))}
         </SearchHistoryList>
       </Content>
-
-      <BottomActions>
-        <CancelButton onClick={handleCancelClick}>취소</CancelButton>
-        <ActionIcons>
-          <ActionIcon onClick={handleVoiceSearch}>🎤</ActionIcon>
-          <ActionIcon onClick={handleImageSearch}>📷</ActionIcon>
-          <ActionIcon onClick={handleLocationSearch}>📍</ActionIcon>
-        </ActionIcons>
-      </BottomActions>
     </Container>
   );
 }

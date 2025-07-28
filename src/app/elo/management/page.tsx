@@ -84,6 +84,8 @@ export default function ManagementPage() {
   const router = useRouter();
   const registrationModal = useModal();
   const [pendingMatches, setPendingMatches] = useState<PendingMatch[]>([]);
+  // const user = useAuthStore();
+  // console.log(user);
 
   // 30초 후 대기 중인 매치 제거
   useEffect(() => {
