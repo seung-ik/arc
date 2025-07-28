@@ -10,11 +10,11 @@ import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
 import { ProfilePost } from '@/types/post';
 import NicknameChangeModal from '@/components/NicknameChangeModal';
-import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { useAuthStore } from '@/stores/authStore';
+import { useProfileApi } from '@/api/useUser';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -79,51 +79,6 @@ const ProfileRightCol = styled.div`
   gap: 16px;
   justify-content: center;
 `;
-
-// 임시 데이터 - 실제로는 API에서 가져올 예정
-const mockUserProfile: UserProfile = {
-  id: '1',
-  name: '김철수',
-  tokens: 1250,
-  gameStats: {
-    [GAME_TYPES.BILLIARDS]: {
-      elo: 1250,
-      percentile: 15,
-      isActive: true,
-      gamesPlayed: 25,
-    },
-    [GAME_TYPES.TABLE_TENNIS]: {
-      elo: 1180,
-      percentile: 25,
-      isActive: true,
-      gamesPlayed: 18,
-    },
-    [GAME_TYPES.BADMINTON]: {
-      elo: 1320,
-      percentile: 8,
-      isActive: true,
-      gamesPlayed: 32,
-    },
-    [GAME_TYPES.CHESS]: {
-      elo: 1450,
-      percentile: 3,
-      isActive: true,
-      gamesPlayed: 45,
-    },
-    [GAME_TYPES.GO]: {
-      elo: 1100,
-      percentile: 30,
-      isActive: true,
-      gamesPlayed: 12,
-    },
-    [GAME_TYPES.TENNIS]: {
-      elo: 0,
-      percentile: 0,
-      isActive: false,
-      gamesPlayed: 0,
-    },
-  },
-};
 
 // 임시 글 데이터 (기본값: 숨김)
 const mockMyPosts: ProfilePost[] = [
@@ -272,32 +227,14 @@ const mockMyPosts: ProfilePost[] = [
 export default function ProfilePage() {
   const router = useRouter();
   const logoutAll = useLogoutAll();
-  // const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
   const [posts, setPosts] = useState(mockMyPosts);
-  const [loading, setLoading] = useState(true);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
-  const user = useAuthStore();
-
-  console.log(user);
-
-  useEffect(() => {
-    // 실제로는 API 호출을 여기서 할 예정
-    const fetchUserProfile = async () => {
-      try {
-        // API 호출 시뮬레이션
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setUserProfile(mockUserProfile);
-      } catch (error) {
-        console.error('Failed to fetch user profile:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+  const { data: profileData, isLoading } = useProfileApi();
+  const { setProfile, setUserElos, setTokenAmount, setNickname, userProfile } =
+    useAuthStore();
 
   const handleHarvest = (postId: number) => {
     setPosts(prevPosts =>
@@ -314,12 +251,11 @@ export default function ProfilePage() {
 
   const handleHarvestAll = () => {
     // 실제로는 Web3 트랜잭션 처리
-    if (harvestableTokens > 0 && userProfile) {
-      setUserProfile(prev =>
-        prev
-          ? { ...prev, tokens: (prev.tokens || 0) + harvestableTokens }
-          : null
-      );
+    if (harvestableTokens > 0 && userProfile.tokenAmount) {
+      setTokenAmount((prev: string) => {
+        const currentAmount = parseFloat(prev || '0');
+        return (currentAmount + harvestableTokens).toFixed(8);
+      });
       setHarvestableTokens(0);
     }
   };
@@ -329,12 +265,12 @@ export default function ProfilePage() {
   };
 
   const handleNicknameSubmit = (newNickname: string) => {
-    if (userProfile) {
-      setUserProfile(prev =>
-        prev
-          ? { ...prev, name: newNickname, tokens: (prev.tokens || 0) - 1 }
-          : null
-      );
+    if (userProfile.tokenAmount) {
+      setTokenAmount((prev: string) => {
+        const currentAmount = parseFloat(prev || '0');
+        return (currentAmount - 1).toFixed(8);
+      });
+      setNickname(newNickname);
       console.log('닉네임이 변경되었습니다:', newNickname);
       console.log('1 토큰이 소각되었습니다.');
     }
@@ -348,7 +284,14 @@ export default function ProfilePage() {
     await logoutAll();
   };
 
-  if (loading || !userProfile) {
+  useEffect(() => {
+    if (profileData) {
+      setProfile(profileData.user); // 유저 프로필 정보 저장
+      setUserElos(profileData.userElos); // ELO 정보 저장
+    }
+  }, [profileData, setProfile, setUserElos]);
+
+  if (isLoading) {
     return <FullPageLoading />;
   }
 
@@ -359,16 +302,16 @@ export default function ProfilePage() {
         <ProfileTopWrapper>
           <ProfileLeftCol>
             <ProfileHeader
-              name={user.nickname}
-              profileImage={user.profileImageUrl}
+              name={userProfile.nickname || ''}
+              profileImage={userProfile.profileImageUrl || undefined}
               isMyProfile={true}
               onNicknameChange={handleNicknameChange}
             />
           </ProfileLeftCol>
           <ProfileRightCol>
             <TokenDisplay
-              tokens={Number(user.tokenAmount) ?? 0}
-              harvestableTokens={Number(user.availableToken) ?? 0}
+              tokens={Number(userProfile.tokenAmount) ?? 0}
+              harvestableTokens={Number(userProfile.availableToken) ?? 0}
               onHarvestAll={handleHarvestAll}
               harvestButtonText="수확하기"
               onViewHistory={handleViewTokenHistory}
@@ -376,7 +319,7 @@ export default function ProfilePage() {
           </ProfileRightCol>
         </ProfileTopWrapper>
 
-        <GameStatsGrid gameStats={userProfile.gameStats} />
+        <GameStatsGrid />
 
         <ProfilePostList
           posts={posts}
@@ -389,8 +332,8 @@ export default function ProfilePage() {
         isOpen={isNicknameModalOpen}
         onClose={() => setIsNicknameModalOpen(false)}
         onSubmit={handleNicknameSubmit}
-        currentNickname={user.nickname}
-        userTokens={Number(user.tokenAmount) ?? 0}
+        currentNickname={userProfile.nickname || ''}
+        userTokens={Number(userProfile.tokenAmount) ?? 0}
       />
     </Container>
   );

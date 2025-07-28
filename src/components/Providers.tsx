@@ -7,12 +7,13 @@ import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
-import { useInitNicknameApi } from '@/api/useUser';
+import { useInitNicknameApi, useProfileApi } from '@/api/useUser';
 import NicknameModal from './NicknameModal';
 
 function AuthSyncer() {
   const { isInitialized, isLoggedIn: isWepinLoggedIn } = useWepin();
   const { mutate: initNickname } = useInitNicknameApi();
+  const { data: profileData } = useProfileApi();
   const [showNicknameModal, setShowNicknameModal] = useState(false);
 
   const pathname = usePathname();
@@ -41,10 +42,10 @@ function AuthSyncer() {
   }, [pathname]);
 
   useEffect(() => {
-    if (auth.isLoggedIn && !auth.userProfile.nickname) {
+    if (profileData && auth.isLoggedIn && !auth.userProfile.nickname) {
       setShowNicknameModal(true);
     }
-  }, [auth]);
+  }, [profileData, auth]);
 
   const handleNicknameSubmit = (nickname: string) => {
     initNickname(

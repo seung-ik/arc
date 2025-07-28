@@ -1,12 +1,9 @@
 'use client';
 
 import styled from 'styled-components';
-import { GAME_TYPES, GameType, GameStat } from '@/constants/gameTypes';
+import { useAuthStore } from '@/stores/authStore';
+import { UserElo } from '@/api/useUser';
 import GameStatCard from './GameStatCard';
-
-interface GameStatsGridProps {
-  gameStats: Record<GameType, GameStat>;
-}
 
 const GridContainer = styled.div`
   padding: 16px;
@@ -31,17 +28,40 @@ const Grid = styled.div`
   }
 `;
 
-export default function GameStatsGrid({ gameStats }: GameStatsGridProps) {
+// userElos를 ID를 키로 하는 객체로 변환하는 함수
+const convertUserElosToObject = (userElos: UserElo[]) => {
+  const userElosObject: Record<
+    number,
+    {
+      name: string;
+      eloPoint: number;
+      percentile: string;
+      tier: string;
+    }
+  > = {};
+
+  userElos.forEach(userElo => {
+    userElosObject[userElo.id] = {
+      name: userElo.sportCategory.name,
+      eloPoint: userElo.eloPoint,
+      percentile: userElo.percentile,
+      tier: userElo.tier,
+    };
+  });
+
+  return userElosObject;
+};
+
+export default function GameStatsGrid() {
+  const { userElos } = useAuthStore();
+  const userElosObject = convertUserElosToObject(userElos);
+
   return (
     <GridContainer>
       <GridTitle>종목별 ELO</GridTitle>
       <Grid>
-        {Object.values(GAME_TYPES).map(gameType => (
-          <GameStatCard
-            key={gameType}
-            gameType={gameType}
-            gameStat={gameStats[gameType]}
-          />
+        {Object.entries(userElosObject).map(([id, data]) => (
+          <GameStatCard key={id} data={data} />
         ))}
       </Grid>
     </GridContainer>

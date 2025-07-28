@@ -13,6 +13,8 @@ interface AuthActions {
   setUserElos: (userElos: UserElo[]) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setNickname: (nickname: string | null) => void;
+  setTokenAmount: (tokenAmount: string | ((prev: string) => string)) => void;
   reset: () => void;
 }
 
@@ -52,6 +54,25 @@ export const useAuthStore = create<AuthStore>(set => ({
     set(state => ({
       ...state,
       isLoading,
+    })),
+  setNickname: (nickname: string | null) =>
+    set(state => ({
+      ...state,
+      userProfile: {
+        ...state.userProfile,
+        nickname,
+      },
+    })),
+  setTokenAmount: (tokenAmount: string | ((prev: string) => string)) =>
+    set(state => ({
+      ...state,
+      userProfile: {
+        ...state.userProfile,
+        tokenAmount:
+          typeof tokenAmount === 'function'
+            ? tokenAmount(state.userProfile.tokenAmount)
+            : tokenAmount,
+      },
     })),
   reset: () =>
     set({
