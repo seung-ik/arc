@@ -1,124 +1,54 @@
 'use client';
 
 import styled from 'styled-components';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ROUTES } from '@/constants/routes';
+import { ICONS } from '@/assets';
+import Image from 'next/image';
 
 const TabContainer = styled.div`
   display: flex;
-  gap: ${props => props.theme.spacing.sm};
+  align-items: center;
+  justify-content: space-between;
   background: ${props => props.theme.colors.background};
   width: 100%;
-
-  // /* 화면 넓을 때: 반반씩 꽉 채우기 */
-  @media (min-width: 768px) {
-    flex-wrap: nowrap;
-    overflow-x: visible;
-  }
+  margin-bottom: ${props => props.theme.spacing.lg};
+  margin-top: ${props => props.theme.spacing.xs};
+  position: relative;
+  z-index: 10;
 `;
 
-const TabCard = styled.button<{ $active: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${props => props.theme.spacing.sm};
-  background-color: ${props => props.theme.colors.background};
-  border: 1.5px solid
-    ${props =>
-      props.$active ? props.theme.colors.primary : props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.md};
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  text-align: left;
+const TabButton = styled.button<{ $active: boolean }>`
+  background: none;
+  border: none;
   cursor: pointer;
-  transition:
-    box-shadow 0.2s,
-    border-color 0.2s;
+  padding: 0 ${props => props.theme.spacing.sm};
+  font-size: ${props => props.theme.typography.fontSizes['xl']};
+  font-weight: ${props =>
+    props.$active
+      ? props.theme.typography.fontWeights.bold
+      : props.theme.typography.fontWeights.medium};
+  color: ${props =>
+    props.$active ? props.theme.colors.textBlack : props.theme.colors.textGray};
+  transition: color 0.2s;
   outline: none;
-  word-break: keep-all;
-  word-wrap: break-word;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border-color: ${props => props.theme.colors.primary};
-  }
-
-  /* 화면 넓을 때: 반반씩 꽉 채우기 */
-  @media (min-width: 768px) {
-    flex: 1 1 50%;
-    padding: ${props => props.theme.spacing.md};
-    min-width: 200px;
-  }
-
-  @media (max-width: 767px) {
-    flex: 1 1 50%;
-    padding: ${props => props.theme.spacing.sm};
+    color: ${props => props.theme.colors.textBlack};
   }
 `;
 
-const TabIcon = styled.div`
-  font-size: 1.7rem;
-  margin-bottom: 0;
-
-  /* 화면 넓을 때 */
-  @media (min-width: 768px) {
-    margin-right: ${props => props.theme.spacing.md};
-  }
-
-  /* 화면 작을 때 */
-  @media (max-width: 767px) {
-    margin-right: ${props => props.theme.spacing.sm};
-  }
-`;
-
-const TabTextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-`;
-
-const TabTitle = styled.div`
-  color: ${props => props.theme.colors.textBlack};
-  font-weight: ${props => props.theme.typography.fontWeights.bold};
-  margin-bottom: 0;
-  word-break: keep-all;
-  word-wrap: break-word;
-
-  /* 화면 넓을 때 */
-  @media (min-width: 768px) {
-    font-size: ${props => props.theme.typography.fontSizes.base};
-  }
-
-  /* 화면 작을 때 */
-  @media (max-width: 767px) {
-    font-size: ${props => props.theme.typography.fontSizes.sm};
-  }
-`;
-
-const TabDesc = styled.div`
-  color: ${props => props.theme.colors.textGray};
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  word-break: keep-all;
-  word-wrap: break-word;
-
-  /* 화면 넓을 때만 표시 */
-  @media (min-width: 768px) {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  /* 화면 작을 때는 숨김 */
-  @media (max-width: 767px) {
-    display: none;
-  }
+const TabDivider = styled.div`
+  width: 3px;
+  height: 20px;
+  background-color: #e5e7eb;
+  margin: 0 2px;
+  border-radius: 8px;
 `;
 
 export default function EloTabCards() {
-  const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
@@ -130,16 +60,12 @@ export default function EloTabCards() {
     {
       key: 'management',
       label: '매치관리',
-      icon: '🏓',
-      desc: '신청받은 매치 승인/거절',
       href: ROUTES.elo.management,
       active: mounted && pathname === ROUTES.elo.management,
     },
     {
       key: 'history',
-      label: '매치 히스토리',
-      icon: '📊',
-      desc: '과거 기록과 Elo 점수 변화',
+      label: '매치기록',
       href: ROUTES.elo.history,
       active: mounted && pathname === ROUTES.elo.history,
     },
@@ -147,20 +73,36 @@ export default function EloTabCards() {
 
   return (
     <TabContainer suppressHydrationWarning>
-      {tabs.map(tab => (
-        <TabCard
-          key={tab.key}
-          $active={tab.active}
-          onClick={() => router.push(tab.href)}
-          type="button"
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {tabs.map((tab, index) => (
+          <div key={tab.key} style={{ display: 'flex', alignItems: 'center' }}>
+            <Link href={tab.href} style={{ textDecoration: 'none' }}>
+              <TabButton $active={tab.active} type="button">
+                {tab.label}
+              </TabButton>
+            </Link>
+            {index < tabs.length - 1 && <TabDivider />}
+          </div>
+        ))}
+      </div>
+      <div>
+        <Image src={ICONS.BELL} alt="bell" width={24} height={24} />
+        {/* <div
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'green',
+            borderRadius: '50%',
+            color: 'white',
+            border: '2px solid silver',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          <TabIcon>{tab.icon}</TabIcon>
-          <TabTextBox>
-            <TabTitle>{tab.label}</TabTitle>
-            <TabDesc>{tab.desc}</TabDesc>
-          </TabTextBox>
-        </TabCard>
-      ))}
+          승
+        </div> */}
+      </div>
     </TabContainer>
   );
 }

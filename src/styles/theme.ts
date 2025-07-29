@@ -68,7 +68,7 @@ export const theme = {
       normal: 400,
       medium: 500,
       semibold: 600,
-      bold: 700,
+      bold: 800,
     },
   },
 
@@ -88,6 +88,7 @@ export const theme = {
     md: '8px',
     lg: '12px',
     xl: '16px',
+    '2xl': '24px',
   },
 };
 

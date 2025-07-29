@@ -8,40 +8,53 @@ import MatchRegistrationModal from '@/components/MatchRegistrationModal';
 import MatchManagement from '@/components/MatchManagement';
 import EloTabCards from '@/components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
-import MatchPostCard from '@/components/MatchPostCard';
+import { MatchCard } from '@/components/match';
 import { useRouter } from 'next/navigation';
 import { MatchPost } from '@/types/post';
 import PendingMatchCard from '@/components/PendingMatchCard';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${props => props.theme.colors.background};
+  background-color: ${(props) => props.theme.colors.background};
   position: relative;
   align-items: center;
-  padding: ${props => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.md};
 `;
 
-const Header = styled.div`
-  padding: ${props => props.theme.spacing.lg};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: ${props => props.theme.spacing.lg};
+const RegisterWrapper = styled.div`
+  position: fixed;
+  width: 100%;
+  max-width: 768px;
+  height: calc(100vh - 62px);
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const RegisterButton = styled.button`
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 10;
+
+  display: flex;
+  gap: ${(props) => props.theme.spacing.xs};
+  align-items: center;
+
   background: #111;
   color: #fff;
   border: none;
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  border-radius: ${(props) => props.theme.borderRadius['2xl']};
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.md};
+  font-size: ${(props) => props.theme.typography.fontSizes.base};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background 0.2s;
-  min-width: 280px;
 
   &:hover {
     background: #222;
@@ -59,12 +72,12 @@ const ContentContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: ${props => props.theme.typography.fontSizes.lg};
-  font-weight: ${props => props.theme.typography.fontWeights.bold};
-  color: ${props => props.theme.colors.textBlack};
-  margin: ${props => props.theme.spacing.lg} 0
-    ${props => props.theme.spacing.sm} 0;
-  padding-left: ${props => props.theme.spacing.md};
+  font-size: ${(props) => props.theme.typography.fontSizes.lg};
+  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  color: ${(props) => props.theme.colors.textBlack};
+  margin: ${(props) => props.theme.spacing.lg} 0
+    ${(props) => props.theme.spacing.sm} 0;
+  padding-left: ${(props) => props.theme.spacing.md};
   letter-spacing: -0.5px;
 `;
 
@@ -90,7 +103,7 @@ export default function ManagementPage() {
     const interval = setInterval(() => {
       const now = Date.now();
       setPendingMatches(
-        prev => prev.filter(match => now - match.createdAt < 30000) // 30초 = 30000ms
+        (prev) => prev.filter((match) => now - match.createdAt < 30000) // 30초 = 30000ms
       );
     }, 1000); // 1초마다 체크
 
@@ -229,22 +242,29 @@ export default function ManagementPage() {
       createdAt: Date.now(), // 생성 시간 추가
     };
 
-    setPendingMatches(prev => [newPendingMatch, ...prev]);
+    setPendingMatches((prev) => [newPendingMatch, ...prev]);
   };
 
   return (
     <Container>
       <EloTabCards />
-      <Header>
+      <AdBanner
+        title="기록은 온라인에, 경험은 오프라인에."
+        description={`기록은 당신의 이야기를 남기고,\n보상은 더 넓은 경험으로 이어집니다.`}
+        badge="할인"
+        onClick={() => console.log('구장 예약 클릭')}
+      />
+      <RegisterWrapper>
         <RegisterButton onClick={registrationModal.openModal}>
-          매치결과 등록
+          <Image src={ICONS.PLUS} alt="plus" width={20} height={20} />
+          <span>결과 등록</span>
         </RegisterButton>
-      </Header>
+      </RegisterWrapper>
       <ContentContainer>
         {pendingMatches.length > 0 && (
           <>
             <SectionTitle>내가 보낸 요청</SectionTitle>
-            {pendingMatches.map(match => (
+            {pendingMatches.map((match) => (
               <PendingMatchCard match={match} key={match.id} />
             ))}
           </>
@@ -262,21 +282,9 @@ export default function ManagementPage() {
         )}
 
         <SectionTitle>추천매치</SectionTitle>
-        {recommendedMatchPosts.map((post, index) => (
+        {recommendedMatchPosts.map((post) => (
           <div key={post.id}>
-            <MatchPostCard
-              post={post as MatchPost}
-              onClick={handleChallenge}
-              isCard={true}
-            />
-            {index === 1 && (
-              <AdBanner
-                title="프리미엄 구장 할인"
-                description="전용 코트에서 실력 향상! 20% 할인된 가격으로 이용하세요"
-                badge="할인"
-                onClick={() => console.log('구장 예약 클릭')}
-              />
-            )}
+            <MatchCard post={post as MatchPost} onClick={handleChallenge} />
           </div>
         ))}
       </ContentContainer>
