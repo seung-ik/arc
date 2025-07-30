@@ -537,7 +537,10 @@ function WritePostForm() {
 
   const navigateToCategory = () => {
     // 작성 완료 후 해당 카테고리 페이지로 이동
-    const categoryPath = getCategoryPath(formData.category);
+    const categoryName = categories.filter(
+      el => el.value === Number(formData.category)
+    )[0].label;
+    const categoryPath = getCategoryPath(categoryName);
     router.push(categoryPath);
   };
 
