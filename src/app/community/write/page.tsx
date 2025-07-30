@@ -7,6 +7,8 @@ import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityLayout from '@/components/CommunityLayout';
 import { getCategoryPath, getCategoryLabel } from '@/lib/utils/categoryPath';
+import { useCreatePostMutation } from '@/api/useCommunity';
+import { useCommunityStore } from '@/stores/communityStore';
 import dynamic from 'next/dynamic';
 
 const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {
@@ -367,16 +369,6 @@ const POST_TYPES = [
   { value: '멘토', label: '멘토' },
 ];
 
-// 카테고리 옵션
-const CATEGORIES = [
-  { value: 'tennis', label: '테니스' },
-  { value: 'badminton', label: '배드민턴' },
-  { value: 'table-tennis', label: '탁구' },
-  { value: 'billiards', label: '당구' },
-  { value: 'go', label: '바둑' },
-  { value: 'chess', label: '체스' },
-];
-
 // 유효기간 옵션
 const VALIDITY_PERIODS = [
   { value: '1', label: '1일', token: 1 },
@@ -388,6 +380,14 @@ function WritePostForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultCategory = searchParams.get('category') || '';
+  const { communityTabs } = useCommunityStore();
+  const createPostMutation = useCreatePostMutation();
+
+  // 카테고리 옵션 - communityTabs에서 동적으로 생성
+  const categories = Object.values(communityTabs).map(tab => ({
+    value: tab.id,
+    label: tab.name,
+  }));
 
   const currentLabel = getCategoryLabel(defaultCategory);
 
@@ -451,15 +451,24 @@ function WritePostForm() {
   const handleGeneralSubmit = () => {
     // 일반 글 작성
     const generalData = {
+      sportCategoryId: parseInt(formData.category, 10),
       title: formData.title,
       content: formData.content,
-      postType: formData.postType,
-      category: formData.category,
+      type: formData.postType,
     };
 
-    console.log('일반 글 작성:', generalData);
-    // TODO: 일반 글 API 호출
-    navigateToCategory();
+    console.log('일반 글 작성 요청:', generalData);
+
+    createPostMutation.mutate(generalData, {
+      onSuccess: data => {
+        console.log('글 작성 성공 응답:', data);
+        navigateToCategory();
+      },
+      onError: error => {
+        console.error('글 작성 실패:', error);
+        alert('글 작성에 실패했습니다.');
+      },
+    });
   };
 
   const handleMatchSubmit = () => {
@@ -576,7 +585,7 @@ function WritePostForm() {
                   required
                 >
                   <option value="">카테고리를 선택하세요</option>
-                  {CATEGORIES.map(category => (
+                  {categories.map(category => (
                     <option key={category.value} value={category.value}>
                       {category.label}
                     </option>
@@ -656,7 +665,7 @@ function WritePostForm() {
                         required
                       >
                         <option value="">종목 선택</option>
-                        {CATEGORIES.map(category => (
+                        {categories.map(category => (
                           <option key={category.value} value={category.value}>
                             {category.label}
                           </option>
