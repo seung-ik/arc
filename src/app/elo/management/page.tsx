@@ -1,19 +1,17 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
 
 import { useModal } from '@/hooks/useModal';
 import MatchRegistrationModal from '@/components/MatchRegistrationModal';
-import MatchManagement from '@/components/MatchManagement';
 import EloTabCards from '@/components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import { MatchCard } from '@/components/match';
 import { useRouter } from 'next/navigation';
 import { MatchPost } from '@/types/post';
-import PendingMatchCard from '@/components/PendingMatchCard';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import MatchRequestTabs from '@/components/MatchRequestTabs';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -81,58 +79,11 @@ const SectionTitle = styled.h2`
   letter-spacing: -0.5px;
 `;
 
-interface PendingMatch {
-  id: number;
-  opponentId: string;
-  sport: string;
-  result: string;
-  date: string;
-  isWin: boolean;
-  myElo: number;
-  opponentElo: number;
-  createdAt: number;
-}
-
 export default function ManagementPage() {
   const router = useRouter();
   const registrationModal = useModal();
-  const [pendingMatches, setPendingMatches] = useState<PendingMatch[]>([]);
-
-  // 30초 후 대기 중인 매치 제거
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setPendingMatches(
-        (prev) => prev.filter((match) => now - match.createdAt < 30000) // 30초 = 30000ms
-      );
-    }, 1000); // 1초마다 체크
-
-    return () => clearInterval(interval);
-  }, []);
 
   // 목업 데이터
-  const receivedMatches = [
-    {
-      id: 1,
-      opponentId: 'user123',
-      sport: '탁구',
-      result: '승',
-      date: '2024-01-15',
-      isWin: true,
-      myElo: 1320,
-      opponentElo: 1280,
-    },
-  ];
-
-  const handleAccept = (matchId: number) => {
-    console.log('Accept match:', matchId);
-  };
-
-  const handleReject = (matchId: number, reason?: string) => {
-    console.log('Reject match:', matchId, reason);
-  };
-
-  // 추천매치 데이터를 Post 형식으로 변환
   const recommendedMatchPosts = [
     {
       id: 1,
@@ -229,20 +180,7 @@ export default function ManagementPage() {
     result: '승' | '패';
     isHandicap: boolean;
   }) => {
-    // 새로운 대기 중인 매치 추가
-    const newPendingMatch: PendingMatch = {
-      id: Date.now(), // 임시 ID
-      opponentId: matchData.opponentId,
-      sport: matchData.sport,
-      result: matchData.result,
-      date: new Date().toISOString().split('T')[0],
-      isWin: matchData.result === '승',
-      myElo: 1300, // 임시 값
-      opponentElo: 1300, // 임시 값
-      createdAt: Date.now(), // 생성 시간 추가
-    };
-
-    setPendingMatches((prev) => [newPendingMatch, ...prev]);
+    console.log('Match registration:', matchData);
   };
 
   return (
@@ -261,25 +199,7 @@ export default function ManagementPage() {
         </RegisterButton>
       </RegisterWrapper>
       <ContentContainer>
-        {pendingMatches.length > 0 && (
-          <>
-            <SectionTitle>내가 보낸 요청</SectionTitle>
-            {pendingMatches.map((match) => (
-              <PendingMatchCard match={match} key={match.id} />
-            ))}
-          </>
-        )}
-
-        {receivedMatches.length > 0 && (
-          <>
-            <SectionTitle>나에게 온 요청</SectionTitle>
-            <MatchManagement
-              matches={receivedMatches}
-              onAccept={handleAccept}
-              onReject={handleReject}
-            />
-          </>
-        )}
+        <MatchRequestTabs />
 
         <SectionTitle>추천매치</SectionTitle>
         {recommendedMatchPosts.map((post) => (

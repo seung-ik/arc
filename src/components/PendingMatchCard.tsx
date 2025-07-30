@@ -3,102 +3,126 @@
 import styled from 'styled-components';
 import React from 'react';
 
-const PendingMatchCardWrapper = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
-
-const PendingMatchHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${props => props.theme.spacing.sm};
-`;
-
-const PendingMatchInfo = styled.div`
+// 시계형 원형 프로그레스 바 컴포넌트
+const CircularProgress = styled.div<{ $progress: number; $color: string }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: conic-gradient(
+    ${props => props.$color} 0deg ${props => props.$progress}deg,
+    ${props => props.theme.colors.backgroundGray} ${props => props.$progress}deg
+      360deg
+  );
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing.sm};
+  justify-content: center;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.background};
+  }
 `;
 
-const PendingOpponentId = styled.span`
-  font-weight: 600;
+const TimerText = styled.div`
+  position: absolute;
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   color: ${props => props.theme.colors.textBlack};
 `;
 
-const PendingSportBadge = styled.span`
-  background-color: ${props => props.theme.colors.secondary};
-  color: white;
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-`;
-
-const PendingStatus = styled.span`
-  color: ${props => props.theme.colors.primary};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: 600;
-`;
-
-const PendingResult = styled.div`
+// 로우 아이템 스타일드 컴포넌트들
+const RowItem = styled.div`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing.sm};
-  margin-bottom: ${props => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.sm} 0;
+  border-bottom: 1px solid ${props => props.theme.colors.borderLight};
 `;
 
-const PendingResultBadge = styled.span<{ $isWin: boolean }>`
-  background-color: ${props => (props.$isWin ? '#28a745' : '#dc3545')};
-  color: white;
+const SportBadge = styled.div`
+  background: ${props => props.theme.colors.backgroundGray};
   padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: 600;
+  border-radius: ${props => props.theme.borderRadius.lg};
+  font-size: 24px;
+  margin-right: ${props => props.theme.spacing.sm};
 `;
 
-const PendingDate = styled.span`
+const ContentSection = styled.div`
+  flex: 1;
+`;
+
+const UserName = styled.div`
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textBlack};
+`;
+
+const UserInfo = styled.div`
+  font-size: ${props => props.theme.typography.fontSizes.xs};
   color: ${props => props.theme.colors.textGray};
+`;
+
+const StatusBadge = styled.div`
+  margin-left: ${props => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  background: ${props => props.theme.colors.primaryLight};
+  border-radius: ${props => props.theme.borderRadius.md};
   font-size: ${props => props.theme.typography.fontSizes.xs};
+  color: ${props => props.theme.colors.primary};
 `;
 
-const LoadingBar = styled.div`
-  width: 100%;
-  height: 4px;
-  background-color: ${props => props.theme.colors.border};
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: ${props => props.theme.spacing.sm};
-`;
-
-const LoadingProgress = styled.div`
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    ${props => props.theme.colors.primary},
-    ${props => props.theme.colors.primaryHover}
-  );
-  border-radius: 2px;
-  animation: loading 2s ease-in-out infinite;
-
-  @keyframes loading {
-    0% {
-      width: 0%;
-      margin-left: 0%;
-    }
-    50% {
-      width: 100%;
-      margin-left: 0%;
-    }
-    100% {
-      width: 0%;
-      margin-left: 100%;
-    }
+// 스포츠별 이모지 매핑
+const getSportEmoji = (sport: string) => {
+  switch (sport) {
+    case '탁구':
+      return '🏓';
+    case '배드민턴':
+      return '🏸';
+    case '당구':
+      return '🎱';
+    case '바둑':
+      return '🏁';
+    case '테니스':
+      return '🎾';
+    case '체스':
+      return '♟️';
+    default:
+      return '🏆';
   }
-`;
+};
+
+// 타이머 계산 함수
+const calculateTimeRemaining = (
+  createdAt: number
+): { hours: number; minutes: number; progress: number; color: string } => {
+  const now = Date.now();
+  const elapsed = now - createdAt;
+  const totalTime = 12 * 60 * 60 * 1000; // 12시간을 밀리초로
+  const remaining = totalTime - elapsed;
+
+  if (remaining <= 0) {
+    return { hours: 0, minutes: 0, progress: 360, color: '#dc3545' }; // 빨간색
+  }
+
+  const hours = Math.floor(remaining / (60 * 60 * 1000));
+  const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+  const progress = (elapsed / totalTime) * 360;
+
+  let color = '#28a745'; // 초록색
+  if (progress > 240) {
+    // 8시간 이상 경과
+    color = '#ffc107'; // 노란색
+  }
+  if (progress > 330) {
+    // 11시간 이상 경과
+    color = '#dc3545'; // 빨간색
+  }
+
+  return { hours, minutes, progress, color };
+};
 
 export interface PendingMatch {
   id: number;
@@ -116,27 +140,26 @@ interface PendingMatchCardProps {
   match: PendingMatch;
 }
 
-const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => (
-  <PendingMatchCardWrapper>
-    <PendingMatchHeader>
-      <PendingMatchInfo>
-        <PendingOpponentId>{match.opponentId}</PendingOpponentId>
-        <PendingSportBadge>{match.sport}</PendingSportBadge>
-      </PendingMatchInfo>
-      <PendingStatus>대기중</PendingStatus>
-    </PendingMatchHeader>
+const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => {
+  const { hours, minutes, progress, color } = calculateTimeRemaining(
+    match.createdAt
+  );
 
-    <PendingResult>
-      <PendingResultBadge $isWin={match.isWin}>
-        {match.result}
-      </PendingResultBadge>
-      <PendingDate>{match.date}</PendingDate>
-    </PendingResult>
-
-    <LoadingBar>
-      <LoadingProgress />
-    </LoadingBar>
-  </PendingMatchCardWrapper>
-);
+  return (
+    <RowItem>
+      <SportBadge>{getSportEmoji(match.sport)}</SportBadge>
+      <ContentSection>
+        <UserName>{match.opponentId}</UserName>
+        <UserInfo>
+          {match.result} • {match.date}
+        </UserInfo>
+      </ContentSection>
+      <CircularProgress $progress={progress} $color={color}>
+        <TimerText>{`${hours}:${minutes.toString().padStart(2, '0')}`}</TimerText>
+      </CircularProgress>
+      <StatusBadge>대기중</StatusBadge>
+    </RowItem>
+  );
+};
 
 export default PendingMatchCard;
