@@ -62,34 +62,29 @@ export function WepinProvider({ children }: WepinProviderProps) {
         // 로그인 상태 확인
         try {
           const status = await widgetInstance.getStatus();
-          console.log('Wepin 로그인 상태:', status);
 
           if (status === 'login') {
-            console.log('기존 사용자 로그인 상태 확인');
             setIsLoggedIn(true);
 
             // 기존 사용자 계정 정보 조회
             try {
               const userAccounts = await widgetInstance.getAccounts();
-              console.log('기존 사용자 계정 정보 조회 성공:', userAccounts);
               setAccounts(userAccounts || []);
             } catch (accountsError) {
               console.warn('기존 사용자 계정 정보 조회 실패:', accountsError);
               setAccounts([]);
             }
           } else if (status === 'login_before_register') {
-            console.log('새로운 사용자 - 지갑 생성 필요');
             setIsLoggedIn(true);
 
             // 새로운 사용자는 지갑이 아직 생성되지 않았으므로 빈 배열로 설정
             setAccounts([]);
           } else {
-            console.log('사용자가 로그인되어 있지 않습니다. 상태:', status);
             setIsLoggedIn(false);
             setAccounts([]);
           }
         } catch (statusError) {
-          console.warn('로그인 상태 확인 실패:', statusError);
+          console.log(statusError);
           setIsLoggedIn(false);
           setAccounts([]);
         }

@@ -3,9 +3,10 @@
 import styled from 'styled-components';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { ROUTES } from '@/constants/routes';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { useCommunityStore } from '@/stores/communityStore';
+import { generateCategories } from '@/lib/utils/categoryUtils';
 
 const HeaderContainer = styled.div`
   background-color: ${props => props.theme.colors.background};
@@ -139,50 +140,9 @@ interface Category {
 export default function CategoryTabs() {
   const pathname = usePathname();
   const router = useRouter();
+  const { communityTabs } = useCommunityStore();
 
-  // 초기 카테고리 데이터를 바로 설정 (서버/클라이언트 동일)
-  const initialCategories: Category[] = [
-    {
-      id: 'trending',
-      label: '자유글',
-      path: ROUTES.community.root,
-      order: 1,
-    },
-    {
-      id: 'tennis',
-      label: '테니스',
-      path: ROUTES.community.tennis,
-      order: 2,
-    },
-    {
-      id: 'badminton',
-      label: '배드민턴',
-      path: ROUTES.community.badminton,
-      order: 3,
-    },
-    {
-      id: 'table-tennis',
-      label: '탁구',
-      path: ROUTES.community.tableTennis,
-      order: 4,
-    },
-    {
-      id: 'billiards',
-      label: '당구',
-      path: ROUTES.community.billiards,
-      order: 5,
-    },
-    { id: 'go', label: '바둑', path: ROUTES.community.go, order: 6 },
-    { id: 'chess', label: '체스', path: ROUTES.community.chess, order: 7 },
-    {
-      id: 'notice',
-      label: '공지사항',
-      path: ROUTES.community.notice,
-      order: 8,
-    },
-  ];
-
-  const [categories] = useState<Category[]>(initialCategories);
+  const categories = generateCategories(communityTabs);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentCategoryLabel, setCurrentCategoryLabel] = useState('자유글');
 
@@ -190,7 +150,8 @@ export default function CategoryTabs() {
 
   useEffect(() => {
     const current = pathname.split('/')[2] ?? 'trending';
-    const label = categories.find(cat => cat.id === current)?.label || '자유글';
+    const label =
+      categories.find(cat => cat.path.includes(current))?.label || ' ';
     setCurrentCategoryLabel(label);
   }, [pathname, categories]);
 

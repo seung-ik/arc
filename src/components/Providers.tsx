@@ -9,6 +9,7 @@ import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
 import { useInitNicknameApi } from '@/api/useUser';
 import NicknameModal from './NicknameModal';
+import PrefetchProvider from './PrefetchProvider';
 
 function AuthSyncer() {
   const { isInitialized, isLoggedIn: isWepinLoggedIn } = useWepin();
@@ -41,8 +42,6 @@ function AuthSyncer() {
   }, [pathname]);
 
   useEffect(() => {
-    console.log('isLoggedIn', isLoggedIn);
-    console.log('userProfile.nickname', userProfile.nickname);
     if (isLoggedIn && !userProfile.nickname) {
       setShowNicknameModal(true);
     }
@@ -91,8 +90,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WepinProvider>
-        <AuthSyncer />
-        {children}
+        <PrefetchProvider>
+          <AuthSyncer />
+          {children}
+        </PrefetchProvider>
       </WepinProvider>
     </QueryClientProvider>
   );
