@@ -17,10 +17,10 @@ const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background};
   position: relative;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.md};
 `;
 
 const RegisterWrapper = styled.div`
@@ -40,17 +40,16 @@ const RegisterButton = styled.button`
   z-index: 10;
 
   display: flex;
-  gap: ${(props) => props.theme.spacing.xs};
+  gap: ${props => props.theme.spacing.xs};
   align-items: center;
 
   background: #111;
   color: #fff;
   border: none;
-  border-radius: ${(props) => props.theme.borderRadius['2xl']};
-  padding: ${(props) => props.theme.spacing.sm}
-    ${(props) => props.theme.spacing.md};
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  border-radius: ${props => props.theme.borderRadius['2xl']};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background 0.2s;
 
@@ -70,12 +69,12 @@ const ContentContainer = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
-  margin: ${(props) => props.theme.spacing.lg} 0
-    ${(props) => props.theme.spacing.sm} 0;
-  padding-left: ${(props) => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin: ${props => props.theme.spacing.lg} 0
+    ${props => props.theme.spacing.sm} 0;
+  padding-left: ${props => props.theme.spacing.md};
   letter-spacing: -0.5px;
 `;
 
@@ -202,7 +201,7 @@ export default function ManagementPage() {
         <MatchRequestTabs />
 
         <SectionTitle>추천매치</SectionTitle>
-        {recommendedMatchPosts.map((post) => (
+        {recommendedMatchPosts.map(post => (
           <div key={post.id}>
             <MatchCard post={post as MatchPost} onClick={handleChallenge} />
           </div>

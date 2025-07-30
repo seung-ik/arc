@@ -16,13 +16,13 @@ interface MatchCardProps {
 const MatchCardContainer = styled.div`
   box-sizing: border-box;
   display: flex;
-  background-color: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: ${(props) => props.theme.borderRadius.md};
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
   overflow: hidden;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${props => props.theme.spacing.md};
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -34,7 +34,7 @@ const ImageSection = styled.div`
   width: 100px;
   height: 100px;
   position: relative;
-  background-color: ${(props) => props.theme.colors.backgroundGray};
+  background-color: ${props => props.theme.colors.backgroundGray};
 `;
 
 const ImagePlaceholder = styled.div`
@@ -45,7 +45,7 @@ const ImagePlaceholder = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
 `;
 
 const ContentSection = styled.div`
@@ -66,18 +66,18 @@ const TopRow = styled.div`
 const LocationInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.xs};
-  color: ${(props) => props.theme.colors.textGray};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
+  gap: ${props => props.theme.spacing.xs};
+  color: ${props => props.theme.colors.textGray};
+  font-size: ${props => props.theme.typography.fontSizes.xs};
 `;
 
 const EloBadge = styled.span`
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${props => props.theme.colors.primary};
   color: white;
   padding: 3px 6px;
   border-radius: 10px;
   font-size: 10px;
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const ParticipantBadge = styled.span`
@@ -86,19 +86,19 @@ const ParticipantBadge = styled.span`
   padding: 3px 6px;
   border-radius: 10px;
   font-size: 10px;
-  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const VenueName = styled.h3`
-  font-size: ${(props) => props.theme.typography.fontSizes.base};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
   line-height: 1.3;
 `;
 
 const DateTimeInfo = styled.div`
-  color: ${(props) => props.theme.colors.textBlack};
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.textBlack};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
 `;
 
 export default function MatchCard({ post, onClick }: MatchCardProps) {

@@ -7,9 +7,9 @@ import styled from 'styled-components';
 const BannerContainer = styled.div`
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: ${(props) => props.theme.spacing.sm} 0;
+  margin: ${props => props.theme.spacing.sm} 0;
   color: white;
-  border-radius: ${(props) => props.theme.borderRadius.md};
+  border-radius: ${props => props.theme.borderRadius.md};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -24,15 +24,15 @@ const BannerContainer = styled.div`
 `;
 
 const BannerTitle = styled.h3`
-  margin: 0 0 ${(props) => props.theme.spacing.md} 0;
-  font-size: ${(props) => props.theme.typography.fontSizes.xl};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
+  margin: 0 0 ${props => props.theme.spacing.md} 0;
+  font-size: ${props => props.theme.typography.fontSizes.xl};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
 `;
 
 const BannerDescription = styled.p`
   margin: 0;
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.semibold};
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.semibold};
   opacity: 0.9;
   white-space: pre-line;
   text-align: left;

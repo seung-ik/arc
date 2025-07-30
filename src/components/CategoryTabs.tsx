@@ -184,16 +184,15 @@ export default function CategoryTabs() {
 
   const [categories] = useState<Category[]>(initialCategories);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentCategoryLabel, setCurrentCategoryLabel] = useState('자유글');
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 현재 카테고리를 pathname에서 추출
-  const pathSegments = pathname.split('/');
-  const currentCategory =
-    pathSegments.length > 2 ? pathSegments[2] : 'trending';
-
-  // 현재 선택된 카테고리 라벨 찾기
-  const currentCategoryLabel =
-    categories.find(cat => cat.id === currentCategory)?.label || '자유글';
+  useEffect(() => {
+    const current = pathname.split('/')[2] ?? 'trending';
+    const label = categories.find(cat => cat.id === current)?.label || '자유글';
+    setCurrentCategoryLabel(label);
+  }, [pathname, categories]);
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -235,7 +234,7 @@ export default function CategoryTabs() {
               $isOpen={isDropdownOpen}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <span suppressHydrationWarning>{currentCategoryLabel}</span>
+              <span>{currentCategoryLabel}</span>
               <DropdownArrow $isOpen={isDropdownOpen}>
                 <Image
                   src={ICONS.ARROW_DOWN}
