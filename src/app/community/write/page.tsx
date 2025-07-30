@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityLayout from '@/components/CommunityLayout';
-import { ROUTES } from '@/constants/routes';
+import { getCategoryPath, getCategoryLabel } from '@/lib/utils/categoryPath';
 import dynamic from 'next/dynamic';
 
 const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {
@@ -389,6 +389,8 @@ function WritePostForm() {
   const searchParams = useSearchParams();
   const defaultCategory = searchParams.get('category') || '';
 
+  const currentLabel = getCategoryLabel(defaultCategory);
+
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -429,52 +431,104 @@ function WritePostForm() {
       return;
     }
 
-    // 멘토 포스트 타입일 때 추가 필드 검증
-    if (formData.postType === '멘토') {
-      if (
-        !formData.sport ||
-        !formData.elo ||
-        !formData.location ||
-        !formData.tokenReward
-      ) {
-        alert('멘토링 요청에 필요한 모든 정보를 입력해주세요.');
+    // 글 타입별로 다른 처리
+    switch (formData.postType) {
+      case '일반':
+        handleGeneralSubmit();
+        break;
+      case '매치':
+        handleMatchSubmit();
+        break;
+      case '멘토':
+        handleMentorSubmit();
+        break;
+      default:
+        alert('올바른 글 타입을 선택해주세요.');
         return;
-      }
+    }
+  };
 
-      // 직접 입력한 경우 customSport도 확인
-      if (formData.sport === '직접입력' && !formData.customSport.trim()) {
-        alert('종목을 직접 입력해주세요.');
-        return;
-      }
+  const handleGeneralSubmit = () => {
+    // 일반 글 작성
+    const generalData = {
+      title: formData.title,
+      content: formData.content,
+      postType: formData.postType,
+      category: formData.category,
+    };
+
+    console.log('일반 글 작성:', generalData);
+    // TODO: 일반 글 API 호출
+    navigateToCategory();
+  };
+
+  const handleMatchSubmit = () => {
+    alert('준비중 입니다.');
+    return;
+    // 매치 글 필드 검증
+    if (!formData.validityPeriod) {
+      alert('매칭 요청에 필요한 모든 정보를 입력해주세요.');
+      return;
     }
 
-    // 매치 포스트 타입일 때 추가 필드 검증
-    if (formData.postType === '매치') {
-      if (!formData.validityPeriod) {
-        alert('매칭 요청에 필요한 모든 정보를 입력해주세요.');
-        return;
-      }
+    // 매치 글 작성
+    const matchData = {
+      title: formData.title,
+      content: formData.content,
+      postType: formData.postType,
+      category: formData.category,
+      matchLocation: formData.matchLocation,
+      myElo: formData.myElo,
+      preferredElo: formData.preferredElo,
+      validityPeriod: formData.validityPeriod,
+    };
+
+    console.log('매치 글 작성:', matchData);
+    // TODO: 매치 글 API 호출
+    navigateToCategory();
+  };
+
+  const handleMentorSubmit = () => {
+    alert('준비중 입니다.');
+    return;
+    // 멘토 글 필드 검증
+    if (
+      !formData.sport ||
+      !formData.elo ||
+      !formData.location ||
+      !formData.tokenReward
+    ) {
+      alert('멘토링 요청에 필요한 모든 정보를 입력해주세요.');
+      return;
     }
 
-    // TODO: API 호출하여 글 작성
-    console.log('글 작성:', formData);
+    // 직접 입력한 경우 customSport도 확인
+    if (formData.sport === '직접입력' && !formData.customSport.trim()) {
+      alert('종목을 직접 입력해주세요.');
+      return;
+    }
 
+    // 멘토 글 작성
+    const mentorData = {
+      title: formData.title,
+      content: formData.content,
+      postType: formData.postType,
+      category: formData.category,
+      sport:
+        formData.sport === '직접입력' ? formData.customSport : formData.sport,
+      elo: formData.elo,
+      location: formData.location,
+      tokenReward: formData.tokenReward,
+    };
+
+    console.log('멘토 글 작성:', mentorData);
+    // TODO: 멘토 글 API 호출
+    navigateToCategory();
+  };
+
+  const navigateToCategory = () => {
     // 작성 완료 후 해당 카테고리 페이지로 이동
-    const categoryPath =
-      formData.category === 'tennis'
-        ? ROUTES.community.tennis
-        : formData.category === 'badminton'
-          ? ROUTES.community.badminton
-          : formData.category === 'table-tennis'
-            ? ROUTES.community.tableTennis
-            : formData.category === 'billiards'
-              ? ROUTES.community.billiards
-              : formData.category === 'go'
-                ? ROUTES.community.go
-                : formData.category === 'chess'
-                  ? ROUTES.community.chess
-                  : ROUTES.community.root;
-
+    const categoryPath = getCategoryPath(formData.category);
     router.push(categoryPath);
   };
 
@@ -498,7 +552,7 @@ function WritePostForm() {
 
   return (
     <Container>
-      <CategoryTabs />
+      <CategoryTabs currentLabel={currentLabel} />
       <CommunityLayout>
         <Content>
           <Header>
