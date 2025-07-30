@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { ICONS } from '@/assets';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const WriteButtonContainer = styled.div`
   position: fixed;
@@ -12,7 +13,7 @@ const WriteButtonContainer = styled.div`
   transform: translateX(-50%);
 `;
 
-const Button = styled.button`
+const WriteButtonLink = styled(Link)`
   position: absolute;
   bottom: 12px;
   right: 16px;
@@ -31,6 +32,7 @@ const Button = styled.button`
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: background 0.2s;
+  text-decoration: none;
 
   &:hover {
     background: #222;
@@ -42,16 +44,16 @@ const Button = styled.button`
 `;
 
 interface WriteButtonProps {
-  onClick: () => void;
+  href: string;
 }
 
-export default function WriteButton({ onClick }: WriteButtonProps) {
+export default function WriteButton({ href }: WriteButtonProps) {
   return (
     <WriteButtonContainer>
-      <Button onClick={onClick}>
+      <WriteButtonLink href={href} prefetch={true}>
         <Image src={ICONS.PLUS} alt="plus" width={20} height={20} />
         <span>글쓰기</span>
-      </Button>
+      </WriteButtonLink>
     </WriteButtonContainer>
   );
 }
