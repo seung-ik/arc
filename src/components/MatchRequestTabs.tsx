@@ -99,17 +99,17 @@ export default function MatchRequestTabs() {
 
   // 목업 데이터
   const pendingMatches: Match[] = [
-    {
-      id: 1,
-      opponentId: 'user123',
-      sport: '배드민턴',
-      result: '승',
-      date: '2025-07-30',
-      isWin: true,
-      myElo: 1300,
-      opponentElo: 1280,
-      createdAt: Date.now() - 2 * 60 * 60 * 1000, // 2시간 전
-    },
+    // {
+    //   id: 1,
+    //   opponentId: 'user123',
+    //   sport: '배드민턴',
+    //   result: '승',
+    //   date: '2025-07-30',
+    //   isWin: true,
+    //   myElo: 1300,
+    //   opponentElo: 1280,
+    //   createdAt: Date.now() - 2 * 60 * 60 * 1000, // 2시간 전
+    // },
   ];
 
   const receivedMatches: Match[] = [

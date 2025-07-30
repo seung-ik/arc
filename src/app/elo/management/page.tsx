@@ -191,12 +191,7 @@ export default function ManagementPage() {
         badge="할인"
         onClick={() => console.log('구장 예약 클릭')}
       />
-      <RegisterWrapper>
-        <RegisterButton onClick={registrationModal.openModal}>
-          <Image src={ICONS.PLUS} alt="plus" width={20} height={20} />
-          <span>결과 등록</span>
-        </RegisterButton>
-      </RegisterWrapper>
+
       <ContentContainer>
         <MatchRequestTabs />
 
@@ -207,6 +202,14 @@ export default function ManagementPage() {
           </div>
         ))}
       </ContentContainer>
+
+      <RegisterWrapper>
+        <RegisterButton onClick={registrationModal.openModal}>
+          <Image src={ICONS.PLUS} alt="plus" width={20} height={20} />
+          <span>결과 등록</span>
+        </RegisterButton>
+      </RegisterWrapper>
+
       <MatchRegistrationModal
         isOpen={registrationModal.isOpen}
         onClose={registrationModal.closeModal}

@@ -1,27 +1,43 @@
 import styled from 'styled-components';
 import { ICONS } from '@/assets';
+import Image from 'next/image';
 
-const WriteButtonContainer = styled.button`
+const WriteButtonContainer = styled.div`
   position: fixed;
-  right: 24px;
-  bottom: 75px;
-  z-index: 100;
-  width: px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
+  width: 100%;
+  max-width: 768px;
+  height: calc(100vh - 62px);
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const Button = styled.button`
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 10;
+
   display: flex;
+  gap: ${props => props.theme.spacing.xs};
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius['2xl']};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  cursor: pointer;
+  transition: background 0.2s;
 
   &:hover {
-    transform: translateY(-1px);
+    background: #222;
   }
 
   &:active {
-    transform: translateY(0);
+    transform: translateY(1px);
   }
 `;
 
@@ -31,20 +47,11 @@ interface WriteButtonProps {
 
 export default function WriteButton({ onClick }: WriteButtonProps) {
   return (
-    <WriteButtonContainer onClick={onClick}>
-      <div
-        style={{
-          width: 56,
-          height: 56,
-          backgroundColor: '#007aff',
-          WebkitMaskImage: `url(${ICONS.PLUS_CIRCLE.src})`,
-          WebkitMaskRepeat: 'no-repeat',
-          WebkitMaskSize: 'contain',
-          maskImage: `url(${ICONS.PLUS_CIRCLE.src})`,
-          maskRepeat: 'no-repeat',
-          maskSize: 'contain',
-        }}
-      />
+    <WriteButtonContainer>
+      <Button onClick={onClick}>
+        <Image src={ICONS.PLUS} alt="plus" width={20} height={20} />
+        <span>글쓰기</span>
+      </Button>
     </WriteButtonContainer>
   );
 }
