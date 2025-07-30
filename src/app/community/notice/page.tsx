@@ -1,22 +1,21 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState, useMemo } from 'react';
-import BottomNavigation from '@/components/BottomNavigation';
+
 import CategoryTabs from '@/components/CategoryTabs';
 import CommunityPost from '@/components/CommunityPost';
-import SearchInput from '@/components/SearchInput';
-import Pagination from '@/components/Pagination';
 import CommunityLayout from '@/components/CommunityLayout';
-import AdBanner from '@/components/AdBanner';
+import { PAGINATION } from '@/constants/pagination';
+import { usePagination } from '@/hooks/usePagination';
 import { Post } from '@/types/post';
+import { usePostsApi } from '@/api/useCommunity';
+import { useCommunityStore } from '@/stores/communityStore';
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: ${props => props.theme.colors.background};
-  padding-bottom: 80px;
   position: relative;
 `;
 
@@ -35,6 +34,26 @@ const NoResults = styled.div`
   padding: ${props => props.theme.spacing.xl};
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.base};
+`;
+
+const LoadMoreButton = styled.button`
+  background-color: ${props => props.theme.colors.backgroundGray};
+  color: ${props => props.theme.colors.textBlack};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  border: 1px solid ${props => props.theme.colors.textGray};
+  cursor: pointer;
+  margin: ${props => props.theme.spacing.md} auto;
+  display: block;
+  width: 80%;
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.borderLight};
+    border-color: ${props => props.theme.colors.textBlack};
+  }
 `;
 
 // 공지사항 임시 데이터
@@ -92,77 +111,51 @@ const mockPosts: Post[] = [
   },
 ];
 
-const POSTS_PER_PAGE = 12;
-
 export default function NoticePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentTab = '공지사항';
 
-  // 검색 필터링
-  const filteredPosts = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return mockPosts;
-    }
+  const { communityTabs } = useCommunityStore();
+  const categoryId = communityTabs?.[currentTab]?.id || 0;
+  const { data: postsData } = usePostsApi(categoryId);
 
-    const query = searchQuery.toLowerCase();
-    return mockPosts.filter(
-      post =>
-        post.title.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query) ||
-        post.authorName.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
+  console.log(postsData);
 
-  // 페이지네이션
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
-  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+  // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
+  const filteredPosts = mockPosts;
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
+  // 페이지네이션 훅 사용
+  const {
+    currentItems: currentPosts,
+    loadMore,
+    hasNextPage: hasMorePosts,
+  } = usePagination({
+    items: filteredPosts,
+    itemsPerPage: PAGINATION.POSTS_PER_PAGE,
+  });
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleAdClick = () => {
-    // Implementation of handleAdClick
+  const handleLoadMore = () => {
+    loadMore();
   };
 
   return (
     <Container>
-      <CategoryTabs />
+      <CategoryTabs currentLabel={currentTab} />
       <CommunityLayout>
-        <AdBanner
-          title="📢 공지사항"
-          description="중요한 공지사항을 확인하세요!"
-          onClick={handleAdClick}
-        />
         <Content>
-          <SearchInput onSearch={handleSearch} placeholder="공지사항 검색..." />
           <PostList>
             {currentPosts.length > 0 ? (
               currentPosts.map(post => (
                 <CommunityPost key={post.id} post={post} />
               ))
             ) : (
-              <NoResults>
-                {searchQuery ? '검색 결과가 없습니다.' : '게시글이 없습니다.'}
-              </NoResults>
+              <NoResults>게시글이 없습니다.</NoResults>
             )}
           </PostList>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {hasMorePosts && (
+            <LoadMoreButton onClick={handleLoadMore}>더보기</LoadMoreButton>
+          )}
         </Content>
       </CommunityLayout>
-      <BottomNavigation />
     </Container>
   );
 }

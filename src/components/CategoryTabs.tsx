@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
@@ -137,23 +137,20 @@ interface Category {
   order: number;
 }
 
-export default function CategoryTabs() {
-  const pathname = usePathname();
+interface CategoryTabsProps {
+  currentLabel?: string;
+}
+
+export default function CategoryTabs({
+  currentLabel = '자유글',
+}: CategoryTabsProps) {
   const router = useRouter();
   const { communityTabs } = useCommunityStore();
 
   const categories = generateCategories(communityTabs);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentCategoryLabel, setCurrentCategoryLabel] = useState('자유글');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const current = pathname.split('/')[2] ?? 'trending';
-    const label =
-      categories.find(cat => cat.path.includes(current))?.label || ' ';
-    setCurrentCategoryLabel(label);
-  }, [pathname, categories]);
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -195,7 +192,7 @@ export default function CategoryTabs() {
               $isOpen={isDropdownOpen}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <span>{currentCategoryLabel}</span>
+              <span>{currentLabel}</span>
               <DropdownArrow $isOpen={isDropdownOpen}>
                 <Image
                   src={ICONS.ARROW_DOWN}
