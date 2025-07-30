@@ -2,7 +2,6 @@
 
 import styled from 'styled-components';
 import BottomNavigation from '@/components/BottomNavigation';
-import { useRouter } from 'next/navigation';
 import WriteButton from '@/components/WriteButton';
 import { ROUTES } from '@/constants/routes';
 
@@ -22,22 +21,15 @@ const ContentWrapper = styled.div`
   padding-bottom: 80px; /* BottomNavigation 높이만큼 패딩 */
 `;
 
-export default function CommunityLayout({
+export default function TableTennisLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-
-  const handleWriteClick = () => {
-    console.log('자유글 글쓰기 버튼 클릭됨');
-    router.push(`${ROUTES.community.write}?category=table-tennis`);
-  };
-
   return (
     <LayoutContainer>
       <ContentWrapper>{children}</ContentWrapper>
-      <WriteButton onClick={handleWriteClick} />
+      <WriteButton href={`${ROUTES.community.write}?category=table-tennis`} />
       <BottomNavigation />
     </LayoutContainer>
   );

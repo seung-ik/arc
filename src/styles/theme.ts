@@ -1,14 +1,14 @@
 export const theme = {
   colors: {
     // Primary colors
-    primary: '#0070f3',
-    primaryHover: '#0051cc',
-    primaryLight: '#e6f3ff',
+    primary: '#23424A', // 메인 컬러 (딥 블루그린)
+    primaryHover: '#1a3137', // 호버 시 더 어두운 톤
+    primaryLight: '#e2f1f3', // 밝은 톤 (배경/선택 상태 등에 사용)
 
     // Secondary colors
-    secondary: '#6c757d',
-    secondaryHover: '#5a6268',
-    secondaryLight: '#f8f9fa',
+    secondary: '#E8C87D', // 메인 세컨더리 (따뜻한 골드 베이지)
+    secondaryHover: '#d2b467', // 호버용으로 살짝 어두운 골드톤
+    secondaryLight: '#fff7e3', // 아주 연한 베이지톤, 배경/포커스 등에 적합
 
     // Text colors
     textBlack: '#000000',
@@ -26,9 +26,9 @@ export const theme = {
     borderLight: '#f1f1f1',
 
     // Status colors
-    success: '#28a745',
+    success: '#6CBF84',
     warning: '#ffc107',
-    error: '#dc3545',
+    error: '#D9675F',
     info: '#17a2b8',
 
     // Post type colors
@@ -68,7 +68,7 @@ export const theme = {
       normal: 400,
       medium: 500,
       semibold: 600,
-      bold: 700,
+      bold: 800,
     },
   },
 
@@ -88,6 +88,7 @@ export const theme = {
     md: '8px',
     lg: '12px',
     xl: '16px',
+    '2xl': '24px',
   },
 };
 

@@ -10,6 +10,8 @@ import { PAGINATION, POSTS } from '@/constants/pagination';
 import { usePagination } from '@/hooks/usePagination';
 import { MatchPost, Post } from '@/types/post';
 import PopularPosts from '@/components/PopularPosts';
+import { usePostsApi } from '@/api/useCommunity';
+import { useCommunityStore } from '@/stores/communityStore';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -298,6 +300,13 @@ const mockPosts = [
 ];
 
 export default function BadmintonPage() {
+  const currentTab = '배드민턴';
+
+  const { communityTabs } = useCommunityStore();
+  const categoryId = communityTabs?.[currentTab]?.id || 0;
+  const { data: postsData } = usePostsApi(categoryId);
+
+  console.log(postsData);
   // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
   const filteredPosts = mockPosts;
 
@@ -337,7 +346,8 @@ export default function BadmintonPage() {
 
   return (
     <Container>
-      <CategoryTabs />
+      <CategoryTabs currentLabel={currentTab} />
+
       <CommunityLayout>
         <Content>
           <PopularPosts posts={popularFreePosts} />

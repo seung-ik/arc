@@ -9,8 +9,8 @@ const ButtonGroup = styled.div`
 `;
 
 const CancelButton = styled.button`
-  background-color: ${props => props.theme.colors.secondaryLight};
-  color: ${props => props.theme.colors.textGray};
+  background-color: ${props => props.theme.colors.error};
+  color: ${props => props.theme.colors.textWhite};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
   padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
@@ -30,7 +30,7 @@ const CancelButton = styled.button`
 `;
 
 const ConfirmButton = styled.button`
-  background-color: ${props => props.theme.colors.primary};
+  background-color: ${props => props.theme.colors.info};
   color: ${props => props.theme.colors.textWhite};
   border: none;
   border-radius: ${props => props.theme.borderRadius.md};

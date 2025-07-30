@@ -1,0 +1,111 @@
+import { useQuery, useMutation } from '@tanstack/react-query';
+import api from '@/lib/axios';
+
+// Types
+export interface SportCategory {
+  id: number;
+  name: string;
+  sortOrder: number;
+}
+
+export interface SportCategoriesResponse {
+  success: boolean;
+  message: string;
+  data: SportCategory[];
+}
+
+export interface Post {
+  id: number;
+  title: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  date: string;
+  category: string;
+  postType: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+  dislikeCount: number;
+  isLiked: boolean;
+  isDisliked: boolean;
+}
+
+export interface PostsResponse {
+  success: boolean;
+  message: string;
+  data: Post[];
+}
+
+// Create Post Types
+export interface CreatePostRequest {
+  sportCategoryId: number;
+  title: string;
+  content: string;
+  type: string;
+}
+
+export interface Author {
+  id: number;
+  nickname: string | null;
+  profileImageUrl: string | null;
+}
+
+export interface CreatePostResponse {
+  success: boolean;
+  data: {
+    id: number;
+    title: string;
+    content: string;
+    type: string;
+    isHidden: boolean;
+    createdAt: string;
+    updatedAt: string;
+    author: Author;
+  };
+  message: string;
+}
+
+// API Hooks
+export const useSportCategoriesApi = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['sport-categories'],
+    queryFn: async (): Promise<SportCategoriesResponse> => {
+      const response = await api.get('/sport-categories');
+      return response.data;
+    },
+    enabled,
+  });
+};
+
+export const usePostsApi = (
+  sportCategoryId?: number,
+  enabled: boolean = true
+) => {
+  return useQuery({
+    queryKey: ['posts', sportCategoryId],
+    queryFn: async (): Promise<PostsResponse> => {
+      const params = sportCategoryId ? { sport: sportCategoryId } : {};
+      const response = await api.get('/posts', { params });
+      return response.data;
+    },
+    enabled: enabled && !!sportCategoryId,
+  });
+};
+
+export const useCreatePostMutation = () => {
+  return useMutation({
+    mutationFn: async (
+      data: CreatePostRequest
+    ): Promise<CreatePostResponse> => {
+      const response = await api.post('/posts', data);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('글 작성 성공:', data);
+    },
+    onError: error => {
+      console.error('글 작성 실패:', error);
+    },
+  });
+};

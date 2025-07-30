@@ -1,11 +1,12 @@
 'use client';
 
 import styled from 'styled-components';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { ROUTES } from '@/constants/routes';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { useCommunityStore } from '@/stores/communityStore';
+import { generateCategories } from '@/lib/utils/categoryUtils';
 
 const HeaderContainer = styled.div`
   background-color: ${props => props.theme.colors.background};
@@ -136,64 +137,20 @@ interface Category {
   order: number;
 }
 
-export default function CategoryTabs() {
-  const pathname = usePathname();
+interface CategoryTabsProps {
+  currentLabel?: string;
+}
+
+export default function CategoryTabs({
+  currentLabel = '자유글',
+}: CategoryTabsProps) {
   const router = useRouter();
+  const { communityTabs } = useCommunityStore();
 
-  // 초기 카테고리 데이터를 바로 설정 (서버/클라이언트 동일)
-  const initialCategories: Category[] = [
-    {
-      id: 'trending',
-      label: '자유글',
-      path: ROUTES.community.root,
-      order: 1,
-    },
-    {
-      id: 'tennis',
-      label: '테니스',
-      path: ROUTES.community.tennis,
-      order: 2,
-    },
-    {
-      id: 'badminton',
-      label: '배드민턴',
-      path: ROUTES.community.badminton,
-      order: 3,
-    },
-    {
-      id: 'table-tennis',
-      label: '탁구',
-      path: ROUTES.community.tableTennis,
-      order: 4,
-    },
-    {
-      id: 'billiards',
-      label: '당구',
-      path: ROUTES.community.billiards,
-      order: 5,
-    },
-    { id: 'go', label: '바둑', path: ROUTES.community.go, order: 6 },
-    { id: 'chess', label: '체스', path: ROUTES.community.chess, order: 7 },
-    {
-      id: 'notice',
-      label: '공지사항',
-      path: ROUTES.community.notice,
-      order: 8,
-    },
-  ];
-
-  const [categories] = useState<Category[]>(initialCategories);
+  const categories = generateCategories(communityTabs);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // 현재 카테고리를 pathname에서 추출
-  const pathSegments = pathname.split('/');
-  const currentCategory =
-    pathSegments.length > 2 ? pathSegments[2] : 'trending';
-
-  // 현재 선택된 카테고리 라벨 찾기
-  const currentCategoryLabel =
-    categories.find(cat => cat.id === currentCategory)?.label || '자유글';
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -235,7 +192,7 @@ export default function CategoryTabs() {
               $isOpen={isDropdownOpen}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <span suppressHydrationWarning>{currentCategoryLabel}</span>
+              <span>{currentLabel}</span>
               <DropdownArrow $isOpen={isDropdownOpen}>
                 <Image
                   src={ICONS.ARROW_DOWN}

@@ -49,7 +49,7 @@ const ToastEditor: React.FC<ToastEditorProps> = ({
   const handleChange = () => {
     if (editorRef.current && onChange) {
       const editorInstance = editorRef.current.getInstance();
-      onChange(editorInstance.getMarkdown());
+      onChange(editorInstance.getHTML());
     }
   };
 
