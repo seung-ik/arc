@@ -52,6 +52,21 @@ export interface CreatePostResponse {
   message: string;
 }
 
+export interface PostDetailResponse {
+  success: boolean;
+  data: {
+    id: number;
+    title: string;
+    content: string;
+    type: string;
+    isHidden: boolean;
+    createdAt: string;
+    updatedAt: string;
+    author: Author;
+  };
+  message: string;
+}
+
 // API Hooks
 export const useSportCategoriesApi = (enabled: boolean = true) => {
   return useQuery({
@@ -93,5 +108,16 @@ export const useCreatePostMutation = () => {
     onError: error => {
       console.error('글 작성 실패:', error);
     },
+  });
+};
+
+export const usePostDetailApi = (postId: number, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['post-detail', postId],
+    queryFn: async (): Promise<PostDetailResponse> => {
+      const response = await api.get(`/posts/${postId}`);
+      return response.data;
+    },
+    enabled: enabled && !!postId,
   });
 };
