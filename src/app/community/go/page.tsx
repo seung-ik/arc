@@ -1,63 +1,9 @@
 'use client';
 
-import styled from 'styled-components';
-import CategoryTabs from '@/components/CategoryTabs';
-import CommunityPost from '@/components/CommunityPost';
-import MatchPostCard from '@/components/MatchPostCard';
-import BusinessBanner from '@/components/BusinessBanner';
-import CommunityLayout from '@/components/CommunityLayout';
-import { PAGINATION, POSTS } from '@/constants/pagination';
-import { usePagination } from '@/hooks/usePagination';
-import { MatchPost, Post } from '@/types/post';
-import PopularPosts from '@/components/PopularPosts';
 import { usePostsApi } from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: ${props => props.theme.colors.background};
-  padding-bottom: 80px;
-  position: relative;
-`;
-
-const Content = styled.div`
-  flex: 1;
-  width: 100%;
-`;
-
-const PostList = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const NoResults = styled.div`
-  text-align: center;
-  padding: ${props => props.theme.spacing.xl};
-  color: ${props => props.theme.colors.textGray};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-`;
-
-const LoadMoreButton = styled.button`
-  background-color: ${props => props.theme.colors.backgroundGray};
-  color: ${props => props.theme.colors.textBlack};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.md};
-  border: 1px solid ${props => props.theme.colors.textGray};
-  cursor: pointer;
-  margin: ${props => props.theme.spacing.md} auto;
-  display: block;
-  width: 80%;
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.borderLight};
-    border-color: ${props => props.theme.colors.textBlack};
-  }
-`;
+import CommunityPageWrapper from '../component/CommunityPageWrapper';
+import { createPopularPostsByViewsFromMock } from '../utils/mockData';
 
 // 바둑 관련 임시 게시글 데이터
 const mockPosts = [
@@ -286,68 +232,19 @@ export default function GoPage() {
 
   console.log(postsData);
 
-  // 모든 게시글 표시 (검색은 별도 페이지에서 처리)
-  const filteredPosts = mockPosts;
-
-  // 페이지네이션 훅 사용
-  const {
-    currentItems: currentPosts,
-    loadMore,
-    hasNextPage: hasMorePosts,
-  } = usePagination({
-    items: filteredPosts,
-    itemsPerPage: PAGINATION.POSTS_PER_PAGE,
-  });
-
   // 인기글(일반글 중 조회수 순 상위 3개)
-  const popularFreePosts = mockPosts
-    .filter(post => post.postType === '일반')
-    .sort((a, b) => (b.viewCount ?? 0) - (a.viewCount ?? 0))
-    .slice(0, POSTS.POPULAR_POSTS_COUNT)
-    .map(post => ({
-      id: post.id,
-      title: post.title,
-      author: post.authorName,
-      views: post.viewCount ?? 0,
-      likes: 0, // 바둑 데이터에는 likeCount가 없으므로 기본값 사용
-      commentCount: post.commentCount ?? 0,
-      date: post.date,
-      content: post.content,
-    }));
+  const popularFreePosts = createPopularPostsByViewsFromMock(mockPosts, 3);
 
   const handleLoadMore = () => {
-    loadMore();
-  };
-
-  const handleAdClick = (business: any) => {
-    console.log('바둑 업장 배너 클릭됨:', business.name);
+    console.log('바둑 더보기 클릭됨');
   };
 
   return (
-    <Container>
-      <CategoryTabs currentLabel={currentTab} />
-      <CommunityLayout>
-        <Content>
-          <PopularPosts posts={popularFreePosts} />
-          <BusinessBanner onClick={handleAdClick} />
-          <PostList>
-            {currentPosts.length > 0 ? (
-              currentPosts.map(post =>
-                post.postType === '매치' ? (
-                  <MatchPostCard key={post.id} post={post as MatchPost} />
-                ) : (
-                  <CommunityPost key={post.id} post={post as Post} />
-                )
-              )
-            ) : (
-              <NoResults>게시글이 없습니다.</NoResults>
-            )}
-          </PostList>
-          {hasMorePosts && (
-            <LoadMoreButton onClick={handleLoadMore}>더보기</LoadMoreButton>
-          )}
-        </Content>
-      </CommunityLayout>
-    </Container>
+    <CommunityPageWrapper
+      currentTab={currentTab}
+      popularPosts={popularFreePosts}
+      postsData={postsData}
+      onLoadMore={handleLoadMore}
+    />
   );
 }

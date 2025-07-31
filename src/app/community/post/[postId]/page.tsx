@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
-import CategoryTabs from '@/components/CategoryTabs';
-import CommunityLayout from '@/components/CommunityLayout';
+import CategoryTabs from '../../component/CategoryTabs';
+import CommunityLayout from '../../component/CommunityLayout';
 import BottomNavigation from '@/components/BottomNavigation';
 import GeneralPostDetail from '@/components/GeneralPostDetail';
 import GeneralMyPostDetail from '@/components/GeneralMyPostDetail';
@@ -19,34 +19,38 @@ const mockGeneralPost: GeneralPost = {
   id: 1,
   title: '테니스 라켓 구매 후기',
   content: `최근에 Wilson Pro Staff RF97을 구매했습니다. 처음에는 무거워서 적응하기 어려웠지만, 한 달 정도 사용하니 정말 좋은 라켓이라는 걸 알 수 있었습니다.\n\n특히 서브와 포핸드에서 위력이 대단합니다. 라켓 헤드가 작아서 정확도가 높고, 무게감이 있어서 파워도 충분합니다.\n\n다만 초보자에게는 조금 어려울 수 있어요. 적어도 1년 이상 테니스를 치신 분들에게 추천드립니다.\n\n스트링은 Luxilon Alu Power를 사용했는데, 이것도 정말 좋네요. 스핀과 컨트롤이 완벽하게 조화를 이룹니다.\n\n전체적으로 만족도가 높은 구매였습니다!`,
-  authorId: 'user303',
-  authorName: '테니스매니아',
-  date: '2024-01-15',
-  category: 'tennis',
-  postType: 'general',
+  author: {
+    id: 303,
+    nickname: '테니스매니아',
+    profileImageUrl: null,
+  },
+  createdAt: '2024-01-15',
+  updatedAt: '2024-01-15',
+  isHidden: false,
   viewCount: 89,
-  likeCount: 31,
-  dislikeCount: 5,
   commentCount: 8,
-  isLiked: false,
-  isDisliked: false,
+  sportCategoryId: 1,
+  sportCategoryName: 'tennis',
+  type: '일반',
 };
 
 const mockMatchPost: MatchPost = {
   id: 2,
   title: '테니스 매치 구합니다 (ELO 1500-1600)',
   content: `안녕하세요! 테니스 매치 상대를 구합니다.\n\n- 실력: 중급 (ELO 1500-1600 정도)\n- 위치: 강남 테니스장\n- 시간: 주말 오후\n- 인원: 2명 (더블스 가능)\n\n실력이 비슷한 분들과 재미있게 치고 싶습니다. 연락주세요!`,
-  authorId: 'user404',
-  authorName: '테니스러버',
-  date: '2024-01-20',
-  category: 'tennis',
-  postType: 'match',
+  author: {
+    id: 404,
+    nickname: '테니스러버',
+    profileImageUrl: null,
+  },
+  createdAt: '2024-01-20',
+  updatedAt: '2024-01-20',
+  isHidden: false,
   viewCount: 55,
-  likeCount: 10,
-  dislikeCount: 1,
   commentCount: 2,
-  isLiked: false,
-  isDisliked: false,
+  sportCategoryId: 1,
+  sportCategoryName: 'tennis',
+  type: '매치',
   elo: 1550,
   location: '강남 테니스장',
   desiredSkillLevel: '중급',
@@ -57,17 +61,19 @@ const mockMentorPost: MentorPost = {
   id: 3,
   title: '테니스 멘토 구합니다 (초급→중급)',
   content: `안녕하세요! 테니스 멘토를 구합니다.\n\n- 현재 실력: 초급 (ELO 1200)\n- 목표: 중급 수준으로 발전\n- 원하는 멘토: ELO 1600+ 이상\n- 선호 지역: 강남, 서초\n- 예산: 40 토큰/시간\n- 수업 시간: 주말 오후\n\n아마추어 고수분께 한수 배우고 싶습니다! 특히 서브와 포핸드 개선에 도움이 필요해요.\n\n함께 치면서 팁 주실 수 있는 멘토님 연락주세요!`,
-  authorId: 'user606',
-  authorName: '테니스초보',
-  date: '2024-01-18',
-  category: 'tennis',
-  postType: 'mentor',
+  author: {
+    id: 606,
+    nickname: '테니스초보',
+    profileImageUrl: null,
+  },
+  createdAt: '2024-01-18',
+  updatedAt: '2024-01-18',
+  isHidden: false,
   viewCount: 85,
-  likeCount: 12,
-  dislikeCount: 1,
   commentCount: 8,
-  isLiked: false,
-  isDisliked: false,
+  sportCategoryId: 1,
+  sportCategoryName: 'tennis',
+  type: '멘토',
   elo: 1200,
   location: '강남, 서초',
   sport: '테니스',
@@ -195,8 +201,7 @@ export default function PostDetailPage() {
   const typeParam = searchParams.get('type');
 
   // 내 글인지 확인 (from=profile이거나 현재 사용자가 작성자인 경우)
-  const isMyPost =
-    fromParam === 'profile' || post.authorId === 'current-user-id'; // TODO: 실제 사용자 ID로 변경
+  const isMyPost = fromParam === 'profile' || post.author.id === 1; // TODO: 실제 사용자 ID로 변경
 
   const renderPostDetail = () => {
     if (isMyPost) {
