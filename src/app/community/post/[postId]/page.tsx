@@ -13,6 +13,7 @@ import MatchMyPostDetail from '@/components/MatchMyPostDetail';
 import MentorPostDetail from '@/components/MentorPostDetail';
 import MentorMyPostDetail from '@/components/MentorMyPostDetail';
 import { Post, GeneralPost, MatchPost, MentorPost } from '@/types/post';
+import { usePostDetailApi } from '@/api/useCommunity';
 
 // 임시 데이터 타입
 const mockGeneralPost: GeneralPost = {
@@ -133,6 +134,20 @@ export default function PostDetailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const postId = params.postId as string;
+
+  // API 호출
+  const {
+    data: postDetailData,
+    isLoading: apiLoading,
+    error: apiError,
+  } = usePostDetailApi(Number(postId));
+
+  console.log('API 호출 결과:', {
+    postDetailData,
+    apiLoading,
+    apiError,
+    postId: Number(postId),
+  });
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
