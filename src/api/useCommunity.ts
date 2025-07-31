@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import api from '@/lib/axios';
+import { Post } from '@/types/post';
 
 // Types
 export interface SportCategory {
@@ -14,22 +15,7 @@ export interface SportCategoriesResponse {
   data: SportCategory[];
 }
 
-export interface Post {
-  id: number;
-  title: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
-  viewCount: number;
-  commentCount: number;
-  likeCount: number;
-  dislikeCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
-}
+
 
 export interface PostsResponse {
   success: boolean;

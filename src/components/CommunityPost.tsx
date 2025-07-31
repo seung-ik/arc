@@ -3,10 +3,10 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { Post } from '@/types/post';
+import { GeneralPost } from '@/types/post';
 
 interface CommunityPostProps {
-  post: Post;
+  post: GeneralPost;
   onClick?: (postId: number) => void;
 }
 
@@ -109,13 +109,14 @@ const ViewCount = styled.span`
 
 export default function CommunityPost({ post, onClick }: CommunityPostProps) {
   const router = useRouter();
+  console.log(post);
 
   const handleClick = () => {
     if (onClick) {
       onClick(post.id);
     } else {
       router.push(
-        `${ROUTES.community.post(post.id.toString())}?type=${post.postType}`
+        `${ROUTES.community.post(post.id.toString())}?type=${post.type}`
       );
     }
   };
@@ -129,16 +130,16 @@ export default function CommunityPost({ post, onClick }: CommunityPostProps) {
   return (
     <PostContainer onClick={handleClick}>
       <PostHeader>
-        <CategoryTag $type={post.postType}>{post.postType}</CategoryTag>
+        <CategoryTag $type={post.type}>{post.type}</CategoryTag>
         <PostTitle>{titleWithComments}</PostTitle>
       </PostHeader>
 
       <ContentText>{post.content}</ContentText>
 
       <PostFooter>
-        <AuthorName>{post.authorName}</AuthorName>
+        <AuthorName>{post.author.nickname}</AuthorName>
         <span>•</span>
-        <PostDate>{post.date}</PostDate>
+        <PostDate>{post.createdAt}</PostDate>
         <span>•</span>
         <ViewCount>조회 {post.viewCount || 0}</ViewCount>
       </PostFooter>
