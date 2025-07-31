@@ -3,27 +3,28 @@ export interface BasePost {
   id: number;
   title: string;
   content: string;
-  authorId: string;
-  authorName: string;
-  date: string;
-  category: string;
-  postType: string;
+  isHidden: boolean;
   viewCount: number;
-  likeCount: number;
-  dislikeCount: number;
   commentCount: number;
-  isLiked: boolean;
-  isDisliked: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: number;
+    nickname: string;
+    profileImageUrl: string | null;
+  };
+  sportCategoryId: number;
+  sportCategoryName: string;
 }
 
 // 일반 포스트 인터페이스
 export interface GeneralPost extends BasePost {
-  postType: 'general' | '일반' | '공지';
+  type: '일반' | '공지';
 }
 
 // 매치 포스트 인터페이스
 export interface MatchPost extends BasePost {
-  postType: 'match' | '매치';
+  type: 'match' | '매치';
   // CommunityPost에서 사용하는 필드명
   myElo?: string;
   matchLocation?: string;
@@ -39,7 +40,7 @@ export interface MatchPost extends BasePost {
 
 // 멘토 포스트 인터페이스
 export interface MentorPost extends BasePost {
-  postType: 'mentor' | '멘토';
+  type: 'mentor' | '멘토';
   // CommunityPost에서 사용하는 필드명
   sport?: string;
   customSport?: string;
