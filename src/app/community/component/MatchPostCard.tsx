@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { MatchPost } from '@/types/post';
-import { calculateValidityPeriod } from './match/utils';
+import { calculateValidityPeriod } from '../utils/matchUtils';
 
 interface MatchPostCardProps {
   post: MatchPost;
@@ -106,7 +106,7 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
     if (!post.validityPeriod) return '진행중';
 
     const validityText = calculateValidityPeriod(
-      post.date,
+      post.createdAt,
       post.validityPeriod
     );
     if (validityText === '만료됨') {

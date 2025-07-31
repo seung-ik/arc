@@ -198,7 +198,10 @@ export default function ManagementPage() {
         <SectionTitle>추천매치</SectionTitle>
         {recommendedMatchPosts.map(post => (
           <div key={post.id}>
-            <MatchCard post={post as MatchPost} onClick={handleChallenge} />
+            <MatchCard
+              post={post as unknown as MatchPost}
+              onClick={handleChallenge}
+            />
           </div>
         ))}
       </ContentContainer>
