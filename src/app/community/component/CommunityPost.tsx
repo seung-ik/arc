@@ -112,11 +112,12 @@ export default function CommunityPost({ post, onClick }: CommunityPostProps) {
   console.log(post);
 
   const handleClick = () => {
+    console.log('CommunityPost 클릭됨:', post.id);
     if (onClick) {
       onClick(post.id);
     } else {
       router.push(
-        `${ROUTES.community.post(post.id.toString())}?type=${post.type}`
+        `${ROUTES.community.post(post.id.toString())}?type=${post.type || '일반'}`
       );
     }
   };

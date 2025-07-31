@@ -11,13 +11,15 @@ const WriteButtonContainer = styled.div`
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: none;
 `;
 
 const WriteButtonLink = styled(Link)`
   position: absolute;
   bottom: 12px;
   right: 16px;
-  z-index: 10;
+  z-index: 200;
+  pointer-events: auto;
 
   display: flex;
   gap: ${props => props.theme.spacing.xs};
