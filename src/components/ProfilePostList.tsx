@@ -240,7 +240,7 @@ export default function ProfilePostList({
       }
 
       // 3. 수확 가능 여부가 같다면 최신순 (날짜 내림차순)
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
   }, [posts]);
 
@@ -263,7 +263,8 @@ export default function ProfilePostList({
     }
 
     // 수확 불가능하거나 완료된 경우 좋아요 개수 표시
-    return `좋아요 ${post.likeCount || 0}개`;
+    // return `좋아요 ${post.likeCount || 0}개`;
+    return `좋아요 ${0}개`;
   };
 
   const handlePostClick = (post: ProfilePost) => {
@@ -311,9 +312,7 @@ export default function ProfilePostList({
         <PostCard key={post.id} onClick={() => handlePostClick(post)}>
           <PostHeader>
             <PostTitleSection>
-              <PostTypeBadge $postType={post.postType}>
-                {post.postType}
-              </PostTypeBadge>
+              <PostTypeBadge $postType={post.type}>{post.type}</PostTypeBadge>
               <PostTitle>{post.title}</PostTitle>
               <PostStats>[{post.commentCount}]</PostStats>
             </PostTitleSection>

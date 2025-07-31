@@ -139,8 +139,8 @@ export default function MatchCard({ post, onClick }: MatchCardProps) {
         </VenueName>
 
         <DateTimeInfo>
-          {post.date
-            ? new Date(post.date).toLocaleDateString('ko-KR', {
+          {post.createdAt
+            ? new Date(post.createdAt).toLocaleDateString('ko-KR', {
                 month: 'numeric',
                 day: 'numeric',
                 weekday: 'short',
