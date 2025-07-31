@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import PostHeader from '@/components/PostHeader';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
+import HtmlContent from './HtmlContent';
 import { MentorPost } from '@/types/post';
 import TwoButtonModal from '@/components/TwoButtonModal';
 import PostInfoSection from './PostInfoSection';
@@ -201,10 +202,10 @@ export default function MentorPostDetail({ post }: MentorPostDetailProps) {
       <Content>
         <PostHeader
           title={post.title}
-          authorId={post.authorId}
-          authorName={post.authorName}
-          date={post.date}
-          postType={post.postType}
+          authorId={post.author.id}
+          authorName={post.author.nickname}
+          date={post.createdAt}
+          postType={post.type}
           viewCount={post.viewCount}
         />
 
@@ -221,7 +222,9 @@ export default function MentorPostDetail({ post }: MentorPostDetailProps) {
           ]}
         />
 
-        <PostContent>{post.content}</PostContent>
+        <PostContent>
+          <HtmlContent content={post.content} />
+        </PostContent>
 
         <ApplyButton onClick={handleApply} disabled={isApplied}>
           {isApplied ? '신청 완료' : '멘토 신청하기'}

@@ -19,6 +19,7 @@ import {
   ManagementButton,
 } from '@/styles/PostDetailStyles';
 import { GeneralPost } from '@/types/post';
+import HtmlContent from './HtmlContent';
 
 interface Comment {
   id: number;
@@ -41,6 +42,7 @@ export default function GeneralMyPostDetail({
 }: GeneralMyPostDetailProps) {
   const router = useRouter();
   const [comments, setComments] = useState<Comment[]>([]);
+  console.log(post, '///');
 
   const handleLike = () => {
     // TODO: 좋아요 처리
@@ -120,32 +122,38 @@ export default function GeneralMyPostDetail({
       <Content>
         <PostHeader
           title={post.title}
-          authorId={post.authorId}
-          authorName={post.authorName}
-          date={post.date}
-          postType={post.postType}
+          authorId={post.author.id}
+          authorName={post.author.nickname}
+          date={post.createdAt}
+          postType={post.type}
           viewCount={post.viewCount}
         />
 
-        <PostContent>{post.content}</PostContent>
+        <PostContent>
+          <HtmlContent content={post.content} />
+        </PostContent>
 
         <PostActions>
           <ActionButtons>
             <ActionButton
               onClick={handleLike}
-              $isActive={post.isLiked}
+              $isActive={true}
+              // $isActive={post.isLiked}
               $variant="like"
             >
               <ButtonText>좋아요</ButtonText>
-              <ButtonCount>{post.likeCount}</ButtonCount>
+              {/* <ButtonCount>{post.likeCount}</ButtonCount> */}
+              <ButtonCount>{3}</ButtonCount>
             </ActionButton>
             <ActionButton
               onClick={handleDislike}
-              $isActive={post.isDisliked}
+              // $isActive={post.isDisliked}
+              $isActive={false}
               $variant="dislike"
             >
               <ButtonText>싫어요</ButtonText>
-              <ButtonCount>{post.dislikeCount}</ButtonCount>
+              {/* <ButtonCount>{post.dislikeCount}</ButtonCount> */}
+              <ButtonCount>{1}</ButtonCount>
             </ActionButton>
           </ActionButtons>
         </PostActions>

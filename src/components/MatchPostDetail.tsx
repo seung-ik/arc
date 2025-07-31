@@ -8,6 +8,7 @@ import MatchApplicationStatus from '@/components/MatchApplicationStatus';
 import { useModal } from '@/hooks/useModal';
 import TwoButtonModal from '@/components/TwoButtonModal';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
+import HtmlContent from './HtmlContent';
 import { MatchPost } from '@/types/post';
 
 interface MatchPostDetailProps {
@@ -112,10 +113,10 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
       <Content>
         <PostHeader
           title={post.title}
-          authorId={post.authorId}
-          authorName={post.authorName}
-          date={post.date}
-          postType={post.postType}
+          authorId={post.author.id}
+          authorName={post.author.nickname}
+          date={post.createdAt}
+          postType={post.type}
           viewCount={post.viewCount}
         />
 
@@ -130,7 +131,9 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
           }
         />
 
-        <PostContent>{post.content}</PostContent>
+        <PostContent>
+          <HtmlContent content={post.content} />
+        </PostContent>
 
         <JoinButton
           onClick={handleJoin}

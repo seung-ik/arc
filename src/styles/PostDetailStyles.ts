@@ -105,6 +105,74 @@ export const PostContent = styled.div`
   margin-bottom: ${props => props.theme.spacing.xl};
   white-space: pre-wrap;
   word-break: break-word;
+
+  /* HTML 태그 스타일링 */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: ${props => props.theme.spacing.md} 0
+      ${props => props.theme.spacing.sm} 0;
+    font-weight: ${props => props.theme.typography.fontWeights.bold};
+  }
+
+  h1 {
+    font-size: ${props => props.theme.typography.fontSizes.xl};
+  }
+  h2 {
+    font-size: ${props => props.theme.typography.fontSizes.lg};
+  }
+  h3 {
+    font-size: ${props => props.theme.typography.fontSizes.base};
+  }
+
+  p {
+    margin: ${props => props.theme.spacing.sm} 0;
+  }
+
+  ul,
+  ol {
+    margin: ${props => props.theme.spacing.sm} 0;
+    padding-left: ${props => props.theme.spacing.lg};
+  }
+
+  li {
+    margin: ${props => props.theme.spacing.xs} 0;
+  }
+
+  strong,
+  b {
+    font-weight: ${props => props.theme.typography.fontWeights.bold};
+  }
+
+  em,
+  i {
+    font-style: italic;
+  }
+
+  code {
+    background-color: ${props => props.theme.colors.backgroundGray};
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  pre {
+    background-color: ${props => props.theme.colors.backgroundGray};
+    padding: ${props => props.theme.spacing.sm};
+    border-radius: ${props => props.theme.borderRadius.sm};
+    overflow-x: auto;
+    margin: ${props => props.theme.spacing.sm} 0;
+  }
+
+  blockquote {
+    border-left: 4px solid ${props => props.theme.colors.primary};
+    padding-left: ${props => props.theme.spacing.md};
+    margin: ${props => props.theme.spacing.md} 0;
+    color: ${props => props.theme.colors.textGray};
+  }
 `;
 
 // 액션 버튼 스타일

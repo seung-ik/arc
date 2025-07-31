@@ -6,6 +6,7 @@ import PostHeader from '@/components/PostHeader';
 import MentorApplicationList from '@/components/MentorApplicationList';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import { MentorPost } from '@/types/post';
+import HtmlContent from './HtmlContent';
 import PostInfoSection from './PostInfoSection';
 
 interface MentorApplication {
@@ -136,10 +137,10 @@ export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
       <Content>
         <PostHeader
           title={post.title}
-          authorId={post.authorId}
-          authorName={post.authorName}
-          date={post.date}
-          postType={post.postType}
+          authorId={post.author.id}
+          authorName={post.author.nickname}
+          date={post.createdAt}
+          postType={post.type}
           viewCount={post.viewCount}
         />
 
@@ -156,7 +157,9 @@ export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
           ]}
         />
 
-        <PostContent>{post.content}</PostContent>
+        <PostContent>
+          <HtmlContent content={post.content} />
+        </PostContent>
 
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>

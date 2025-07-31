@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { GeneralPost } from '@/types/post';
+import HtmlContent from '@/components/HtmlContent';
 
 interface CommunityPostProps {
   post: GeneralPost;
@@ -73,7 +74,7 @@ const PostTitle = styled.h3`
   line-height: 1.4;
 `;
 
-const ContentText = styled.p`
+const ContentText = styled.div`
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.sm};
   margin: 0 0 ${props => props.theme.spacing.sm} 0;
@@ -135,7 +136,9 @@ export default function CommunityPost({ post, onClick }: CommunityPostProps) {
         <PostTitle>{titleWithComments}</PostTitle>
       </PostHeader>
 
-      <ContentText>{post.content}</ContentText>
+      <ContentText>
+        <HtmlContent content={post.content} />
+      </ContentText>
 
       <PostFooter>
         <AuthorName>{post.author.nickname}</AuthorName>
