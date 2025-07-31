@@ -16,7 +16,7 @@ import {
 
 interface PostHeaderProps {
   title: string;
-  authorId: string;
+  authorId: number;
   authorName: string;
   date: string;
   postType: string;
@@ -33,7 +33,7 @@ export default function PostHeader({
 }: PostHeaderProps) {
   const router = useRouter();
 
-  const handleAuthorClick = (authorId: string) => {
+  const handleAuthorClick = (authorId: number) => {
     router.push(`/profile/${authorId}`);
   };
 

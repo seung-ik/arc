@@ -41,6 +41,7 @@ import {
   ToggleRepliesButton,
 } from '@/styles/PostDetailStyles';
 import { GeneralPost } from '@/types/post';
+import HtmlContent from './HtmlContent';
 
 interface Comment {
   id: number;
@@ -172,32 +173,38 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
       <Content>
         <PostHeader
           title={post.title}
-          authorId={post.authorId}
-          authorName={post.authorName}
-          date={post.date}
-          postType={post.postType}
+          authorId={post.author.id}
+          authorName={post.author.nickname}
+          date={post.createdAt}
+          postType={post.type}
           viewCount={post.viewCount}
         />
 
-        <PostContent>{post.content}</PostContent>
+        <PostContent>
+          <HtmlContent content={post.content} />
+        </PostContent>
 
         <PostActions>
           <ActionButtons>
             <ActionButton
               onClick={handleLike}
-              $isActive={post.isLiked}
+              // $isActive={post.isLiked}
+              $isActive={true}
               $variant="like"
             >
               <ButtonText>좋아요</ButtonText>
-              <ButtonCount>{post.likeCount}</ButtonCount>
+              {/* <ButtonCount>{post.likeCount}</ButtonCount> */}
+              <ButtonCount>4</ButtonCount>
             </ActionButton>
             <ActionButton
               onClick={handleDislike}
-              $isActive={post.isDisliked}
+              // $isActive={post.isDisliked}
+              $isActive={false}
               $variant="dislike"
             >
               <ButtonText>싫어요</ButtonText>
-              <ButtonCount>{post.dislikeCount}</ButtonCount>
+              {/* <ButtonCount>{post.dislikeCount}</ButtonCount> */}
+              <ButtonCount>4</ButtonCount>
             </ActionButton>
           </ActionButtons>
         </PostActions>
