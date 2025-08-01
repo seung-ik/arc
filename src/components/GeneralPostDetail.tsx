@@ -37,10 +37,10 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
         </PostContent>
 
         <PostActions
-          likeCount={4}
-          dislikeCount={4}
-          isLiked={true}
-          isDisliked={false}
+          likeCount={post.likeCount}
+          dislikeCount={post.hateCount}
+          isLiked={post.isLiked}
+          isDisliked={post.isHated}
           onLike={handleLike}
           onDislike={handleDislike}
         />

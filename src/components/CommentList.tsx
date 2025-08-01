@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/authStore';
 import {
   CommentList as CommentListContainer,
   CommentItem,
@@ -43,24 +44,53 @@ interface CommentListProps {
   comments: Comment[];
   onCommentLike?: (commentId: number) => void;
   onReplySubmit?: (commentId: number, content: string) => void;
+  onDeleteComment?: (commentId: number) => void;
+  onDeleteReply?: (replyId: number) => void;
 }
 
 export default function CommentList({
   comments,
   onCommentLike,
   onReplySubmit,
+  onDeleteComment,
+  onDeleteReply,
 }: CommentListProps) {
   const router = useRouter();
+  const { userProfile } = useAuthStore();
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [expandedReplies, setExpandedReplies] = useState<Set<number>>(
-    new Set()
+    new Set(
+      comments
+        .filter(comment => comment.replies && comment.replies.length > 0)
+        .map(comment => comment.id)
+    )
   );
 
   const handleCommentLike = (commentId: number) => {
     if (onCommentLike) {
       onCommentLike(commentId);
     }
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+      if (onDeleteComment) {
+        onDeleteComment(commentId);
+      }
+    }
+  };
+
+  const handleDeleteReply = (replyId: number) => {
+    if (confirm('정말로 이 답글을 삭제하시겠습니까?')) {
+      if (onDeleteReply) {
+        onDeleteReply(replyId);
+      }
+    }
+  };
+
+  const isMyComment = (comment: Comment) => {
+    return comment.authorId === userProfile.id.toString();
   };
 
   const handleReplyClick = (commentId: number) => {
@@ -124,6 +154,11 @@ export default function CommentList({
                   <span>❤️</span>
                   <span>{comment.likeCount}</span>
                 </CommentLikeButton>
+                {isMyComment(comment) && (
+                  <button onClick={() => handleDeleteComment(comment.id)}>
+                    삭제
+                  </button>
+                )}
                 <ReplyButton onClick={() => handleReplyClick(comment.id)}>
                   답글
                 </ReplyButton>
@@ -182,6 +217,23 @@ export default function CommentList({
                                   {reply.authorName}
                                 </ReplyAuthor>
                               </ReplyMeta>
+                              {isMyComment(reply) && (
+                                <button
+                                  onClick={() => handleDeleteReply(reply.id)}
+                                  style={{
+                                    marginLeft: '8px',
+                                    padding: '2px 6px',
+                                    fontSize: '12px',
+                                    color: '#ff4444',
+                                    background: 'none',
+                                    border: '1px solid #ff4444',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  삭제
+                                </button>
+                              )}
                             </ReplyFooter>
                           </ReplyItem>
                         ))}

@@ -15,6 +15,10 @@ export interface BasePost {
   };
   sportCategoryId: number;
   sportCategoryName: string;
+  isLiked: boolean;
+  isHated: boolean;
+  likeCount: number;
+  hateCount: number;
 }
 
 // 일반 포스트 인터페이스
