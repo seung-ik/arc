@@ -123,12 +123,12 @@ export default function MentorMyPostDetail({ post }: MentorMyPostDetailProps) {
 
   const handleDelete = () => {
     // TODO: 삭제 처리
-    console.log('Delete post:', post.id);
+    alert(`Delete post::${post.id}`);
   };
 
   const handlePayment = (applicationId: number) => {
     // TODO: 실제 지불 로직 구현
-    console.log('Payment sent for application:', applicationId);
+    alert(`Payment sent for application:${applicationId}`);
     alert('전송완료 되었습니다.');
   };
 

@@ -62,10 +62,7 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
     },
   ]);
 
-  const handleDelete = () => {
-    // TODO: 삭제 처리
-    console.log('Delete post:', post.id);
-  };
+  const handleDelete = () => {};
 
   const handleApproveApplication = (applicationId: number) => {
     setApplications(prev =>
@@ -73,8 +70,6 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
         app.id === applicationId ? { ...app, status: 'approved' as const } : app
       )
     );
-    // TODO: API 호출로 승인 처리
-    console.log('Approve application:', applicationId);
   };
 
   const handleRejectApplication = (applicationId: number) => {
@@ -83,8 +78,6 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
         app.id === applicationId ? { ...app, status: 'rejected' as const } : app
       )
     );
-    // TODO: API 호출로 거절 처리
-    console.log('Reject application:', applicationId);
   };
 
   return (

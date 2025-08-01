@@ -53,8 +53,8 @@ export interface MentorPost extends BasePost {
 export type Post = GeneralPost | MatchPost | MentorPost;
 
 // 프로필 포스트 인터페이스 (기존 ProfilePost와 호환)
-export interface ProfilePost extends BasePost {
-  enableHarvest?: boolean;
-  harvestStage?: number;
-  showInProfile?: boolean;
-}
+// export interface ProfilePost extends Post {
+//   enableHarvest?: boolean;
+//   harvestStage?: number;
+//   showInProfile?: boolean;
+// }

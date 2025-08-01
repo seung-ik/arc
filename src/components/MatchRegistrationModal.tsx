@@ -171,7 +171,7 @@ export default function MatchRegistrationModal({
   const handleSubmit = () => {
     if (validateForm()) {
       // 실제 제출 로직
-      console.log('Match registration:', { sport, opponentId, result });
+      alert(`매치 결과가 등록되었습니다: ${sport} - ${opponentId} - ${result}`);
 
       // onSubmit 콜백 호출
       if (onSubmit && result) {

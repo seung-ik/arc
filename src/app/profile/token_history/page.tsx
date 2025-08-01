@@ -208,7 +208,6 @@ export default function TokenHistoryPage() {
   };
 
   const handleLearnMore = () => {
-    console.log('자세히 알아보기 클릭');
     // 여기에 자세한 설명 모달이나 페이지로 이동
   };
 

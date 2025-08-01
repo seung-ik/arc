@@ -48,11 +48,7 @@ export default function ChessPage() {
   const categoryId = communityTabs?.[currentTab]?.id || 0;
   const { data: postsData } = usePostsApi(categoryId);
 
-  console.log(postsData);
-
-  const handleLoadMore = () => {
-    console.log('체스 더보기 클릭됨');
-  };
+  const handleLoadMore = () => {};
 
   return (
     <CommunityPageWrapper

@@ -84,7 +84,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
             setAccounts([]);
           }
         } catch (statusError) {
-          console.log(statusError);
+          console.error(statusError);
           setIsLoggedIn(false);
           setAccounts([]);
         }
@@ -122,7 +122,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
         try {
           userAccounts = await wepinSDK.getAccounts();
         } catch (accountsError) {
-          console.log(accountsError);
+          console.error(accountsError);
           // 계정 조회 실패 시 새로운 사용자 등록 시도
           try {
             await wepinSDK.register();
@@ -131,7 +131,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
             try {
               userAccounts = await wepinSDK.getAccounts();
             } catch (finalAccountsError) {
-              console.log(finalAccountsError);
+              console.error(finalAccountsError);
               userAccounts = [];
             }
           } catch (registerError) {
@@ -167,7 +167,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
       try {
         await wepinSDK.logout();
       } catch (error) {
-        console.log('Wepin SDK 로그아웃 실패, 계속 진행', error);
+        console.error('Wepin SDK 로그아웃 실패, 계속 진행', error);
       }
     }
 

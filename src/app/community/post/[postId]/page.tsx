@@ -77,13 +77,6 @@ export default function PostDetailPage() {
     error: apiError,
   } = usePostDetailApi(Number(postId));
 
-  console.log('API 호출 결과:', {
-    postDetailData,
-    isLoading,
-    apiError,
-    postId: Number(postId),
-  });
-
   const handleBackClick = () => {
     router.back();
   };

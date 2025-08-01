@@ -48,11 +48,7 @@ export default function TableTennisPage() {
   const categoryId = communityTabs?.[currentTab]?.id || 0;
   const { data: postsData } = usePostsApi(categoryId);
 
-  console.log(postsData);
-
-  const handleLoadMore = () => {
-    console.log('탁구 더보기 클릭됨');
-  };
+  const handleLoadMore = () => {};
 
   return (
     <CommunityPageWrapper

@@ -15,8 +15,6 @@ export interface SportCategoriesResponse {
   data: SportCategory[];
 }
 
-
-
 export interface PostsResponse {
   success: boolean;
   message: string;

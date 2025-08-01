@@ -71,12 +71,10 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
 
   const handleLike = () => {
     // TODO: 좋아요 처리
-    console.log('Like post:', post.id);
   };
 
   const handleDislike = () => {
     // TODO: 싫어요 처리
-    console.log('Dislike post:', post.id);
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {

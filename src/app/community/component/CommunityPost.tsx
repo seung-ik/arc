@@ -110,10 +110,8 @@ const ViewCount = styled.span`
 
 export default function CommunityPost({ post, onClick }: CommunityPostProps) {
   const router = useRouter();
-  console.log(post);
 
   const handleClick = () => {
-    console.log('CommunityPost 클릭됨:', post.id);
     if (onClick) {
       onClick(post.id);
     } else {

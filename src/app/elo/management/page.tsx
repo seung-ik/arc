@@ -189,7 +189,7 @@ export default function ManagementPage() {
         title="기록은 온라인에, 경험은 오프라인에."
         description={`기록은 당신의 이야기를 남기고,\n보상은 더 넓은 경험으로 이어집니다.`}
         badge="할인"
-        onClick={() => console.log('구장 예약 클릭')}
+        onClick={() => alert('구장 예약 클릭')}
       />
 
       <ContentContainer>
