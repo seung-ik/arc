@@ -50,6 +50,92 @@ export interface CreatePostResponse {
   message: string;
 }
 
+// Create Comment Types
+export interface CreateCommentRequest {
+  post_id: string;
+  content: string;
+}
+
+export interface CreateCommentResponse {
+  success: boolean;
+  data: {
+    post_id: string;
+    comment: string;
+  };
+  message: string;
+}
+
+// Create Reply Types
+export interface CreateReplyRequest {
+  comment_id: string;
+  content: string;
+}
+
+export interface CreateReplyResponse {
+  success: boolean;
+  data: any;
+  message: string;
+}
+
+// Comment List Types
+export interface CommentUser {
+  id: number;
+  nickname: string | null;
+  profileImageUrl: string | null;
+}
+
+export interface Reply {
+  id: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  user: CommentUser;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  user: CommentUser;
+  postId: number;
+  replies: Reply[];
+  likeCount: number;
+}
+
+export interface CommentsResponse {
+  success: boolean;
+  data: Comment[];
+  message: string;
+}
+
+// Delete Post Types
+export interface DeletePostResponse {
+  success: boolean;
+  data: {
+    deleted: boolean;
+  };
+  message: string;
+}
+
+// Delete Comment Types
+export interface DeleteCommentResponse {
+  success: boolean;
+  data: {
+    deleted: boolean;
+  };
+  message: string;
+}
+
+// Delete Reply Types
+export interface DeleteReplyResponse {
+  success: boolean;
+  data: {
+    deleted: boolean;
+  };
+  message: string;
+}
+
 export interface PostDetailResponse {
   success: boolean;
   data: {
@@ -105,6 +191,96 @@ export const useCreatePostMutation = () => {
     },
     onError: error => {
       console.error('글 작성 실패:', error);
+    },
+  });
+};
+
+export const useCreateCommentMutation = () => {
+  return useMutation({
+    mutationFn: async (
+      data: CreateCommentRequest
+    ): Promise<CreateCommentResponse> => {
+      const response = await api.post('/comments', data);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('댓글 작성 성공:', data);
+    },
+    onError: error => {
+      console.error('댓글 작성 실패:', error);
+    },
+  });
+};
+
+export const useCreateReplyMutation = () => {
+  return useMutation({
+    mutationFn: async (
+      data: CreateReplyRequest
+    ): Promise<CreateReplyResponse> => {
+      const response = await api.post('/replies', data);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('대댓글 작성 성공:', data);
+    },
+    onError: error => {
+      console.error('대댓글 작성 실패:', error);
+    },
+  });
+};
+
+export const useCommentsApi = (postId: number, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['comments', postId],
+    queryFn: async (): Promise<CommentsResponse> => {
+      const response = await api.get(`/posts/${postId}/comments`);
+      return response.data;
+    },
+    enabled: enabled && !!postId,
+  });
+};
+
+export const useDeletePostMutation = () => {
+  return useMutation({
+    mutationFn: async (postId: number): Promise<DeletePostResponse> => {
+      const response = await api.delete(`/posts/${postId}`);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('글 삭제 성공:', data);
+    },
+    onError: error => {
+      console.error('글 삭제 실패:', error);
+    },
+  });
+};
+
+export const useDeleteCommentMutation = () => {
+  return useMutation({
+    mutationFn: async (commentId: number): Promise<DeleteCommentResponse> => {
+      const response = await api.delete(`/comments/${commentId}`);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('댓글 삭제 성공:', data);
+    },
+    onError: error => {
+      console.error('댓글 삭제 실패:', error);
+    },
+  });
+};
+
+export const useDeleteReplyMutation = () => {
+  return useMutation({
+    mutationFn: async (replyId: number): Promise<DeleteReplyResponse> => {
+      const response = await api.delete(`/replies/${replyId}`);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('대댓글 삭제 성공:', data);
+    },
+    onError: error => {
+      console.error('대댓글 삭제 실패:', error);
     },
   });
 };
