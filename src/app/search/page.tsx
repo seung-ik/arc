@@ -187,7 +187,6 @@ export default function SearchPage() {
       ]);
 
       // 검색 결과 페이지로 이동 (실제로는 검색 API 호출)
-      console.log('검색어:', searchQuery);
       // router.push(`/search/results?q=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -213,7 +212,6 @@ export default function SearchPage() {
   const handleSearchHistoryClick = (text: string) => {
     setSearchQuery(text);
     // 검색 실행
-    console.log('검색어:', text);
     // router.push(`/search/results?q=${encodeURIComponent(text)}`);
   };
 

@@ -78,7 +78,6 @@ export default function ColorsPage() {
 
   const handleTwoButtonSubmit = () => {
     // 실제 제출 로직을 여기에 구현
-    console.log('Two button modal submitted!');
     twoButtonModal.closeModal();
   };
 

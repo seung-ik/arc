@@ -7,7 +7,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ProfileHeader from '@/components/ProfileHeader';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
-import { ProfilePost } from '@/types/post';
+import { Post } from '@/types/post';
 import { UserProfile, GAME_TYPES } from '@/constants/gameTypes';
 
 const Container = styled.div`
@@ -68,7 +68,7 @@ const mockOtherUserProfile: UserProfile = {
 };
 
 // 임시 글 데이터 (다른 유저의 글) - 기본값: 숨김
-const mockOtherUserPosts: ProfilePost[] = [
+const mockOtherUserPosts: Post[] = [
   {
     id: 1,
     title: '테니스 라켓 구매 후기',
@@ -86,7 +86,7 @@ const mockOtherUserPosts: ProfilePost[] = [
     },
     sportCategoryId: 1,
     sportCategoryName: '테니스',
-    showInProfile: false, // 기본값: 숨김
+    type: '일반',
   },
   {
     id: 2,
@@ -105,7 +105,7 @@ const mockOtherUserPosts: ProfilePost[] = [
     },
     sportCategoryId: 2,
     sportCategoryName: '바둑',
-    showInProfile: false, // 기본값: 숨김
+    type: '일반',
   },
   {
     id: 3,
@@ -124,7 +124,9 @@ const mockOtherUserPosts: ProfilePost[] = [
     },
     sportCategoryId: 3,
     sportCategoryName: '당구',
-    showInProfile: false, // 기본값: 숨김
+    type: '매치',
+    location: '서울 강북',
+    desiredSkillLevel: '실력 무관',
   },
 ];
 

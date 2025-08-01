@@ -42,16 +42,13 @@ export default function GeneralMyPostDetail({
 }: GeneralMyPostDetailProps) {
   const router = useRouter();
   const [comments, setComments] = useState<Comment[]>([]);
-  console.log(post, '///');
 
   const handleLike = () => {
     // TODO: 좋아요 처리
-    console.log('Like post:', post.id);
   };
 
   const handleDislike = () => {
     // TODO: 싫어요 처리
-    console.log('Dislike post:', post.id);
   };
 
   const handleCommentSubmit = (content: string) => {
@@ -114,7 +111,6 @@ export default function GeneralMyPostDetail({
 
   const handleDelete = () => {
     // TODO: 삭제 처리
-    console.log('Delete post:', post.id);
   };
 
   return (

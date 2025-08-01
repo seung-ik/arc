@@ -48,11 +48,7 @@ export default function BadmintonPage() {
   const categoryId = communityTabs?.[currentTab]?.id || 0;
   const { data: postsData } = usePostsApi(categoryId);
 
-  console.log(postsData);
-
-  const handleLoadMore = () => {
-    console.log('배드민턴 더보기 클릭됨');
-  };
+  const handleLoadMore = () => {};
 
   return (
     <CommunityPageWrapper

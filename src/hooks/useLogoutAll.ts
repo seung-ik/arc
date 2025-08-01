@@ -19,7 +19,6 @@ export function useLogoutAll() {
     localStorage.removeItem('ACCESS_TOKEN');
     storeLogout();
     await wepinLogout();
-    console.log('logoutAll');
     router.push(ROUTES.auth.login);
   };
 }

@@ -11,11 +11,7 @@ export default function NoticePage() {
   const categoryId = communityTabs?.[currentTab]?.id || 0;
   const { data: postsData } = usePostsApi(categoryId);
 
-  console.log(postsData);
-
-  const handleLoadMore = () => {
-    console.log('공지사항 더보기 클릭됨');
-  };
+  const handleLoadMore = () => {};
 
   return (
     <CommunityPageWrapper

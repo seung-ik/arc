@@ -8,7 +8,7 @@ import ProfileHeader from '@/components/ProfileHeader';
 import TokenDisplay from '@/components/TokenDisplay';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
-import { ProfilePost } from '@/types/post';
+import { Post } from '@/types/post';
 import NicknameChangeModal from '@/components/NicknameChangeModal';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
@@ -81,7 +81,7 @@ const ProfileRightCol = styled.div`
 `;
 
 // 임시 글 데이터 (기본값: 숨김)
-const mockMyPosts: ProfilePost[] = [
+const mockMyPosts: Post[] = [
   // 일반 포스트
   {
     id: 1,
@@ -100,9 +100,7 @@ const mockMyPosts: ProfilePost[] = [
     commentCount: 45,
     sportCategoryId: 1,
     sportCategoryName: '배드민턴',
-    showInProfile: true,
-    enableHarvest: true,
-    harvestStage: 1, // 1단계 수확 (노란색)
+    type: '일반',
   },
   {
     id: 2,
@@ -121,9 +119,7 @@ const mockMyPosts: ProfilePost[] = [
     commentCount: 89,
     sportCategoryId: 1,
     sportCategoryName: '탁구',
-    showInProfile: true,
-    enableHarvest: true,
-    harvestStage: 3, // 3단계 수확 (파란색)
+    type: '일반',
   },
   {
     id: 3,
@@ -142,9 +138,7 @@ const mockMyPosts: ProfilePost[] = [
     commentCount: 67,
     sportCategoryId: 1,
     sportCategoryName: '체스',
-    showInProfile: true,
-    enableHarvest: true,
-    harvestStage: 2, // 2단계 수확 (초록색)
+    type: '일반',
   },
   // 매치 포스트
   {
@@ -164,9 +158,9 @@ const mockMyPosts: ProfilePost[] = [
     commentCount: 23,
     sportCategoryId: 1,
     sportCategoryName: '배드민턴',
-    showInProfile: true,
-    enableHarvest: true,
-    harvestStage: 2, // 2단계 수확 (초록색)
+    type: '매치',
+    location: '서울 강남',
+    desiredSkillLevel: '중급',
   },
   {
     id: 5,
@@ -185,8 +179,9 @@ const mockMyPosts: ProfilePost[] = [
     commentCount: 15,
     sportCategoryId: 1,
     sportCategoryName: '체스',
-    showInProfile: false,
-    enableHarvest: false,
+    type: '매치',
+    location: '부산 해운대',
+    desiredSkillLevel: '실력 무관',
   },
   // 멘토 포스트
   {
@@ -206,9 +201,9 @@ const mockMyPosts: ProfilePost[] = [
     commentCount: 38,
     sportCategoryId: 1,
     sportCategoryName: '탁구',
-    showInProfile: true,
-    enableHarvest: true,
-    harvestStage: 2, // 2단계 수확 (초록색)
+    type: '멘토',
+    location: '서울 강남',
+    tokenReward: '5',
   },
 ];
 export default function ProfilePage() {
@@ -225,12 +220,10 @@ export default function ProfilePage() {
 
   const handleHarvest = (postId: number) => {
     setPosts(prevPosts =>
-      prevPosts.map(post =>
-        post.id === postId ? { ...post, enableHarvest: false } : post
-      )
+      prevPosts.map(post => (post.id === postId ? { ...post } : post))
     );
     const post = posts.find(p => p.id === postId);
-    if (post && post.enableHarvest) {
+    if (post) {
       const likeCount = post.commentCount ?? 0; // 좋아요개수로 바꿔야됨
       setHarvestableTokens(prev => prev + likeCount);
     }
@@ -258,8 +251,6 @@ export default function ProfilePage() {
         return (currentAmount - 1).toFixed(8);
       });
       setNickname(newNickname);
-      console.log('닉네임이 변경되었습니다:', newNickname);
-      console.log('1 토큰이 소각되었습니다.');
     }
   };
 

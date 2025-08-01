@@ -12,9 +12,9 @@ export default function HtmlContent({ content, className }: HtmlContentProps) {
     .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '');
 
   return (
-    <div 
+    <div
       className={className}
       dangerouslySetInnerHTML={{ __html: sanitizedContent }}
     />
   );
-} 
+}

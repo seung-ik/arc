@@ -29,4 +29,4 @@ export const calculateValidityPeriod = (
   } else {
     return '유효기간: 1시간 미만';
   }
-}; 
+};

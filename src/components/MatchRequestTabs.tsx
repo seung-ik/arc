@@ -127,11 +127,13 @@ export default function MatchRequestTabs() {
   ];
 
   const handleAccept = (matchId: number) => {
-    console.log('Accept match:', matchId);
+    alert(`매치 요청을 수락했습니다: ${matchId}`);
   };
 
   const handleReject = (matchId: number, reason?: string) => {
-    console.log('Reject match:', matchId, reason);
+    alert(
+      `매치 요청을 거절했습니다: ${matchId}${reason ? `, 사유: ${reason}` : ''}`
+    );
   };
 
   return (

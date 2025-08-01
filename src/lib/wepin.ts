@@ -16,7 +16,6 @@ export const initializeWepin = async () => {
     });
 
     await wepinSDK.init();
-    console.log('Wepin SDK initialized successfully');
 
     return wepinSDK;
   } catch (error) {
@@ -52,7 +51,6 @@ export const logout = async () => {
   try {
     const sdk = getWepinSDK();
     await sdk.logout();
-    console.log('Logged out successfully');
   } catch (error) {
     console.error('Error during logout:', error);
     throw error;

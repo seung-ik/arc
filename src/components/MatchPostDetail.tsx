@@ -76,8 +76,6 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
   };
 
   const handleSubmit = () => {
-    // TODO: 실제 매치 참가 신청 API 호출
-    console.log('매치 참가 신청:', { postId: post.id, comment });
     setIsJoined(true);
     setMyApplication({
       status: 'pending',

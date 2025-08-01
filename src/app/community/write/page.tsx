@@ -457,8 +457,6 @@ function WritePostForm() {
       type: formData.postType,
     };
 
-    console.log('일반 글 작성 요청:', generalData);
-
     createPostMutation.mutate(generalData, {
       onSuccess: data => {
         console.log('글 작성 성공 응답:', data);

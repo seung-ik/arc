@@ -48,10 +48,8 @@ export default function GoPage() {
   const categoryId = communityTabs?.[currentTab]?.id || 0;
   const { data: postsData } = usePostsApi(categoryId);
 
-  console.log(postsData);
-
   const handleLoadMore = () => {
-    console.log('바둑 더보기 클릭됨');
+    console.log('바둑 더보기 클됨');
   };
 
   return (
