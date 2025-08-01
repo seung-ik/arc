@@ -1,7 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useCreateCommentMutation, useCommentsApi } from '@/api/useCommunity';
+import {
+  useCreateCommentMutation,
+  useCreateReplyMutation,
+  useCommentsApi,
+} from '@/api/useCommunity';
 import CommentList from '@/components/CommentList';
 import { Comment, normalizeApiComments } from '@/utils/commentUtils';
 import {
@@ -16,19 +20,11 @@ import React from 'react';
 interface CommentsProps {
   postId: number;
   commentCount: number;
-  onCommentSubmit?: (content: string) => void;
-  onCommentLike?: (commentId: number) => void;
-  onReplySubmit?: (commentId: number, content: string) => void;
 }
 
-export default function Comments({
-  postId,
-  commentCount,
-  onCommentSubmit,
-  onCommentLike,
-  onReplySubmit,
-}: CommentsProps) {
+export default function Comments({ postId, commentCount }: CommentsProps) {
   const createCommentMutation = useCreateCommentMutation();
+  const createReplyMutation = useCreateReplyMutation();
   const { data: commentsData, isLoading } = useCommentsApi(postId);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
@@ -52,72 +48,70 @@ export default function Comments({
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    if (onCommentSubmit) {
-      onCommentSubmit(newComment.trim());
-    } else {
-      // Use API mutation
-      createCommentMutation.mutate(
-        {
-          postId: postId,
-          content: newComment.trim(),
-        },
-        {
-          onSuccess: handleCommentSuccess,
-        }
-      );
-    }
+    createCommentMutation.mutate(
+      {
+        postId: postId,
+        content: newComment.trim(),
+      },
+      {
+        onSuccess: handleCommentSuccess,
+      }
+    );
 
     setNewComment('');
   };
 
   const handleCommentLike = (commentId: number) => {
-    if (onCommentLike) {
-      onCommentLike(commentId);
-    } else {
-      // Update local state immediately
-      setComments(prev =>
-        prev.map(comment =>
-          comment.id === commentId
-            ? {
-                ...comment,
-                isLiked: !comment.isLiked,
-                likeCount: comment.isLiked
-                  ? comment.likeCount - 1
-                  : comment.likeCount + 1,
-              }
-            : comment
-        )
-      );
-    }
+    // Update local state immediately
+    setComments(prev =>
+      prev.map(comment =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              isLiked: !comment.isLiked,
+              likeCount: comment.isLiked
+                ? comment.likeCount - 1
+                : comment.likeCount + 1,
+            }
+          : comment
+      )
+    );
   };
 
   const handleReplySubmit = (parentCommentId: number, content: string) => {
-    if (onReplySubmit) {
-      onReplySubmit(parentCommentId, content);
-    } else {
-      // Add reply to local state immediately
-      const reply: Comment = {
-        id: Date.now(),
-        authorId: 'currentUser',
-        authorName: '현재사용자',
+    createReplyMutation.mutate(
+      {
+        commentId: parentCommentId.toString(),
         content: content,
-        date: new Date().toISOString().split('T')[0],
-        parentId: parentCommentId,
-        likeCount: 0,
-        isLiked: false,
-      };
+      },
+      {
+        onSuccess: data => {
+          console.log(data);
+          // Add the new reply to the state immediately
+          const newReply: Comment = {
+            id: Date.now(), // 임시 ID, 실제로는 API 응답에서 받아야 함
+            authorId: 'currentUser',
+            authorName: '현재사용자',
+            content: content,
+            date: new Date().toISOString().split('T')[0],
+            parentId: parentCommentId,
+            likeCount: 0,
+            isLiked: false,
+          };
 
-      setComments(prev =>
-        prev.map(comment =>
-          comment.id === parentCommentId
-            ? {
-                ...comment,
-                replies: [...(comment.replies || []), reply],
-              }
-            : comment
-        )
-      );
-    }
+          setComments(prev =>
+            prev.map(comment =>
+              comment.id === parentCommentId
+                ? {
+                    ...comment,
+                    replies: [...(comment.replies || []), newReply],
+                  }
+                : comment
+            )
+          );
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -151,7 +145,7 @@ export default function Comments({
         </div>
       ) : (
         <CommentList
-          comments={comments}
+          comments={comments as any}
           onCommentLike={handleCommentLike}
           onReplySubmit={handleReplySubmit}
         />
