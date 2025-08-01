@@ -67,7 +67,7 @@ export interface CreateCommentResponse {
 
 // Create Reply Types
 export interface CreateReplyRequest {
-  comment_id: string;
+  commentId: string;
   content: string;
 }
 
