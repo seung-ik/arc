@@ -73,6 +73,7 @@ export default function PostActions({
   onLike,
   onDislike,
 }: PostActionsProps) {
+  console.log('???');
   return (
     <PostActionsContainer>
       <ActionButtons>

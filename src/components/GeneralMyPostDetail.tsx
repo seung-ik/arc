@@ -1,18 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import PostHeader from '@/components/PostHeader';
-import CommentSection from '@/components/CommentSection';
 import {
   Container,
   Content,
   PostContent,
-  PostActions,
-  ActionButtons,
-  ActionButton,
-  ButtonText,
-  ButtonCount,
   ManagementSection,
   ManagementTitle,
   ManagementButtons,
@@ -20,18 +12,10 @@ import {
 } from '@/styles/PostDetailStyles';
 import { GeneralPost } from '@/types/post';
 import HtmlContent from './HtmlContent';
-
-interface Comment {
-  id: number;
-  authorId: string;
-  authorName: string;
-  content: string;
-  date: string;
-  parentId?: number;
-  replies?: Comment[];
-  likeCount: number;
-  isLiked: boolean;
-}
+import PostActions from './PostActions';
+import Comments from './Comments';
+import { useDeletePostMutation } from '@/api/useCommunity';
+import { useRouter } from 'next/navigation';
 
 interface GeneralMyPostDetailProps {
   post: GeneralPost;
@@ -41,7 +25,7 @@ export default function GeneralMyPostDetail({
   post,
 }: GeneralMyPostDetailProps) {
   const router = useRouter();
-  const [comments, setComments] = useState<Comment[]>([]);
+  const deletePostMutation = useDeletePostMutation();
 
   const handleLike = () => {
     // TODO: 좋아요 처리
@@ -51,66 +35,19 @@ export default function GeneralMyPostDetail({
     // TODO: 싫어요 처리
   };
 
-  const handleCommentSubmit = (content: string) => {
-    const comment: Comment = {
-      id: Date.now(),
-      authorId: 'currentUser',
-      authorName: '현재사용자',
-      content: content,
-      date: new Date().toISOString().split('T')[0],
-      likeCount: 0,
-      isLiked: false,
-    };
-
-    setComments(prev => [comment, ...prev]);
-  };
-
-  const handleCommentLike = (commentId: number) => {
-    setComments(prev =>
-      prev.map(comment =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likeCount: comment.isLiked
-                ? comment.likeCount - 1
-                : comment.likeCount + 1,
-            }
-          : comment
-      )
-    );
-  };
-
-  const handleReplySubmit = (parentCommentId: number, content: string) => {
-    const reply: Comment = {
-      id: Date.now(),
-      authorId: 'currentUser',
-      authorName: '현재사용자',
-      content: content,
-      date: new Date().toISOString().split('T')[0],
-      parentId: parentCommentId,
-      likeCount: 0,
-      isLiked: false,
-    };
-
-    setComments(prev =>
-      prev.map(comment =>
-        comment.id === parentCommentId
-          ? {
-              ...comment,
-              replies: [...(comment.replies || []), reply],
-            }
-          : comment
-      )
-    );
-  };
-
-  const handleAuthorClick = (authorId: string) => {
-    router.push(`/profile/${authorId}`);
-  };
-
   const handleDelete = () => {
-    // TODO: 삭제 처리
+    if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
+      deletePostMutation.mutate(post.id, {
+        onSuccess: () => {
+          console.log('글 삭제 성공');
+          router.back(); // 이전 페이지로 돌아가기
+        },
+        onError: error => {
+          console.error('글 삭제 실패:', error);
+          alert('글 삭제에 실패했습니다.');
+        },
+      });
+    }
   };
 
   return (
@@ -129,30 +66,14 @@ export default function GeneralMyPostDetail({
           <HtmlContent content={post.content} />
         </PostContent>
 
-        <PostActions>
-          <ActionButtons>
-            <ActionButton
-              onClick={handleLike}
-              $isActive={true}
-              // $isActive={post.isLiked}
-              $variant="like"
-            >
-              <ButtonText>좋아요</ButtonText>
-              {/* <ButtonCount>{post.likeCount}</ButtonCount> */}
-              <ButtonCount>{3}</ButtonCount>
-            </ActionButton>
-            <ActionButton
-              onClick={handleDislike}
-              // $isActive={post.isDisliked}
-              $isActive={false}
-              $variant="dislike"
-            >
-              <ButtonText>싫어요</ButtonText>
-              {/* <ButtonCount>{post.dislikeCount}</ButtonCount> */}
-              <ButtonCount>{1}</ButtonCount>
-            </ActionButton>
-          </ActionButtons>
-        </PostActions>
+        <PostActions
+          likeCount={post.likeCount}
+          dislikeCount={post.hateCount}
+          isLiked={post.isLiked}
+          isDisliked={post.isHated}
+          onLike={handleLike}
+          onDislike={handleDislike}
+        />
 
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>
@@ -163,14 +84,7 @@ export default function GeneralMyPostDetail({
           </ManagementButtons>
         </ManagementSection>
 
-        <CommentSection
-          commentCount={post.commentCount}
-          comments={comments}
-          onCommentSubmit={handleCommentSubmit}
-          onCommentLike={handleCommentLike}
-          onReplySubmit={handleReplySubmit}
-          onAuthorClick={handleAuthorClick}
-        />
+        <Comments postId={post.id} commentCount={post.commentCount} />
       </Content>
     </Container>
   );

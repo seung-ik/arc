@@ -5,6 +5,8 @@ import {
   useCreateCommentMutation,
   useCreateReplyMutation,
   useCommentsApi,
+  useDeleteCommentMutation,
+  useDeleteReplyMutation,
 } from '@/api/useCommunity';
 import CommentList from '@/components/CommentList';
 import { Comment, normalizeApiComments } from '@/utils/commentUtils';
@@ -16,6 +18,7 @@ import {
   CommentSubmitButton,
 } from '@/styles/PostDetailStyles';
 import React from 'react';
+import { useAuthStore } from '@/stores/authStore';
 
 interface CommentsProps {
   postId: number;
@@ -25,16 +28,19 @@ interface CommentsProps {
 export default function Comments({ postId, commentCount }: CommentsProps) {
   const createCommentMutation = useCreateCommentMutation();
   const createReplyMutation = useCreateReplyMutation();
+  const deleteCommentMutation = useDeleteCommentMutation();
+  const deleteReplyMutation = useDeleteReplyMutation();
   const { data: commentsData, isLoading } = useCommentsApi(postId);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
+  const { userProfile } = useAuthStore();
 
   // Handle successful comment creation
   const handleCommentSuccess = (data: any) => {
     const newCommentItem: Comment = {
       id: data.data.id,
-      authorId: data.data.user.id,
-      authorName: data.data.user.nickname,
+      authorId: userProfile.id.toString(),
+      authorName: userProfile.nickname || '사용자',
       content: data.data.content,
       date: data.data.createdAt,
       likeCount: data.data.likeCount,
@@ -42,6 +48,40 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
     };
 
     setComments(prev => [newCommentItem, ...prev]);
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    deleteCommentMutation.mutate(commentId, {
+      onSuccess: () => {
+        console.log('댓글 삭제 성공');
+        // 로컬 상태에서 댓글 제거
+        setComments(prev => prev.filter(comment => comment.id !== commentId));
+      },
+      onError: error => {
+        console.error('댓글 삭제 실패:', error);
+        alert('댓글 삭제에 실패했습니다.');
+      },
+    });
+  };
+
+  const handleDeleteReply = (replyId: number) => {
+    deleteReplyMutation.mutate(replyId, {
+      onSuccess: () => {
+        console.log('대댓글 삭제 성공');
+        // 로컬 상태에서 대댓글 제거
+        setComments(prev =>
+          prev.map(comment => ({
+            ...comment,
+            replies:
+              comment.replies?.filter(reply => reply.id !== replyId) || [],
+          }))
+        );
+      },
+      onError: error => {
+        console.error('대댓글 삭제 실패:', error);
+        alert('대댓글 삭제에 실패했습니다.');
+      },
+    });
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
@@ -89,13 +129,13 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
           console.log(data);
           // Add the new reply to the state immediately
           const newReply: Comment = {
-            id: Date.now(), // 임시 ID, 실제로는 API 응답에서 받아야 함
-            authorId: 'currentUser',
-            authorName: '현재사용자',
-            content: content,
-            date: new Date().toISOString().split('T')[0],
+            id: data.data.id,
+            authorId: data.data.user.id.toString(),
+            authorName: data.data.user.nickname,
+            content: data.data.content,
+            date: data.data.createdAt,
             parentId: parentCommentId,
-            likeCount: 0,
+            likeCount: 0, // API 응답에 likeCount가 없으므로 기본값 사용
             isLiked: false,
           };
 
@@ -148,6 +188,8 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
           comments={comments as any}
           onCommentLike={handleCommentLike}
           onReplySubmit={handleReplySubmit}
+          onDeleteComment={handleDeleteComment}
+          onDeleteReply={handleDeleteReply}
         />
       )}
     </CommentsSection>

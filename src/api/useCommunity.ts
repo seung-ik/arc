@@ -59,8 +59,18 @@ export interface CreateCommentRequest {
 export interface CreateCommentResponse {
   success: boolean;
   data: {
-    postId: string;
-    comment: string;
+    id: number;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      id: number;
+      nickname: string;
+      profileImageUrl: string | null;
+    };
+    postId: number;
+    replies: any[];
+    likeCount: number;
   };
   message: string;
 }
@@ -73,7 +83,18 @@ export interface CreateReplyRequest {
 
 export interface CreateReplyResponse {
   success: boolean;
-  data: any;
+  data: {
+    id: number;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      id: number;
+      nickname: string;
+      profileImageUrl: string | null;
+    };
+    commentId: number;
+  };
   message: string;
 }
 
