@@ -29,9 +29,7 @@ function AuthSyncer() {
     const syncAuth = async () => {
       const token = localStorage.getItem('ACCESS_TOKEN');
       if (!isInitialized) return;
-      if (isWepinLoggedIn && !token) {
-        // logoutAll();
-      } else {
+      if (wepinUserInfo && token) {
         // TODO: me 호출 > 위핀내 정보랑 me 호출해서 다르면 로그아웃 시켜야 될거같음?
 
         // 프로필 API 호출
@@ -48,15 +46,12 @@ function AuthSyncer() {
             logoutAll();
           });
       }
+
+      // logoutAll();
     };
     syncAuth();
-  }, [
-    isWepinLoggedIn,
-    isInitialized,
-    wepinUserInfo,
-    logoutAll,
-    refetchProfile,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWepinLoggedIn, isInitialized, wepinUserInfo]);
 
   useEffect(() => {
     const token = localStorage.getItem('ACCESS_TOKEN');
