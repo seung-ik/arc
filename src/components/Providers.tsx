@@ -7,13 +7,18 @@ import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
-import { useInitNicknameApi } from '@/api/useUser';
+import { useInitNicknameApi, useProfileApi } from '@/api/useUser';
 import NicknameModal from './NicknameModal';
 import PrefetchProvider from './PrefetchProvider';
 
 function AuthSyncer() {
-  const { isInitialized, isLoggedIn: isWepinLoggedIn } = useWepin();
+  const {
+    isInitialized,
+    isLoggedIn: isWepinLoggedIn,
+    userInfo: wepinUserInfo,
+  } = useWepin();
   const { mutate: initNickname } = useInitNicknameApi();
+  const { refetch: refetchProfile } = useProfileApi();
   const [showNicknameModal, setShowNicknameModal] = useState(false);
 
   const pathname = usePathname();
@@ -28,10 +33,30 @@ function AuthSyncer() {
         // logoutAll();
       } else {
         // TODO: me 호출 > 위핀내 정보랑 me 호출해서 다르면 로그아웃 시켜야 될거같음?
+
+        // 프로필 API 호출
+        refetchProfile()
+          .then(({ data }) => {
+            if (data?.user?.email !== wepinUserInfo?.email) {
+              logoutAll();
+            } else {
+              console.log('위핀, 토큰 정보 일치합니다.');
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            logoutAll();
+          });
       }
     };
     syncAuth();
-  }, [isWepinLoggedIn, isInitialized]);
+  }, [
+    isWepinLoggedIn,
+    isInitialized,
+    wepinUserInfo,
+    logoutAll,
+    refetchProfile,
+  ]);
 
   useEffect(() => {
     const token = localStorage.getItem('ACCESS_TOKEN');

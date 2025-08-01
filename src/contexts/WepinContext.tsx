@@ -66,6 +66,16 @@ export function WepinProvider({ children }: WepinProviderProps) {
           if (status === 'login') {
             setIsLoggedIn(true);
 
+            // 기존 사용자 정보 조회
+            try {
+              const sdkUserInfo = (widgetInstance as any)._userInfo?.userInfo;
+              if (sdkUserInfo) {
+                setUserInfo(sdkUserInfo);
+              }
+            } catch (userInfoError) {
+              console.warn('기존 사용자 정보 조회 실패:', userInfoError);
+            }
+
             // 기존 사용자 계정 정보 조회
             try {
               const userAccounts = await widgetInstance.getAccounts();
@@ -77,10 +87,21 @@ export function WepinProvider({ children }: WepinProviderProps) {
           } else if (status === 'login_before_register') {
             setIsLoggedIn(true);
 
+            // 새로운 사용자 정보 조회
+            try {
+              const sdkUserInfo = (widgetInstance as any)._userInfo?.userInfo;
+              if (sdkUserInfo) {
+                setUserInfo(sdkUserInfo);
+              }
+            } catch (userInfoError) {
+              console.warn('새로운 사용자 정보 조회 실패:', userInfoError);
+            }
+
             // 새로운 사용자는 지갑이 아직 생성되지 않았으므로 빈 배열로 설정
             setAccounts([]);
           } else {
             setIsLoggedIn(false);
+            setUserInfo(null);
             setAccounts([]);
           }
         } catch (statusError) {
