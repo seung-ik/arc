@@ -52,14 +52,14 @@ export interface CreatePostResponse {
 
 // Create Comment Types
 export interface CreateCommentRequest {
-  post_id: string;
+  postId: number;
   content: string;
 }
 
 export interface CreateCommentResponse {
   success: boolean;
   data: {
-    post_id: string;
+    postId: string;
     comment: string;
   };
   message: string;
