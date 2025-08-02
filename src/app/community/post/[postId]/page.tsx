@@ -2,9 +2,11 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
-import CategoryTabs from '../../component/CategoryTabs';
 import CommunityLayout from '../../component/CommunityLayout';
 import BottomNavigation from '@/components/BottomNavigation';
+import CommunityErrorLayout from '@/components/CommunityErrorLayout';
+import PostDetailHeader from '@/components/PostDetailHeader';
+import FullPageLoading from '@/components/FullPageLoading';
 import GeneralPostDetail from '@/components/GeneralPostDetail';
 import GeneralMyPostDetail from '@/components/GeneralMyPostDetail';
 import MatchPostDetail from '@/components/MatchPostDetail';
@@ -22,45 +24,6 @@ const Container = styled.div`
   background-color: ${props => props.theme.colors.background};
   padding-bottom: 80px;
   position: relative;
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  font-size: ${props => props.theme.typography.fontSizes.lg};
-  color: ${props => props.theme.colors.textGray};
-`;
-
-const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  text-align: center;
-`;
-
-const ErrorMessage = styled.div`
-  font-size: ${props => props.theme.typography.fontSizes.lg};
-  color: ${props => props.theme.colors.textGray};
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
-
-const BackButton = styled.button`
-  background-color: ${props => props.theme.colors.primary};
-  color: ${props => props.theme.colors.textWhite};
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.primaryHover};
-  }
 `;
 
 export default function PostDetailPage() {
@@ -82,31 +45,15 @@ export default function PostDetailPage() {
   };
 
   if (isLoading) {
-    return (
-      <Container>
-        <CategoryTabs />
-        <CommunityLayout>
-          <LoadingContainer>로딩 중...</LoadingContainer>
-        </CommunityLayout>
-        <BottomNavigation />
-      </Container>
-    );
+    return <FullPageLoading />;
   }
 
   if (apiError || !postDetailData?.data) {
     return (
-      <Container>
-        <CategoryTabs />
-        <CommunityLayout>
-          <ErrorContainer>
-            <ErrorMessage>
-              {apiError?.message || '게시글을 찾을 수 없습니다.'}
-            </ErrorMessage>
-            <BackButton onClick={handleBackClick}>돌아가기</BackButton>
-          </ErrorContainer>
-        </CommunityLayout>
-        <BottomNavigation />
-      </Container>
+      <CommunityErrorLayout
+        message={apiError?.message || '게시글을 찾을 수 없습니다.'}
+        onBackClick={handleBackClick}
+      />
     );
   }
 
@@ -155,7 +102,7 @@ export default function PostDetailPage() {
 
   return (
     <Container>
-      <CategoryTabs />
+      <PostDetailHeader onBackClick={handleBackClick} />
       <CommunityLayout>{renderPostDetail()}</CommunityLayout>
       <BottomNavigation />
     </Container>

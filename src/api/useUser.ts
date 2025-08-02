@@ -61,12 +61,6 @@ interface MyPostsResponse {
   message: string;
 }
 
-interface UserProfileResponse {
-  success: boolean;
-  data: User;
-  message: string;
-}
-
 // 프로필 조회 응답 타입
 interface ProfileResponse {
   user: User;
@@ -106,9 +100,9 @@ export const useMyPostsApi = () => {
 
 // 다른 사람의 프로필 조회
 export const useUserProfileApi = (userId: number) => {
-  return useQuery<UserProfileResponse>({
+  return useQuery<ProfileResponse>({
     queryKey: ['user-profile', userId],
-    queryFn: () => api.get(`/users/${userId}`).then(res => res.data),
+    queryFn: () => api.get(`/users/${userId}/profile`).then(res => res.data),
     enabled: !!userId,
   });
 };

@@ -39,8 +39,8 @@ export default function UserProfilePage() {
   useEffect(() => {
     if (userProfileData) {
       console.log('다른 사람 프로필 정보:', userProfileData);
-      setUser(userProfileData.data);
-      setUserElos([]); //TODO: 추후 수정
+      setUser(userProfileData.user);
+      setUserElos(userProfileData.userElos);
     }
   }, [userProfileData]);
 
