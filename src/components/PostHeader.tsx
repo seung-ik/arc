@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { formatDate, formatRelativeTime } from '@/utils';
 import {
   PostHeader as PostHeaderStyled,
   PostTitle,
@@ -12,6 +13,9 @@ import {
   AuthorName,
   PostDate,
   PostTypeBadge,
+  AuthorProfileImage,
+  AuthorProfileInitials,
+  AuthorTextInfo,
 } from '@/styles/PostDetailStyles';
 
 interface PostHeaderProps {
@@ -21,6 +25,7 @@ interface PostHeaderProps {
   date: string;
   postType: string;
   viewCount: number;
+  authorProfileImage?: string;
 }
 
 export default function PostHeader({
@@ -30,6 +35,7 @@ export default function PostHeader({
   date,
   postType,
   viewCount,
+  authorProfileImage,
 }: PostHeaderProps) {
   const router = useRouter();
 
@@ -37,23 +43,44 @@ export default function PostHeader({
     router.push(`/profile/${authorId}`);
   };
 
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <PostHeaderStyled>
+      <PostMeta>
+        <AuthorInfo>
+          {authorProfileImage ? (
+            <AuthorProfileImage src={authorProfileImage} alt={authorName} />
+          ) : (
+            <AuthorProfileInitials>
+              {getInitials(authorName)}
+            </AuthorProfileInitials>
+          )}
+          <AuthorTextInfo>
+            <AuthorName onClick={() => handleAuthorClick(authorId)}>
+              {authorName}
+            </AuthorName>
+            <PostDate>
+              {formatDate(date)}
+              {formatRelativeTime(date) && ` (${formatRelativeTime(date)})`}
+            </PostDate>
+          </AuthorTextInfo>
+        </AuthorInfo>
+      </PostMeta>
       <PostTitleRow>
         <PostTitleContainer>
+          <PostTypeBadge>{postType}</PostTypeBadge>
           <PostTitle>{title}</PostTitle>
         </PostTitleContainer>
         <ViewCount>조회 {viewCount}</ViewCount>
       </PostTitleRow>
-      <PostMeta>
-        <AuthorInfo>
-          <AuthorName onClick={() => handleAuthorClick(authorId)}>
-            {authorName}
-          </AuthorName>
-          <PostDate>{date}</PostDate>
-        </AuthorInfo>
-        <PostTypeBadge>{postType}</PostTypeBadge>
-      </PostMeta>
     </PostHeaderStyled>
   );
 }

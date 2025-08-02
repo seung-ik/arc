@@ -4,17 +4,19 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useLikePostMutation, useHatePostMutation } from '@/api/useCommunity';
 import { GeneralPost } from '@/types/post';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 const PostActionsContainer = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
   padding: ${props => props.theme.spacing.md} 0;
-  border-top: 1px solid ${props => props.theme.colors.border};
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  margin-bottom: 0;
 `;
 
 const ActionButtons = styled.div`
   display: flex;
   gap: ${props => props.theme.spacing.md};
+  justify-content: center;
 `;
 
 const ActionButton = styled.button<{
@@ -23,35 +25,27 @@ const ActionButton = styled.button<{
 }>`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing.xs};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
   background-color: ${props =>
     props.$isActive
-      ? props.$variant === 'like'
-        ? props.theme.colors.success
-        : props.theme.colors.error
+      ? props.theme.colors.secondaryLight
       : props.theme.colors.background};
   color: ${props =>
     props.$isActive
-      ? props.theme.colors.textWhite
+      ? props.theme.colors.textBlack
       : props.theme.colors.textBlack};
   cursor: pointer;
   transition: all 0.2s;
-  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
+  font-weight: ${props => props.theme.typography.fontWeights.semibold};
 
   &:hover {
-    background-color: ${props =>
-      props.$variant === 'like'
-        ? props.theme.colors.success
-        : props.theme.colors.error};
-    color: ${props => props.theme.colors.textWhite};
+    background-color: ${props => props.theme.colors.secondaryLight};
+    color: ${props => props.theme.colors.textBlack};
   }
-`;
-
-const ButtonText = styled.span`
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
 `;
 
 const ButtonCount = styled.span`
@@ -108,7 +102,7 @@ export default function PostActions({ post }: PostActionsProps) {
           $isActive={localIsLiked}
           $variant="like"
         >
-          <ButtonText>좋아요</ButtonText>
+          <Image src={ICONS.GOOD} alt="좋아요" />
           <ButtonCount>{localLikeCount}</ButtonCount>
         </ActionButton>
         <ActionButton
@@ -116,7 +110,7 @@ export default function PostActions({ post }: PostActionsProps) {
           $isActive={localIsHated}
           $variant="dislike"
         >
-          <ButtonText>싫어요</ButtonText>
+          <Image src={ICONS.HATE} alt="싫어요" />
           <ButtonCount>{localHateCount}</ButtonCount>
         </ActionButton>
       </ActionButtons>

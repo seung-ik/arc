@@ -12,7 +12,11 @@ import SEARCH from '@/assets/images/icons/search.svg';
 import BELL from '@/assets/images/icons/bell.svg';
 import PLUS_CIRCLE from '@/assets/images/icons/plus_circle.svg';
 import ARROW_DOWN from '@/assets/images/icons/arrow_down.svg';
+import ARROW_LEFT from '@/assets/images/icons/arrow_left.svg';
+import HAMBURGER from '@/assets/images/icons/hamburger.svg';
 import PLUS from '@/assets/images/icons/plus.svg';
+import GOOD from '@/assets/images/icons/good.svg';
+import HATE from '@/assets/images/icons/hate.svg';
 
 // 탭 아이콘들
 import TAB_COMMUNITY from '@/assets/images/icons/tab_community.svg';
@@ -38,7 +42,11 @@ export const ICONS = {
   BELL,
   PLUS_CIRCLE,
   ARROW_DOWN,
+  ARROW_LEFT,
+  HAMBURGER,
   PLUS,
+  GOOD,
+  HATE,
 } as const;
 
 // 탭 아이콘들
