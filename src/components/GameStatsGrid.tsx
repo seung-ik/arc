@@ -1,7 +1,6 @@
 'use client';
 
 import styled from 'styled-components';
-import { useAuthStore } from '@/stores/authStore';
 import { UserElo } from '@/api/useUser';
 import GameStatCard from './GameStatCard';
 
@@ -40,20 +39,29 @@ const convertUserElosToObject = (userElos: UserElo[]) => {
     }
   > = {};
 
+  if (!userElos || userElos.length === 0) {
+    return userElosObject;
+  }
+
   userElos.forEach(userElo => {
-    userElosObject[userElo.id] = {
-      name: userElo.sportCategory.name,
-      eloPoint: userElo.eloPoint,
-      percentile: userElo.percentile,
-      tier: userElo.tier,
-    };
+    if (userElo && userElo.sportCategory) {
+      userElosObject[userElo.id] = {
+        name: userElo.sportCategory.name,
+        eloPoint: userElo.eloPoint,
+        percentile: userElo.percentile,
+        tier: userElo.tier,
+      };
+    }
   });
 
   return userElosObject;
 };
 
-export default function GameStatsGrid() {
-  const { userElos } = useAuthStore();
+interface GameStatsGridProps {
+  userElos: UserElo[];
+}
+
+export default function GameStatsGrid({ userElos }: GameStatsGridProps) {
   const userElosObject = convertUserElosToObject(userElos);
 
   return (

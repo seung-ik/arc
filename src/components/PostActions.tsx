@@ -74,7 +74,7 @@ export default function PostActions({ post }: PostActionsProps) {
 
   const handleLike = () => {
     likePostMutation.mutate(post.id, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         setLocalLikeCount(data.data.likeCount);
         setLocalIsLiked(data.data.isLiked);
         // 싫어요가 활성화되어 있다면 비활성화
@@ -88,7 +88,7 @@ export default function PostActions({ post }: PostActionsProps) {
 
   const handleDislike = () => {
     hatePostMutation.mutate(post.id, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         setLocalHateCount(data.data.hateCount);
         setLocalIsHated(data.data.isHated);
         // 좋아요가 활성화되어 있다면 비활성화
@@ -103,7 +103,11 @@ export default function PostActions({ post }: PostActionsProps) {
   return (
     <PostActionsContainer>
       <ActionButtons>
-        <ActionButton onClick={handleLike} $isActive={localIsLiked} $variant="like">
+        <ActionButton
+          onClick={handleLike}
+          $isActive={localIsLiked}
+          $variant="like"
+        >
           <ButtonText>좋아요</ButtonText>
           <ButtonCount>{localLikeCount}</ButtonCount>
         </ActionButton>

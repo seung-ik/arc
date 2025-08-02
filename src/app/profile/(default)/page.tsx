@@ -88,9 +88,15 @@ export default function ProfilePage() {
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
   const { data: profileData, isLoading } = useProfileApi();
+  const {
+    setProfile,
+    setUserElos,
+    setTokenAmount,
+    setNickname,
+    userProfile,
+    userElos,
+  } = useAuthStore();
   const { data: myPostsData } = useMyPostsApi();
-  const { setProfile, setUserElos, setTokenAmount, setNickname, userProfile } =
-    useAuthStore();
 
   // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
   useEffect(() => {
@@ -179,7 +185,7 @@ export default function ProfilePage() {
           </ProfileRightCol>
         </ProfileTopWrapper>
 
-        <GameStatsGrid />
+        <GameStatsGrid userElos={userElos} />
 
         <ProfilePostList
           posts={posts}

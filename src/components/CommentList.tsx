@@ -76,7 +76,7 @@ export default function CommentList({
 
   const handleCommentLike = (commentId: number) => {
     likeCommentMutation.mutate(commentId, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         setLocalComments(prev =>
           prev.map(comment =>
             comment.id === commentId

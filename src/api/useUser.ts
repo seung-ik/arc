@@ -61,6 +61,12 @@ interface MyPostsResponse {
   message: string;
 }
 
+interface UserProfileResponse {
+  success: boolean;
+  data: User;
+  message: string;
+}
+
 // 프로필 조회 응답 타입
 interface ProfileResponse {
   user: User;
@@ -95,5 +101,23 @@ export const useMyPostsApi = () => {
   return useQuery<MyPostsResponse>({
     queryKey: ['my-posts'],
     queryFn: () => api.get('/users/me/posts').then(res => res.data),
+  });
+};
+
+// 다른 사람의 프로필 조회
+export const useUserProfileApi = (userId: number) => {
+  return useQuery<UserProfileResponse>({
+    queryKey: ['user-profile', userId],
+    queryFn: () => api.get(`/users/${userId}`).then(res => res.data),
+    enabled: !!userId,
+  });
+};
+
+// 다른 사람이 쓴 글 목록 조회
+export const useUserPostsApi = (userId: number) => {
+  return useQuery<MyPostsResponse>({
+    queryKey: ['user-posts', userId],
+    queryFn: () => api.get(`/users/${userId}/posts`).then(res => res.data),
+    enabled: !!userId,
   });
 };
