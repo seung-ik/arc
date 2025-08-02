@@ -1,6 +1,9 @@
 'use client';
 
 import styled from 'styled-components';
+import { useState } from 'react';
+import { useLikePostMutation, useHatePostMutation } from '@/api/useCommunity';
+import { GeneralPost } from '@/types/post';
 
 const PostActionsContainer = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -57,37 +60,60 @@ const ButtonCount = styled.span`
 `;
 
 interface PostActionsProps {
-  likeCount?: number;
-  dislikeCount?: number;
-  isLiked?: boolean;
-  isDisliked?: boolean;
-  onLike?: () => void;
-  onDislike?: () => void;
+  post: GeneralPost;
 }
 
-export default function PostActions({
-  likeCount = 0,
-  dislikeCount = 0,
-  isLiked = false,
-  isDisliked = false,
-  onLike,
-  onDislike,
-}: PostActionsProps) {
-  console.log('???');
+export default function PostActions({ post }: PostActionsProps) {
+  const [localLikeCount, setLocalLikeCount] = useState(post.likeCount || 0);
+  const [localHateCount, setLocalHateCount] = useState(post.hateCount || 0);
+  const [localIsLiked, setLocalIsLiked] = useState(post.isLiked || false);
+  const [localIsHated, setLocalIsHated] = useState(post.isHated || false);
+
+  const likePostMutation = useLikePostMutation();
+  const hatePostMutation = useHatePostMutation();
+
+  const handleLike = () => {
+    likePostMutation.mutate(post.id, {
+      onSuccess: (data) => {
+        setLocalLikeCount(data.data.likeCount);
+        setLocalIsLiked(data.data.isLiked);
+        // 싫어요가 활성화되어 있다면 비활성화
+        if (data.data.isLiked && localIsHated) {
+          setLocalIsHated(false);
+          setLocalHateCount(prev => Math.max(0, prev - 1));
+        }
+      },
+    });
+  };
+
+  const handleDislike = () => {
+    hatePostMutation.mutate(post.id, {
+      onSuccess: (data) => {
+        setLocalHateCount(data.data.hateCount);
+        setLocalIsHated(data.data.isHated);
+        // 좋아요가 활성화되어 있다면 비활성화
+        if (data.data.isHated && localIsLiked) {
+          setLocalIsLiked(false);
+          setLocalLikeCount(prev => Math.max(0, prev - 1));
+        }
+      },
+    });
+  };
+
   return (
     <PostActionsContainer>
       <ActionButtons>
-        <ActionButton onClick={onLike} $isActive={isLiked} $variant="like">
+        <ActionButton onClick={handleLike} $isActive={localIsLiked} $variant="like">
           <ButtonText>좋아요</ButtonText>
-          <ButtonCount>{likeCount}</ButtonCount>
+          <ButtonCount>{localLikeCount}</ButtonCount>
         </ActionButton>
         <ActionButton
-          onClick={onDislike}
-          $isActive={isDisliked}
+          onClick={handleDislike}
+          $isActive={localIsHated}
           $variant="dislike"
         >
           <ButtonText>싫어요</ButtonText>
-          <ButtonCount>{dislikeCount}</ButtonCount>
+          <ButtonCount>{localHateCount}</ButtonCount>
         </ActionButton>
       </ActionButtons>
     </PostActionsContainer>

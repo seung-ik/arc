@@ -101,23 +101,6 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
     setNewComment('');
   };
 
-  const handleCommentLike = (commentId: number) => {
-    // Update local state immediately
-    setComments(prev =>
-      prev.map(comment =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likeCount: comment.isLiked
-                ? comment.likeCount - 1
-                : comment.likeCount + 1,
-            }
-          : comment
-      )
-    );
-  };
-
   const handleReplySubmit = (parentCommentId: number, content: string) => {
     createReplyMutation.mutate(
       {
@@ -186,7 +169,6 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
       ) : (
         <CommentList
           comments={comments as any}
-          onCommentLike={handleCommentLike}
           onReplySubmit={handleReplySubmit}
           onDeleteComment={handleDeleteComment}
           onDeleteReply={handleDeleteReply}

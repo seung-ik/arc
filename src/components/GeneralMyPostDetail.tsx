@@ -27,14 +27,6 @@ export default function GeneralMyPostDetail({
   const router = useRouter();
   const deletePostMutation = useDeletePostMutation();
 
-  const handleLike = () => {
-    // TODO: 좋아요 처리
-  };
-
-  const handleDislike = () => {
-    // TODO: 싫어요 처리
-  };
-
   const handleDelete = () => {
     if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
       deletePostMutation.mutate(post.id, {
@@ -66,14 +58,7 @@ export default function GeneralMyPostDetail({
           <HtmlContent content={post.content} />
         </PostContent>
 
-        <PostActions
-          likeCount={post.likeCount}
-          dislikeCount={post.hateCount}
-          isLiked={post.isLiked}
-          isDisliked={post.isHated}
-          onLike={handleLike}
-          onDislike={handleDislike}
-        />
+        <PostActions post={post} />
 
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>

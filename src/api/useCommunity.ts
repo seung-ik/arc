@@ -172,6 +172,42 @@ export interface PostDetailResponse {
   message: string;
 }
 
+// Like Post Types
+export interface LikePostResponse {
+  success: boolean;
+  data: {
+    postId: number;
+    success: boolean;
+    isLiked: boolean;
+    likeCount: number;
+  };
+  message: string;
+}
+
+// Hate Post Types
+export interface HatePostResponse {
+  success: boolean;
+  data: {
+    postId: number;
+    success: boolean;
+    isHated: boolean;
+    hateCount: number;
+  };
+  message: string;
+}
+
+// Like Comment Types
+export interface LikeCommentResponse {
+  success: boolean;
+  data: {
+    commentId: number;
+    success: boolean;
+    isLiked: boolean;
+    likeCount: number;
+  };
+  message: string;
+}
+
 // API Hooks
 export const useSportCategoriesApi = (enabled: boolean = true) => {
   return useQuery({
@@ -314,5 +350,50 @@ export const usePostDetailApi = (postId: number, enabled: boolean = true) => {
       return response.data;
     },
     enabled: enabled && !!postId,
+  });
+};
+
+export const useLikePostMutation = () => {
+  return useMutation({
+    mutationFn: async (postId: number): Promise<LikePostResponse> => {
+      const response = await api.post(`/posts/${postId}/likes`);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('좋아요 성공:', data);
+    },
+    onError: error => {
+      console.error('좋아요 실패:', error);
+    },
+  });
+};
+
+export const useHatePostMutation = () => {
+  return useMutation({
+    mutationFn: async (postId: number): Promise<HatePostResponse> => {
+      const response = await api.post(`/posts/${postId}/hates`);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('싫어요 성공:', data);
+    },
+    onError: error => {
+      console.error('싫어요 실패:', error);
+    },
+  });
+};
+
+export const useLikeCommentMutation = () => {
+  return useMutation({
+    mutationFn: async (commentId: number): Promise<LikeCommentResponse> => {
+      const response = await api.post(`/comments/${commentId}/likes`);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('댓글 좋아요 성공:', data);
+    },
+    onError: error => {
+      console.error('댓글 좋아요 실패:', error);
+    },
   });
 };

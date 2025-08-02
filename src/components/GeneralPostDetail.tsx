@@ -12,14 +12,6 @@ interface GeneralPostDetailProps {
 }
 
 export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
-  const handleLike = () => {
-    // TODO: 좋아요 처리
-  };
-
-  const handleDislike = () => {
-    // TODO: 싫어요 처리
-  };
-
   return (
     <Container>
       <Content>
@@ -36,14 +28,7 @@ export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {
           <HtmlContent content={post.content} />
         </PostContent>
 
-        <PostActions
-          likeCount={post.likeCount}
-          dislikeCount={post.hateCount}
-          isLiked={post.isLiked}
-          isDisliked={post.isHated}
-          onLike={handleLike}
-          onDislike={handleDislike}
-        />
+        <PostActions post={post} />
 
         <Comments postId={post.id} commentCount={post.commentCount} />
       </Content>

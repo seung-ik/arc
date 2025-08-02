@@ -32,6 +32,35 @@ export interface UserElo {
   percentile: string;
 }
 
+// 내가 쓴 글 타입
+export interface MyPost {
+  id: number;
+  title: string;
+  content: string;
+  type: string;
+  isHidden: boolean;
+  viewCount: number;
+  commentCount: number;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: number;
+    nickname: string;
+    profileImageUrl: string | null;
+  };
+  sportCategoryId: number;
+  sportCategoryName: string;
+  likeCount: number;
+  hateCount: number;
+}
+
+// 내가 쓴 글 목록 응답 타입
+interface MyPostsResponse {
+  success: boolean;
+  data: MyPost[];
+  message: string;
+}
+
 // 프로필 조회 응답 타입
 interface ProfileResponse {
   user: User;
@@ -58,5 +87,13 @@ export const useInitNicknameApi = () => {
   return useMutation<InitNicknameResponse, Error, InitNicknameParams>({
     mutationFn: params =>
       api.put('/users/me/nickname', params).then(res => res.data),
+  });
+};
+
+// 내가 쓴 글 목록 조회
+export const useMyPostsApi = () => {
+  return useQuery<MyPostsResponse>({
+    queryKey: ['my-posts'],
+    queryFn: () => api.get('/users/me/posts').then(res => res.data),
   });
 };

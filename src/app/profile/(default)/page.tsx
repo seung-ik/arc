@@ -8,13 +8,12 @@ import ProfileHeader from '@/components/ProfileHeader';
 import TokenDisplay from '@/components/TokenDisplay';
 import GameStatsGrid from '@/components/GameStatsGrid';
 import ProfilePostList from '@/components/ProfilePostList';
-import { Post } from '@/types/post';
 import NicknameChangeModal from '@/components/NicknameChangeModal';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { useAuthStore } from '@/stores/authStore';
-import { useProfileApi } from '@/api/useUser';
+import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -80,143 +79,26 @@ const ProfileRightCol = styled.div`
   justify-content: center;
 `;
 
-// 임시 글 데이터 (기본값: 숨김)
-const mockMyPosts: Post[] = [
-  // 일반 포스트
-  // {
-  //   id: 1,
-  //   title: '배드민턴 스매시 기술 공유',
-  //   content:
-  //     '배드민턴 스매시를 연마한 지 2년이 되었는데, 정말 효과적인 연습법을 발견했습니다. 특히 백핸드 스매시에서 파워와 정확도를 동시에 높이는 방법을 공유합니다.',
-  //   author: {
-  //     id: 1,
-  //     nickname: '김철수',
-  //     profileImageUrl: null,
-  //   },
-  //   createdAt: '2024-01-10',
-  //   updatedAt: '2024-01-10',
-  //   isHidden: false,
-  //   viewCount: 234,
-  //   commentCount: 45,
-  //   sportCategoryId: 1,
-  //   sportCategoryName: '배드민턴',
-  //   type: '일반',
-  // },
-  // {
-  //   id: 2,
-  //   title: '탁구 대회 우승 후기',
-  //   content:
-  //     '지난 주에 열린 지역 탁구 대회에서 우승했습니다! 3년간의 연습이 결실을 맺은 것 같아서 정말 기쁩니다. 특히 결승전에서 상대방의 강력한 스핀 서브를 어떻게 받아냈는지 자세히 설명합니다.',
-  //   author: {
-  //     id: 1,
-  //     nickname: '김철수',
-  //     profileImageUrl: null,
-  //   },
-  //   createdAt: '2024-01-08',
-  //   updatedAt: '2024-01-08',
-  //   isHidden: false,
-  //   viewCount: 567,
-  //   commentCount: 89,
-  //   sportCategoryId: 1,
-  //   sportCategoryName: '탁구',
-  //   type: '일반',
-  // },
-  // {
-  //   id: 3,
-  //   title: '체스 오프닝 가이드',
-  //   content:
-  //     '체스 초보자를 위한 기본 오프닝들을 정리했습니다. 이탈리안 게임, 루이 로페즈, 스코치 게임 등 자주 사용되는 오프닝들을 단계별로 설명합니다.',
-  //   author: {
-  //     id: 1,
-  //     nickname: '김철수',
-  //     profileImageUrl: null,
-  //   },
-  //   createdAt: '2024-01-05',
-  //   updatedAt: '2024-01-05',
-  //   isHidden: false,
-  //   viewCount: 445,
-  //   commentCount: 67,
-  //   sportCategoryId: 1,
-  //   sportCategoryName: '체스',
-  //   type: '일반',
-  // },
-  // // 매치 포스트
-  // {
-  //   id: 4,
-  //   title: '배드민턴 매치 상대 구합니다',
-  //   content:
-  //     '서울 강남 지역에서 배드민턴 매치 상대를 구합니다. 실력은 중급 정도이고, 매주 토요일 오후에 치고 싶습니다. 연락처 남겨주세요!',
-  //   author: {
-  //     id: 1,
-  //     nickname: '김철수',
-  //     profileImageUrl: null,
-  //   },
-  //   createdAt: '2023-12-28',
-  //   updatedAt: '2023-12-28',
-  //   isHidden: false,
-  //   viewCount: 156,
-  //   commentCount: 23,
-  //   sportCategoryId: 1,
-  //   sportCategoryName: '배드민턴',
-  //   type: '매치',
-  //   location: '서울 강남',
-  //   desiredSkillLevel: '중급',
-  // },
-  // {
-  //   id: 5,
-  //   title: '체스 친선 대국 상대',
-  //   content:
-  //     '부산 해운대 지역에서 체스 친선 대국 상대를 구합니다. 실력에 관계없이 즐겁게 두실 분 환영합니다!',
-  //   author: {
-  //     id: 1,
-  //     nickname: '김철수',
-  //     profileImageUrl: null,
-  //   },
-  //   createdAt: '2023-12-25',
-  //   updatedAt: '2023-12-25',
-  //   isHidden: false,
-  //   viewCount: 98,
-  //   commentCount: 15,
-  //   sportCategoryId: 1,
-  //   sportCategoryName: '체스',
-  //   type: '매치',
-  //   location: '부산 해운대',
-  //   desiredSkillLevel: '실력 무관',
-  // },
-  // // 멘토 포스트
-  // {
-  //   id: 6,
-  //   title: '탁구 레슨 제공합니다',
-  //   content:
-  //     '탁구 레슨을 제공합니다. 8년 경력의 탁구 지도자입니다. 초급부터 중급까지 체계적으로 가르쳐드립니다. 서울 강남 지역에서 가능합니다.',
-  //   author: {
-  //     id: 1,
-  //     nickname: '김철수',
-  //     profileImageUrl: null,
-  //   },
-  //   createdAt: '2023-12-20',
-  //   updatedAt: '2023-12-20',
-  //   isHidden: false,
-  //   viewCount: 276,
-  //   commentCount: 38,
-  //   sportCategoryId: 1,
-  //   sportCategoryName: '탁구',
-  //   type: '멘토',
-  //   location: '서울 강남',
-  //   tokenReward: '5',
-  // },
-];
 export default function ProfilePage() {
   const router = useRouter();
   const logoutAll = useLogoutAll();
 
-  const [posts, setPosts] = useState(mockMyPosts);
+  const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
   const { data: profileData, isLoading } = useProfileApi();
+  const { data: myPostsData } = useMyPostsApi();
   const { setProfile, setUserElos, setTokenAmount, setNickname, userProfile } =
     useAuthStore();
+
+  // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
+  useEffect(() => {
+    if (myPostsData) {
+      console.log('내가 쓴 글 목록:', myPostsData);
+      setPosts(myPostsData.data);
+    }
+  }, [myPostsData]);
 
   const handleHarvest = (postId: number) => {
     setPosts(prevPosts =>

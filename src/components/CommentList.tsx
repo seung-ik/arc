@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
+import { useLikeCommentMutation } from '@/api/useCommunity';
+import { useEffect } from 'react';
 import {
   CommentList as CommentListContainer,
   CommentItem,
@@ -42,7 +44,6 @@ interface Comment {
 
 interface CommentListProps {
   comments: Comment[];
-  onCommentLike?: (commentId: number) => void;
   onReplySubmit?: (commentId: number, content: string) => void;
   onDeleteComment?: (commentId: number) => void;
   onDeleteReply?: (replyId: number) => void;
@@ -50,15 +51,16 @@ interface CommentListProps {
 
 export default function CommentList({
   comments,
-  onCommentLike,
   onReplySubmit,
   onDeleteComment,
   onDeleteReply,
 }: CommentListProps) {
   const router = useRouter();
   const { userProfile } = useAuthStore();
+  const likeCommentMutation = useLikeCommentMutation();
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
+  const [localComments, setLocalComments] = useState<Comment[]>(comments);
   const [expandedReplies, setExpandedReplies] = useState<Set<number>>(
     new Set(
       comments
@@ -67,10 +69,27 @@ export default function CommentList({
     )
   );
 
+  // Update local comments when props change
+  useEffect(() => {
+    setLocalComments(comments);
+  }, [comments]);
+
   const handleCommentLike = (commentId: number) => {
-    if (onCommentLike) {
-      onCommentLike(commentId);
-    }
+    likeCommentMutation.mutate(commentId, {
+      onSuccess: (data) => {
+        setLocalComments(prev =>
+          prev.map(comment =>
+            comment.id === commentId
+              ? {
+                  ...comment,
+                  likeCount: data.data.likeCount,
+                  isLiked: data.data.isLiked,
+                }
+              : comment
+          )
+        );
+      },
+    });
   };
 
   const handleDeleteComment = (commentId: number) => {
@@ -132,7 +151,7 @@ export default function CommentList({
 
   return (
     <CommentListContainer>
-      {comments
+      {localComments
         .sort((a, b) => b.likeCount - a.likeCount)
         .map(comment => (
           <CommentItem key={comment.id}>

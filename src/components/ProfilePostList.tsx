@@ -3,10 +3,11 @@
 import styled from 'styled-components';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Post } from '@/types/post';
+import { MyPost } from '@/api/useUser';
+import HtmlContent from './HtmlContent';
 
 interface ProfilePostListProps {
-  posts: Post[];
+  posts: MyPost[];
   isMyProfile: boolean;
   onHarvest?: (postId: number) => void;
 }
@@ -97,7 +98,7 @@ const PostTypeBadge = styled.span<{ $postType: string }>`
   flex-shrink: 0;
 `;
 
-const PostContent = styled.p`
+const PostContent = styled.div`
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.sm};
   margin: 0 0 ${props => props.theme.spacing.sm} 0;
@@ -120,10 +121,30 @@ const PostDate = styled.span`
   color: ${props => props.theme.colors.textLightGray};
 `;
 
-const PostStats = styled.div`
+// const PostStats = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 4px;
+// `;
+
+const LikeButton = styled.button`
+  background-color: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.sm};
+  padding: 4px 8px;
+  font-size: ${props => props.theme.typography.fontSizes.xs};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  color: ${props => props.theme.colors.textGray};
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 4px;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.primaryLight};
+    color: ${props => props.theme.colors.primary};
+  }
 `;
 
 // const HarvestButton = styled.button<{ $canHarvest: boolean; $stage?: number }>`
@@ -267,7 +288,7 @@ export default function ProfilePostList({
   //   return `좋아요 ${0}개`;
   // };
 
-  const handlePostClick = (post: Post) => {
+  const handlePostClick = (post: MyPost) => {
     // postType을 영어로 변환
     const typeParam =
       post.type === '매치'
@@ -314,25 +335,36 @@ export default function ProfilePostList({
             <PostTitleSection>
               <PostTypeBadge $postType={post.type}>{post.type}</PostTypeBadge>
               <PostTitle>{post.title}</PostTitle>
-              <PostStats>[{post.commentCount}]</PostStats>
             </PostTitleSection>
 
-            {/* <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              {isMyProfile &&
-                (post.type === '일반' || post.type === '공지') && (
-                  <HarvestButton
-                    $canHarvest={post.availableHarvest === true}
-                    $stage={post.harvestStage}
-                    onClick={e => handleHarvest(e, post.id)}
-                    disabled={post.availableHarvest !== true}
-                  >
-                    {getHarvestText(post)}
-                  </HarvestButton>
-                )}
-            </div> */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <LikeButton
+                onClick={e => {
+                  e.stopPropagation();
+                  // TODO: 좋아요 기능 구현
+                }}
+              >
+                ❤️ {post.likeCount}
+              </LikeButton>
+              {/* <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                {isMyProfile &&
+                  (post.type === '일반' || post.type === '공지') && (
+                    <HarvestButton
+                      $canHarvest={post.availableHarvest === true}
+                      $stage={post.harvestStage}
+                      onClick={e => handleHarvest(e, post.id)}
+                      disabled={post.availableHarvest !== true}
+                    >
+                      {getHarvestText(post)}
+                    </HarvestButton>
+                  )}
+                </div> */}
+            </div>
           </PostHeader>
 
-          <PostContent>{post.content}</PostContent>
+          <PostContent>
+            <HtmlContent content={post.content} />
+          </PostContent>
 
           <PostFooter>
             <PostDate>{post.createdAt}</PostDate>
