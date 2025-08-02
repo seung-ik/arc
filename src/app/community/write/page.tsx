@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
-import CategoryTabs from '../component/CategoryTabs';
-import CommunityLayout from '../component/CommunityLayout';
-import { getCategoryPath, getCategoryLabel } from '@/lib/utils/categoryPath';
+
+import { getCategoryPath } from '@/lib/utils/categoryPath';
 import { useCreatePostMutation } from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
 import dynamic from 'next/dynamic';
@@ -26,8 +25,11 @@ const Container = styled.div`
 
 const Content = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   padding: ${props => props.theme.spacing.sm};
+  height: 100%;
 `;
 
 const Header = styled.div`
@@ -82,6 +84,14 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: ${props => props.theme.spacing.md};
+  height: 100%;
+`;
+
+const EditorWrapper = styled.div`
+  display: grid;
+  grid-template-rows: 1fr;
+  height: 100%;
+  min-height: 400px;
 `;
 
 const FormGroup = styled.div`
@@ -389,8 +399,6 @@ function WritePostForm() {
     label: tab.name,
   }));
 
-  const currentLabel = getCategoryLabel(defaultCategory);
-
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -562,394 +570,387 @@ function WritePostForm() {
 
   return (
     <Container>
-      <CategoryTabs currentLabel={currentLabel} />
-      <CommunityLayout>
-        <Content>
-          <Header>
-            <Title>글쓰기</Title>
-            <ButtonGroup>
-              <Button onClick={handleCancel}>취소</Button>
-              <Button $variant="primary" onClick={handleSubmit}>
-                작성완료
-              </Button>
-            </ButtonGroup>
-          </Header>
+      <Content>
+        <Header>
+          <Title>글쓰기</Title>
+          <ButtonGroup>
+            <Button onClick={handleCancel}>취소</Button>
+            <Button $variant="primary" onClick={handleSubmit}>
+              작성완료
+            </Button>
+          </ButtonGroup>
+        </Header>
 
-          <Form onSubmit={handleSubmit}>
-            <TopFormGroup>
-              <FormGroup>
-                <Label htmlFor="category">카테고리 *</Label>
-                <Select
-                  id="category"
-                  value={formData.category}
-                  onChange={e => handleInputChange('category', e.target.value)}
-                  required
-                >
-                  <option value="">카테고리를 선택하세요</option>
-                  {categories.map(category => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </Select>
-              </FormGroup>
+        <Form onSubmit={handleSubmit} style={{ flex: 1 }}>
+          <TopFormGroup>
+            <FormGroup>
+              <Label htmlFor="category">카테고리 *</Label>
+              <Select
+                id="category"
+                value={formData.category}
+                onChange={e => handleInputChange('category', e.target.value)}
+                required
+              >
+                <option value="">카테고리를 선택하세요</option>
+                {categories.map(category => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))}
+              </Select>
+            </FormGroup>
 
-              <FormGroup>
-                <Label htmlFor="postType">글타입 *</Label>
-                <Select
-                  id="postType"
-                  value={formData.postType}
-                  onChange={e => handleInputChange('postType', e.target.value)}
-                  required
-                >
-                  <option value="">글타입을 선택하세요</option>
-                  {POST_TYPES.map(type => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </Select>
-              </FormGroup>
-            </TopFormGroup>
+            <FormGroup>
+              <Label htmlFor="postType">글타입 *</Label>
+              <Select
+                id="postType"
+                value={formData.postType}
+                onChange={e => handleInputChange('postType', e.target.value)}
+                required
+              >
+                <option value="">글타입을 선택하세요</option>
+                {POST_TYPES.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </Select>
+            </FormGroup>
+          </TopFormGroup>
 
-            {formData.postType === '멘토' && (
-              <>
-                <div
+          {formData.postType === '멘토' && (
+            <>
+              <div
+                style={{
+                  background:
+                    'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
+                  border: '1px solid #2196f3',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  marginBottom: '16px',
+                }}
+              >
+                <h3
                   style={{
-                    background:
-                      'linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)',
-                    border: '1px solid #2196f3',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    marginBottom: '16px',
+                    color: '#2196f3',
+                    margin: '0 0 8px 0',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
                   }}
                 >
-                  <h3
-                    style={{
-                      color: '#2196f3',
-                      margin: '0 0 8px 0',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    📚 멘토링 요청 안내
-                  </h3>
-                  <p
-                    style={{
-                      color: '#666',
-                      margin: 0,
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                    }}
-                  >
-                    멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역,
-                    보상 토큰 등을 상세히 작성해주세요. 멘토가 요청을 보고
-                    연락을 드릴 예정입니다.
-                  </p>
-                </div>
-
-                <MentorFields>
-                  <FieldRow>
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="sport">종목 *</FieldLabel>
-                        <FieldHelp>
-                          멘토링을 받고 싶은 종목을 선택하거나 직접 입력하세요
-                        </FieldHelp>
-                      </FieldDescription>
-                      <Select
-                        id="sport"
-                        value={formData.sport || ''}
-                        onChange={e =>
-                          handleInputChange('sport', e.target.value)
-                        }
-                        required
-                      >
-                        <option value="">종목 선택</option>
-                        {categories.map(category => (
-                          <option key={category.value} value={category.value}>
-                            {category.label}
-                          </option>
-                        ))}
-                        <option value="직접입력">직접 입력</option>
-                      </Select>
-                      {formData.sport === '직접입력' && (
-                        <Input
-                          type="text"
-                          value={formData.customSport || ''}
-                          onChange={e =>
-                            handleInputChange('customSport', e.target.value)
-                          }
-                          placeholder="종목을 직접 입력하세요"
-                          style={{ marginTop: '8px' }}
-                          required
-                        />
-                      )}
-                    </FormGroup>
-
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="elo">희망 멘토 실력 *</FieldLabel>
-                        <FieldHelp>희망하는 멘토의 최소 실력 수준</FieldHelp>
-                      </FieldDescription>
-                      <Select
-                        id="elo"
-                        value={formData.elo || ''}
-                        onChange={e => handleInputChange('elo', e.target.value)}
-                        required
-                      >
-                        <option value="">실력 선택</option>
-                        <option value="1000-1200">1000-1200 (초급)</option>
-                        <option value="1200-1400">1200-1400 (중급)</option>
-                        <option value="1400-1600">1400-1600 (고급)</option>
-                        <option value="1600+">1600+ (전문가)</option>
-                      </Select>
-                    </FormGroup>
-                  </FieldRow>
-
-                  <FieldRow>
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="location">지역 *</FieldLabel>
-                        <FieldHelp>멘토링을 받을 수 있는 지역</FieldHelp>
-                      </FieldDescription>
-                      <Input
-                        id="location"
-                        type="text"
-                        value={formData.location || ''}
-                        onChange={e =>
-                          handleInputChange('location', e.target.value)
-                        }
-                        placeholder="예: 서울 강남구"
-                        required
-                      />
-                    </FormGroup>
-
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="tokenReward">
-                          보상 토큰 *
-                        </FieldLabel>
-                        <FieldHelp>
-                          멘토에게 지급할 토큰 수량 (숫자만 입력)
-                        </FieldHelp>
-                      </FieldDescription>
-                      <Input
-                        id="tokenReward"
-                        type="number"
-                        value={formData.tokenReward || ''}
-                        onChange={e => {
-                          const value = e.target.value;
-                          // 숫자만 허용
-                          if (value === '' || /^\d+$/.test(value)) {
-                            handleInputChange('tokenReward', value);
-                          }
-                        }}
-                        onKeyPress={e => {
-                          // 숫자와 백스페이스, 화살표 키만 허용
-                          if (
-                            !/[0-9]/.test(e.key) &&
-                            e.key !== 'Backspace' &&
-                            e.key !== 'Delete' &&
-                            e.key !== 'ArrowLeft' &&
-                            e.key !== 'ArrowRight'
-                          ) {
-                            e.preventDefault();
-                          }
-                        }}
-                        placeholder="예: 100"
-                        min="1"
-                        required
-                      />
-                    </FormGroup>
-                  </FieldRow>
-                </MentorFields>
-              </>
-            )}
-
-            {formData.postType === '매치' && (
-              <>
-                <div
+                  📚 멘토링 요청 안내
+                </h3>
+                <p
                   style={{
-                    background:
-                      'linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%)',
-                    border: '1px solid #4caf50',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    marginBottom: '16px',
+                    color: '#666',
+                    margin: 0,
+                    fontSize: '14px',
+                    lineHeight: '1.5',
                   }}
                 >
-                  <h3
-                    style={{
-                      color: '#4caf50',
-                      margin: '0 0 8px 0',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    🏓 매칭 요청 안내
-                  </h3>
-                  <p
-                    style={{
-                      color: '#666',
-                      margin: 0,
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                    }}
-                  >
-                    매칭을 원하는 장소, 상대 실력을 설정하고 유효기간을
-                    선택하세요. AI 추천 시스템을 통해 적합한 상대를
-                    찾아드립니다.
-                  </p>
-                </div>
+                  멘토링을 받고 싶은 종목, 희망하는 멘토의 실력 수준, 지역, 보상
+                  토큰 등을 상세히 작성해주세요. 멘토가 요청을 보고 연락을 드릴
+                  예정입니다.
+                </p>
+              </div>
 
-                <MatchFields>
+              <MentorFields>
+                <FieldRow>
                   <FormGroup>
                     <FieldDescription>
-                      <FieldLabel htmlFor="matchLocation">선호 장소</FieldLabel>
+                      <FieldLabel htmlFor="sport">종목 *</FieldLabel>
                       <FieldHelp>
-                        매칭을 원하는 장소를 입력하세요 (선택사항)
+                        멘토링을 받고 싶은 종목을 선택하거나 직접 입력하세요
                       </FieldHelp>
                     </FieldDescription>
+                    <Select
+                      id="sport"
+                      value={formData.sport || ''}
+                      onChange={e => handleInputChange('sport', e.target.value)}
+                      required
+                    >
+                      <option value="">종목 선택</option>
+                      {categories.map(category => (
+                        <option key={category.value} value={category.value}>
+                          {category.label}
+                        </option>
+                      ))}
+                      <option value="직접입력">직접 입력</option>
+                    </Select>
+                    {formData.sport === '직접입력' && (
+                      <Input
+                        type="text"
+                        value={formData.customSport || ''}
+                        onChange={e =>
+                          handleInputChange('customSport', e.target.value)
+                        }
+                        placeholder="종목을 직접 입력하세요"
+                        style={{ marginTop: '8px' }}
+                        required
+                      />
+                    )}
+                  </FormGroup>
+
+                  <FormGroup>
+                    <FieldDescription>
+                      <FieldLabel htmlFor="elo">희망 멘토 실력 *</FieldLabel>
+                      <FieldHelp>희망하는 멘토의 최소 실력 수준</FieldHelp>
+                    </FieldDescription>
+                    <Select
+                      id="elo"
+                      value={formData.elo || ''}
+                      onChange={e => handleInputChange('elo', e.target.value)}
+                      required
+                    >
+                      <option value="">실력 선택</option>
+                      <option value="1000-1200">1000-1200 (초급)</option>
+                      <option value="1200-1400">1200-1400 (중급)</option>
+                      <option value="1400-1600">1400-1600 (고급)</option>
+                      <option value="1600+">1600+ (전문가)</option>
+                    </Select>
+                  </FormGroup>
+                </FieldRow>
+
+                <FieldRow>
+                  <FormGroup>
+                    <FieldDescription>
+                      <FieldLabel htmlFor="location">지역 *</FieldLabel>
+                      <FieldHelp>멘토링을 받을 수 있는 지역</FieldHelp>
+                    </FieldDescription>
                     <Input
-                      id="matchLocation"
+                      id="location"
                       type="text"
-                      value={formData.matchLocation}
+                      value={formData.location || ''}
                       onChange={e =>
-                        handleInputChange('matchLocation', e.target.value)
+                        handleInputChange('location', e.target.value)
                       }
-                      placeholder="예: 강남구 테니스장, 협의 가능"
+                      placeholder="예: 서울 강남구"
+                      required
                     />
                   </FormGroup>
 
-                  <TimeLocationRow>
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="myElo">내 실력 (Elo)</FieldLabel>
-                        <FieldHelp>현재 Elo 점수를 입력하세요</FieldHelp>
-                      </FieldDescription>
-                      <Input
-                        id="myElo"
-                        type="number"
-                        value={formData.myElo}
-                        onChange={e =>
-                          handleInputChange('myElo', e.target.value)
+                  <FormGroup>
+                    <FieldDescription>
+                      <FieldLabel htmlFor="tokenReward">보상 토큰 *</FieldLabel>
+                      <FieldHelp>
+                        멘토에게 지급할 토큰 수량 (숫자만 입력)
+                      </FieldHelp>
+                    </FieldDescription>
+                    <Input
+                      id="tokenReward"
+                      type="number"
+                      value={formData.tokenReward || ''}
+                      onChange={e => {
+                        const value = e.target.value;
+                        // 숫자만 허용
+                        if (value === '' || /^\d+$/.test(value)) {
+                          handleInputChange('tokenReward', value);
                         }
-                        placeholder="예: 1200"
-                        min="0"
-                      />
-                    </FormGroup>
-
-                    <FormGroup>
-                      <FieldDescription>
-                        <FieldLabel htmlFor="preferredElo">
-                          희망 상대 실력
-                        </FieldLabel>
-                        <FieldHelp>희망하는 상대의 실력 범위</FieldHelp>
-                      </FieldDescription>
-                      <Select
-                        id="preferredElo"
-                        value={formData.preferredElo}
-                        onChange={e =>
-                          handleInputChange('preferredElo', e.target.value)
+                      }}
+                      onKeyPress={e => {
+                        // 숫자와 백스페이스, 화살표 키만 허용
+                        if (
+                          !/[0-9]/.test(e.key) &&
+                          e.key !== 'Backspace' &&
+                          e.key !== 'Delete' &&
+                          e.key !== 'ArrowLeft' &&
+                          e.key !== 'ArrowRight'
+                        ) {
+                          e.preventDefault();
                         }
-                      >
-                        <option value="">실력 무관</option>
-                        <option value="similar">비슷한 실력</option>
-                        <option value="higher">더 높은 실력</option>
-                        <option value="lower">더 낮은 실력</option>
-                        <option value="any">모든 실력</option>
-                      </Select>
-                    </FormGroup>
-                  </TimeLocationRow>
-                </MatchFields>
+                      }}
+                      placeholder="예: 100"
+                      min="1"
+                      required
+                    />
+                  </FormGroup>
+                </FieldRow>
+              </MentorFields>
+            </>
+          )}
 
-                <ValidityPeriodSection>
-                  <ValidityTitle>유효기간 선택 *</ValidityTitle>
-                  <ValidityCards>
-                    {VALIDITY_PERIODS.map(period => (
-                      <ValidityCard
-                        key={period.value}
-                        $selected={formData.validityPeriod === period.value}
-                        onClick={() =>
-                          handleInputChange('validityPeriod', period.value)
-                        }
-                      >
-                        <ValidityPeriod>{period.label}</ValidityPeriod>
-                        <ValidityToken>{period.token} 토큰</ValidityToken>
-                      </ValidityCard>
-                    ))}
-                  </ValidityCards>
+          {formData.postType === '매치' && (
+            <>
+              <div
+                style={{
+                  background:
+                    'linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%)',
+                  border: '1px solid #4caf50',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  marginBottom: '16px',
+                }}
+              >
+                <h3
+                  style={{
+                    color: '#4caf50',
+                    margin: '0 0 8px 0',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  🏓 매칭 요청 안내
+                </h3>
+                <p
+                  style={{
+                    color: '#666',
+                    margin: 0,
+                    fontSize: '14px',
+                    lineHeight: '1.5',
+                  }}
+                >
+                  매칭을 원하는 장소, 상대 실력을 설정하고 유효기간을
+                  선택하세요. AI 추천 시스템을 통해 적합한 상대를 찾아드립니다.
+                </p>
+              </div>
 
-                  <TokenInfo>
-                    <TokenLabel>필요 토큰:</TokenLabel>
-                    <TokenAmount $insufficient={false}>
-                      {formData.validityPeriod
-                        ? VALIDITY_PERIODS.find(
-                            p => p.value === formData.validityPeriod
-                          )?.token || 0
-                        : 0}{' '}
-                      토큰
-                    </TokenAmount>
-                  </TokenInfo>
-                </ValidityPeriodSection>
-              </>
-            )}
-
-            <FormGroup>
-              <Label htmlFor="title">제목 *</Label>
-              <Input
-                id="title"
-                type="text"
-                value={formData.title}
-                onChange={e => handleInputChange('title', e.target.value)}
-                placeholder={
-                  formData.postType === '멘토'
-                    ? '예: 테니스 초보자 멘토링 요청합니다'
-                    : formData.postType === '매치'
-                      ? '예: 테니스 매칭 구합니다'
-                      : '제목을 입력하세요'
-                }
-                required
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label htmlFor="content">내용 *</Label>
-              {formData.postType === '매치' || formData.postType === '멘토' ? (
-                <>
-                  <ShortTextArea
-                    id="content"
-                    value={formData.content}
-                    onChange={e => {
-                      const value = e.target.value;
-                      if (value.length <= 80) {
-                        handleInputChange('content', value);
-                      }
-                    }}
-                    placeholder={
-                      formData.postType === '매치'
-                        ? '매칭 요청 내용을 간단히 입력하세요 (80자 이내)'
-                        : '멘토링 요청 내용을 간단히 입력하세요 (80자 이내)'
+              <MatchFields>
+                <FormGroup>
+                  <FieldDescription>
+                    <FieldLabel htmlFor="matchLocation">선호 장소</FieldLabel>
+                    <FieldHelp>
+                      매칭을 원하는 장소를 입력하세요 (선택사항)
+                    </FieldHelp>
+                  </FieldDescription>
+                  <Input
+                    id="matchLocation"
+                    type="text"
+                    value={formData.matchLocation}
+                    onChange={e =>
+                      handleInputChange('matchLocation', e.target.value)
                     }
-                    maxLength={80}
-                    required
+                    placeholder="예: 강남구 테니스장, 협의 가능"
                   />
-                  <CharCount>{formData.content.length}/80</CharCount>
-                </>
-              ) : (
+                </FormGroup>
+
+                <TimeLocationRow>
+                  <FormGroup>
+                    <FieldDescription>
+                      <FieldLabel htmlFor="myElo">내 실력 (Elo)</FieldLabel>
+                      <FieldHelp>현재 Elo 점수를 입력하세요</FieldHelp>
+                    </FieldDescription>
+                    <Input
+                      id="myElo"
+                      type="number"
+                      value={formData.myElo}
+                      onChange={e => handleInputChange('myElo', e.target.value)}
+                      placeholder="예: 1200"
+                      min="0"
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <FieldDescription>
+                      <FieldLabel htmlFor="preferredElo">
+                        희망 상대 실력
+                      </FieldLabel>
+                      <FieldHelp>희망하는 상대의 실력 범위</FieldHelp>
+                    </FieldDescription>
+                    <Select
+                      id="preferredElo"
+                      value={formData.preferredElo}
+                      onChange={e =>
+                        handleInputChange('preferredElo', e.target.value)
+                      }
+                    >
+                      <option value="">실력 무관</option>
+                      <option value="similar">비슷한 실력</option>
+                      <option value="higher">더 높은 실력</option>
+                      <option value="lower">더 낮은 실력</option>
+                      <option value="any">모든 실력</option>
+                    </Select>
+                  </FormGroup>
+                </TimeLocationRow>
+              </MatchFields>
+
+              <ValidityPeriodSection>
+                <ValidityTitle>유효기간 선택 *</ValidityTitle>
+                <ValidityCards>
+                  {VALIDITY_PERIODS.map(period => (
+                    <ValidityCard
+                      key={period.value}
+                      $selected={formData.validityPeriod === period.value}
+                      onClick={() =>
+                        handleInputChange('validityPeriod', period.value)
+                      }
+                    >
+                      <ValidityPeriod>{period.label}</ValidityPeriod>
+                      <ValidityToken>{period.token} 토큰</ValidityToken>
+                    </ValidityCard>
+                  ))}
+                </ValidityCards>
+
+                <TokenInfo>
+                  <TokenLabel>필요 토큰:</TokenLabel>
+                  <TokenAmount $insufficient={false}>
+                    {formData.validityPeriod
+                      ? VALIDITY_PERIODS.find(
+                          p => p.value === formData.validityPeriod
+                        )?.token || 0
+                      : 0}{' '}
+                    토큰
+                  </TokenAmount>
+                </TokenInfo>
+              </ValidityPeriodSection>
+            </>
+          )}
+
+          <FormGroup>
+            <Label htmlFor="title">제목 *</Label>
+            <Input
+              id="title"
+              type="text"
+              value={formData.title}
+              onChange={e => handleInputChange('title', e.target.value)}
+              placeholder={
+                formData.postType === '멘토'
+                  ? '예: 테니스 초보자 멘토링 요청합니다'
+                  : formData.postType === '매치'
+                    ? '예: 테니스 매칭 구합니다'
+                    : '제목을 입력하세요'
+              }
+              required
+            />
+          </FormGroup>
+
+          <FormGroup style={{ flex: 1 }}>
+            <Label htmlFor="content">내용 *</Label>
+            {formData.postType === '매치' || formData.postType === '멘토' ? (
+              <>
+                <ShortTextArea
+                  id="content"
+                  value={formData.content}
+                  onChange={e => {
+                    const value = e.target.value;
+                    if (value.length <= 80) {
+                      handleInputChange('content', value);
+                    }
+                  }}
+                  placeholder={
+                    formData.postType === '매치'
+                      ? '매칭 요청 내용을 간단히 입력하세요 (80자 이내)'
+                      : '멘토링 요청 내용을 간단히 입력하세요 (80자 이내)'
+                  }
+                  maxLength={80}
+                  required
+                />
+                <CharCount>{formData.content.length}/80</CharCount>
+              </>
+            ) : (
+              <EditorWrapper style={{ flex: 1 }}>
                 <ToastEditor
                   value={formData.content}
                   onChange={value => handleInputChange('content', value)}
-                  height="400px"
-                  placeholder="내용을 입력하세요"
+                  height="100%"
+                  // placeholder="내용을 입력하세요"
                   initialEditType="wysiwyg"
+                  hideModeSwitch={true}
                 />
-              )}
-            </FormGroup>
-          </Form>
-        </Content>
-      </CommunityLayout>
+              </EditorWrapper>
+            )}
+          </FormGroup>
+        </Form>
+      </Content>
 
       {showCancelModal && (
         <Modal>
