@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useMemo, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -221,7 +221,7 @@ const MentorFields = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   background-color: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
@@ -256,7 +256,7 @@ const MatchFields = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   background-color: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
@@ -288,7 +288,7 @@ const ValidityCards = styled.div`
 `;
 
 const ValidityCard = styled.div<{ $selected?: boolean }>`
-  padding: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   border: 2px solid
     ${props =>
       props.$selected ? props.theme.colors.primary : props.theme.colors.border};
@@ -324,7 +324,7 @@ const TokenInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   background-color: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
@@ -389,21 +389,55 @@ const VALIDITY_PERIODS = [
 function WritePostForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const defaultCategory = searchParams.get('category') || '';
   const { communityTabs } = useCommunityStore();
   const createPostMutation = useCreatePostMutation();
 
-  // 카테고리 옵션 - communityTabs에서 동적으로 생성
-  const categories = Object.values(communityTabs).map(tab => ({
-    value: tab.id,
-    label: tab.name,
-  }));
+  // 카테고리 옵션 - communityTabs에서 동적으로 생성 (공지사항 제외)
+  const categories = Object.values(communityTabs)
+    .filter(tab => tab.name !== '공지사항')
+    .map(tab => ({
+      value: String(tab.id),
+      label: tab.name,
+    }));
+
+  // URL 파라미터에서 카테고리 이름을 가져와서 해당 ID로 매핑
+  const categoryParam = searchParams.get('category') || '';
+
+  // 영어-한국어 카테고리 매핑
+  const categoryMapping: Record<string, string> = {
+    tennis: '테니스',
+    badminton: '배드민턴',
+    'table-tennis': '탁구',
+    billiards: '당구',
+    go: '바둑',
+    chess: '체스',
+    notice: '공지사항',
+    free: '자유글',
+  };
+
+  const mappedCategory = categoryMapping[categoryParam.toLowerCase()];
+  console.log('mappedCategory:', mappedCategory);
+
+  const defaultCategory = useMemo(() => {
+    if (categoryParam) {
+      return (
+        categories.find(
+          cat =>
+            cat.label.toLowerCase() ===
+            (mappedCategory || categoryParam.toLowerCase())
+        )?.value || ''
+      );
+    } else {
+      // category 파라미터가 없으면 자유글을 기본값으로 설정
+      return categories.find(cat => cat.label === '자유글')?.value || '';
+    }
+  }, [categoryParam, categories, mappedCategory]);
 
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     postType: '일반',
-    category: defaultCategory,
+    category: '',
     sport: '',
     customSport: '',
     elo: '',
@@ -415,6 +449,16 @@ function WritePostForm() {
     preferredElo: '',
     validityPeriod: '',
   });
+
+  // defaultCategory가 변경될 때 formData.category 업데이트
+  useEffect(() => {
+    if (defaultCategory && !formData.category) {
+      setFormData(prev => ({
+        ...prev,
+        category: defaultCategory,
+      }));
+    }
+  }, [defaultCategory, formData.category]);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
 
@@ -544,7 +588,7 @@ function WritePostForm() {
   const navigateToCategory = () => {
     // 작성 완료 후 해당 카테고리 페이지로 이동
     const categoryName = categories.filter(
-      el => el.value === Number(formData.category)
+      el => el.value === formData.category
     )[0].label;
     const categoryPath = getCategoryPath(categoryName);
     router.push(categoryPath);

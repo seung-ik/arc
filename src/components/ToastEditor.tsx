@@ -35,7 +35,6 @@ const ToastEditor: React.FC<ToastEditorProps> = ({
   hideModeSwitch = false,
 }) => {
   const editorRef = useRef<any>(null);
-  console.log(editorRef?.current?.getInstance().getHTML());
 
   // 초기값 및 외부 값 변경에 따라 내용 설정
   useEffect(() => {
