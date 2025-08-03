@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { GeneralPost } from '@/types/post';
 import HtmlContent from '@/components/HtmlContent';
+import { formatDate, formatRelativeTime } from '@/utils';
 
 interface CommunityPostProps {
   post: GeneralPost;
@@ -141,7 +142,11 @@ export default function CommunityPost({ post, onClick }: CommunityPostProps) {
       <PostFooter>
         <AuthorName>{post.author.nickname}</AuthorName>
         <span>•</span>
-        <PostDate>{post.createdAt}</PostDate>
+        <PostDate>
+          {formatDate(post.createdAt)}
+          {formatRelativeTime(post.createdAt) &&
+            ` (${formatRelativeTime(post.createdAt)})`}
+        </PostDate>
         <span>•</span>
         <ViewCount>조회 {post.viewCount || 0}</ViewCount>
       </PostFooter>
