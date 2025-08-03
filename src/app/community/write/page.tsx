@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useState, Suspense, useMemo, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -391,6 +392,7 @@ function WritePostForm() {
   const searchParams = useSearchParams();
   const { communityTabs } = useCommunityStore();
   const createPostMutation = useCreatePostMutation();
+  const queryClient = useQueryClient();
 
   // 카테고리 옵션 - communityTabs에서 동적으로 생성 (공지사항 제외)
   const categories = Object.values(communityTabs)
@@ -512,6 +514,13 @@ function WritePostForm() {
     createPostMutation.mutate(generalData, {
       onSuccess: data => {
         console.log('글 작성 성공 응답:', data);
+        // 해당 카테고리의 게시글 목록과 내가 쓴 글 목록 무효화
+        queryClient.invalidateQueries({
+          queryKey: ['posts', Number(formData.category)],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ['my-posts'],
+        });
         navigateToCategory();
       },
       onError: error => {
