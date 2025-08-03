@@ -42,7 +42,7 @@ const LoadMoreButton = styled.button`
   border-radius: ${props => props.theme.borderRadius.md};
   border: 1px solid ${props => props.theme.colors.textGray};
   cursor: pointer;
-  margin: ${props => props.theme.spacing.md} auto;
+  margin: ${props => props.theme.spacing['xl']} auto;
   display: block;
   width: 80%;
   font-size: ${props => props.theme.typography.fontSizes.base};
