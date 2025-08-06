@@ -64,12 +64,20 @@ export default function LoginBridgePage() {
 
   // 웹에서 React Native로 로그 전송
   const sendLogToRN = (message: string) => {
-    (window as any).ReactNativeWebView.postMessage(
-      JSON.stringify({
-        type: 'DEBUG_LOG',
-        message: message,
-      })
-    );
+    try {
+      if ((window as any).ReactNativeWebView) {
+        (window as any).ReactNativeWebView.postMessage(
+          JSON.stringify({
+            type: 'DEBUG_LOG',
+            message: message,
+          })
+        );
+      } else {
+        console.error('ReactNativeWebView가 존재하지 않음');
+      }
+    } catch (error) {
+      console.error('React Native로 메시지 전송 실패:', error);
+    }
   };
 
   // WEPIN 사용자 데이터 처리 함수
@@ -79,7 +87,6 @@ export default function LoginBridgePage() {
   }) => {
     sendLogToRN('=== WEPIN 사용자 데이터 처리 시작 ===');
     sendLogToRN('받은 payload: ' + JSON.stringify(payload));
-    sendLogToRN('WEPIN 사용자 정보 받음: ' + JSON.stringify(payload));
 
     if (!payload.wepinUser) {
       setStatus('WEPIN 사용자 정보가 없습니다');
@@ -158,6 +165,9 @@ export default function LoginBridgePage() {
   };
 
   useEffect(() => {
+    // 페이지 로드 시 테스트 메시지 전송
+    sendLogToRN('페이지 로드 완료 - React Native 연결 테스트');
+
     // WebView에서 메시지를 받는 이벤트 리스너
     const handleMessage = (event: MessageEvent) => {
       try {
@@ -166,6 +176,7 @@ export default function LoginBridgePage() {
 
         switch (data.type) {
           case 'WEPIN_USER_DATA':
+            sendLogToRN('WEPIN_USER_DATA 메시지 수신');
             handleWepinUserData(data.payload);
             break;
           default:
