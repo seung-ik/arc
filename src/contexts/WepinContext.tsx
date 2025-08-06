@@ -17,6 +17,9 @@ interface WepinContextType {
   logout: () => Promise<void>;
   getAccounts: () => Promise<any[]>;
   getBalance: (params: { network: string; address: string }) => Promise<any>;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setUserInfo: (userInfo: any) => void;
+  setAccounts: (accounts: any[]) => void;
 }
 
 const WepinContext = createContext<WepinContextType | undefined>(undefined);
@@ -224,6 +227,9 @@ export function WepinProvider({ children }: WepinProviderProps) {
         isLoggedIn,
         userInfo,
         accounts,
+        setIsLoggedIn,
+        setUserInfo,
+        setAccounts,
         loginByWepin,
         logout,
         getAccounts,
