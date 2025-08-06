@@ -238,8 +238,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
 
       return widgetInstance;
     } catch (error) {
-      console.error('Wepin SDK 초기화 실패:', error);
-      return null;
+      throw error;
     }
   };
 

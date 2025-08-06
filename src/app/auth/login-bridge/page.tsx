@@ -99,11 +99,13 @@ export default function LoginBridgePage() {
       let currentWepinSDK = wepinSDK;
       if (!currentWepinSDK) {
         sendLogToRN('wepinSDK 초기화 시도...');
-        currentWepinSDK = await initWepinSDK();
+        try {
+          currentWepinSDK = await initWepinSDK();
+        } catch (error) {
+          sendLogToRN('ERROR: wepinSDK 초기화 실패 - ' + error);
+          return;
+        }
         if (!currentWepinSDK) {
-          sendLogToRN('ERROR: wepinSDK 초기화 실패');
-          setStatus('WEPIN SDK 초기화 실패');
-          setIsLoading(false);
           return;
         }
         sendLogToRN('wepinSDK 초기화 성공');
