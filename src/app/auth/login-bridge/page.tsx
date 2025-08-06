@@ -62,14 +62,24 @@ export default function LoginBridgePage() {
   const [status, setStatus] = useState('WEPIN 사용자 정보를 기다리는 중...');
   const [isLoading, setIsLoading] = useState(true);
 
+  // 웹에서 React Native로 로그 전송
+  const sendLogToRN = (message: string) => {
+    (window as any).ReactNativeWebView.postMessage(
+      JSON.stringify({
+        type: 'DEBUG_LOG',
+        message: message,
+      })
+    );
+  };
+
   // WEPIN 사용자 데이터 처리 함수
   const handleWepinUserData = async (payload: {
     wepinUser: IWepinUser;
     idToken: string;
   }) => {
-    alert(1);
-    alert(JSON.stringify(payload));
-    console.log('WEPIN 사용자 정보 받음:', payload);
+    sendLogToRN('=== WEPIN 사용자 데이터 처리 시작 ===');
+    sendLogToRN('받은 payload: ' + JSON.stringify(payload));
+    sendLogToRN('WEPIN 사용자 정보 받음: ' + JSON.stringify(payload));
 
     if (!payload.wepinUser) {
       setStatus('WEPIN 사용자 정보가 없습니다');
@@ -82,43 +92,52 @@ export default function LoginBridgePage() {
       let userAccounts: any[] = [];
 
       if (!wepinSDK) {
-        console.error('wepinSDK가 초기화되지 않음');
+        sendLogToRN('ERROR: wepinSDK가 초기화되지 않음');
         setStatus('WEPIN SDK 초기화 실패');
         setIsLoading(false);
         return;
       }
-      alert(JSON.stringify(wepinUser));
+      sendLogToRN('wepinUser 정보: ' + JSON.stringify(wepinUser));
       wepinSDK.setUserInfo(wepinUser);
-      alert(1);
+      sendLogToRN('wepinSDK.setUserInfo 완료');
 
       // 계정 정보 조회 시도
       try {
+        sendLogToRN('계정 정보 조회 시도...');
         userAccounts = await wepinSDK.getAccounts();
+        sendLogToRN('계정 정보 조회 성공: ' + JSON.stringify(userAccounts));
       } catch (accountsError) {
-        console.error(accountsError);
+        sendLogToRN('ERROR: 계정 정보 조회 실패 - ' + accountsError);
         // 계정 조회 실패 시 새로운 사용자 등록 시도
         try {
+          sendLogToRN('새로운 사용자 등록 시도...');
           await wepinSDK.register();
+          sendLogToRN('사용자 등록 성공');
 
           // 등록 후 바로 계정 정보 조회 시도
           try {
             userAccounts = await wepinSDK.getAccounts();
+            sendLogToRN(
+              '등록 후 계정 정보 조회 성공: ' + JSON.stringify(userAccounts)
+            );
           } catch (finalAccountsError) {
-            console.error(finalAccountsError);
+            sendLogToRN(
+              'ERROR: 등록 후 계정 정보 조회 실패 - ' + finalAccountsError
+            );
             userAccounts = [];
           }
         } catch (registerError) {
-          console.warn('사용자 등록 실패:', registerError);
+          sendLogToRN('WARN: 사용자 등록 실패 - ' + registerError);
           userAccounts = [];
           return;
         }
       }
-      alert(2);
+      sendLogToRN('계정 정보 처리 완료');
 
       setIsLoggedIn(true);
       setUserInfo(wepinUser);
       setAccounts(userAccounts);
-      alert(3);
+      sendLogToRN('상태 업데이트 완료');
 
       // 백엔드 로그인 처리
       //   await handleBackendLogin({
@@ -127,7 +146,7 @@ export default function LoginBridgePage() {
       //     accounts: userAccounts,
       //   });
     } catch (error) {
-      console.error('WEPIN 사용자 정보 설정 실패:', error);
+      sendLogToRN('ERROR: WEPIN 사용자 정보 설정 실패 - ' + error);
       setStatus('WEPIN 사용자 정보 설정 실패');
       setIsLoading(false);
     }
@@ -135,7 +154,7 @@ export default function LoginBridgePage() {
 
   // 알 수 없는 메시지 타입 처리 함수
   const handleUnknownMessageType = (type: string) => {
-    console.log('알 수 없는 메시지 타입:', type);
+    sendLogToRN('알 수 없는 메시지 타입: ' + type);
   };
 
   useEffect(() => {
@@ -143,7 +162,7 @@ export default function LoginBridgePage() {
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
-        console.log('React Native에서 받은 메시지:', data);
+        sendLogToRN('React Native에서 받은 메시지: ' + JSON.stringify(data));
 
         switch (data.type) {
           case 'WEPIN_USER_DATA':
@@ -153,7 +172,7 @@ export default function LoginBridgePage() {
             handleUnknownMessageType(data.type);
         }
       } catch (error) {
-        console.error('메시지 파싱 오류:', error);
+        sendLogToRN('ERROR: 메시지 파싱 오류 - ' + error);
       }
     };
 
