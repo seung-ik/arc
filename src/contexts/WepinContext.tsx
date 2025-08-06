@@ -53,8 +53,8 @@ export function WepinProvider({ children }: WepinProviderProps) {
         // Wepin Widget SDK 초기화
         const { WepinSDK }: WepinSDKModule = await import('@wepin/sdk-js');
         const widgetInstance = new WepinSDK({
-          appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID || '',
-          appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY || '',
+          appId: '3f2b52c0c69e1c63ad720046a6977c0b',
+          appKey: 'ak_live_TN4xwt5fFxoxfhV67etTmg1neIZi1mz9tE1AfIarghl',
         });
         await widgetInstance.init({ loginProviders: ['google'] });
 
@@ -228,8 +228,8 @@ export function WepinProvider({ children }: WepinProviderProps) {
       // Wepin Widget SDK 초기화
       const { WepinSDK }: WepinSDKModule = await import('@wepin/sdk-js');
       const widgetInstance = new WepinSDK({
-        appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID || '',
-        appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY || '',
+        appId: '3f2b52c0c69e1c63ad720046a6977c0b',
+        appKey: 'ak_live_TN4xwt5fFxoxfhV67etTmg1neIZi1mz9tE1AfIarghl',
       });
       await widgetInstance.init({ loginProviders: ['google'] });
 
@@ -238,7 +238,8 @@ export function WepinProvider({ children }: WepinProviderProps) {
 
       return widgetInstance;
     } catch (error) {
-      throw error;
+      console.error('Wepin SDK 초기화 실패:', error);
+      return null;
     }
   };
 
