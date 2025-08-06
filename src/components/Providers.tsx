@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useWepin, WepinProvider } from '@/contexts/WepinContext';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { usePathname } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
+// import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
 import { useInitNicknameApi, useProfileApi } from '@/api/useUser';
 import NicknameModal from './NicknameModal';
@@ -55,7 +55,7 @@ function AuthSyncer() {
 
   useEffect(() => {
     const token = localStorage.getItem('ACCESS_TOKEN');
-    if (!token && pathname !== ROUTES.auth.login) {
+    if (!token && !pathname.includes('auth')) {
       logoutAll();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
