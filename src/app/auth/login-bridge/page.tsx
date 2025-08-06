@@ -58,7 +58,8 @@ const LoadingSpinner = styled.div`
 `;
 
 export default function LoginBridgePage() {
-  const { wepinSDK, setIsLoggedIn, setUserInfo, setAccounts } = useWepin();
+  const { wepinSDK, initWepinSDK, setIsLoggedIn, setUserInfo, setAccounts } =
+    useWepin();
   const [status, setStatus] = useState('WEPIN 사용자 정보를 기다리는 중...');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -85,9 +86,6 @@ export default function LoginBridgePage() {
     wepinUser: IWepinUser;
     idToken: string;
   }) => {
-    sendLogToRN('=== WEPIN 사용자 데이터 처리 시작 ===');
-    sendLogToRN('받은 payload: ' + JSON.stringify(payload));
-
     if (!payload.wepinUser) {
       setStatus('WEPIN 사용자 정보가 없습니다');
       setIsLoading(false);
@@ -98,32 +96,38 @@ export default function LoginBridgePage() {
       const wepinUser = payload.wepinUser;
       let userAccounts: any[] = [];
 
-      if (!wepinSDK) {
-        sendLogToRN('ERROR: wepinSDK가 초기화되지 않음');
-        setStatus('WEPIN SDK 초기화 실패');
-        setIsLoading(false);
-        return;
+      let currentWepinSDK = wepinSDK;
+      if (!currentWepinSDK) {
+        sendLogToRN('wepinSDK 초기화 시도...');
+        currentWepinSDK = await initWepinSDK();
+        if (!currentWepinSDK) {
+          sendLogToRN('ERROR: wepinSDK 초기화 실패');
+          setStatus('WEPIN SDK 초기화 실패');
+          setIsLoading(false);
+          return;
+        }
+        sendLogToRN('wepinSDK 초기화 성공');
       }
       sendLogToRN('wepinUser 정보: ' + JSON.stringify(wepinUser));
-      wepinSDK.setUserInfo(wepinUser);
+      await currentWepinSDK.setUserInfo(wepinUser);
       sendLogToRN('wepinSDK.setUserInfo 완료');
 
       // 계정 정보 조회 시도
       try {
         sendLogToRN('계정 정보 조회 시도...');
-        userAccounts = await wepinSDK.getAccounts();
+        userAccounts = await currentWepinSDK.getAccounts();
         sendLogToRN('계정 정보 조회 성공: ' + JSON.stringify(userAccounts));
       } catch (accountsError) {
         sendLogToRN('ERROR: 계정 정보 조회 실패 - ' + accountsError);
         // 계정 조회 실패 시 새로운 사용자 등록 시도
         try {
           sendLogToRN('새로운 사용자 등록 시도...');
-          await wepinSDK.register();
+          await currentWepinSDK.register();
           sendLogToRN('사용자 등록 성공');
 
           // 등록 후 바로 계정 정보 조회 시도
           try {
-            userAccounts = await wepinSDK.getAccounts();
+            userAccounts = await currentWepinSDK.getAccounts();
             sendLogToRN(
               '등록 후 계정 정보 조회 성공: ' + JSON.stringify(userAccounts)
             );

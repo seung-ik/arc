@@ -11,6 +11,7 @@ interface WepinContextType {
   isLoggedIn: boolean;
   userInfo: any;
   accounts: any[];
+  initWepinSDK: () => Promise<WepinSDK | null>;
   loginByWepin: () => Promise<
     { idToken: string; wepinUser: any; accounts: any[] } | undefined
   >;
@@ -218,6 +219,30 @@ export function WepinProvider({ children }: WepinProviderProps) {
     return Array.isArray(result) && result.length > 0 ? result[0] : null;
   };
 
+  const initWepinSDK = async (): Promise<WepinSDK | null> => {
+    if (wepinSDK) {
+      return wepinSDK; // 이미 초기화된 경우
+    }
+
+    try {
+      // Wepin Widget SDK 초기화
+      const { WepinSDK }: WepinSDKModule = await import('@wepin/sdk-js');
+      const widgetInstance = new WepinSDK({
+        appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID || '',
+        appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY || '',
+      });
+      await widgetInstance.init({ loginProviders: ['google'] });
+
+      setWepinSDK(widgetInstance);
+      setIsInitialized(true);
+
+      return widgetInstance;
+    } catch (error) {
+      console.error('Wepin SDK 초기화 실패:', error);
+      return null;
+    }
+  };
+
   return (
     <WepinContext.Provider
       value={{
@@ -227,6 +252,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
         isLoggedIn,
         userInfo,
         accounts,
+        initWepinSDK,
         setIsLoggedIn,
         setUserInfo,
         setAccounts,
