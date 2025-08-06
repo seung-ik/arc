@@ -67,6 +67,8 @@ export default function LoginBridgePage() {
     wepinUser: IWepinUser;
     idToken: string;
   }) => {
+    alert(1);
+    alert(JSON.stringify(payload));
     console.log('WEPIN 사용자 정보 받음:', payload);
 
     if (!payload.wepinUser) {
