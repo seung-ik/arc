@@ -189,10 +189,12 @@ export default function LoginBridgePage() {
 
     // 이벤트 리스너 등록
     window.addEventListener('message', handleMessage);
+    document.addEventListener('message', handleMessage as EventListener);
 
     // 컴포넌트 언마운트 시 이벤트 리스너 제거
     return () => {
       window.removeEventListener('message', handleMessage);
+      document.removeEventListener('message', handleMessage as EventListener);
     };
   }, []);
 
