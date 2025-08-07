@@ -37,7 +37,7 @@ const TabButton = styled.button<{ $active: boolean }>`
   font-size: ${props => props.theme.typography.fontSizes.sm};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   position: relative;
-  z-index: 20; // RegisterWrapper의 z-index: 10보다 높게 설정
+  z-index: 20; // RegisterWrapper 의 z-index: 10보다 높게 설정
 
   &:hover {
     background: ${props =>
@@ -93,24 +93,11 @@ export default function MatchRequestTabs() {
   const { data: sentMatchesData } = useSentMatchResultsApi();
   const { data: receivedMatchesData } = useReceivedMatchResultsApi();
 
-  // 콘솔에 데이터 찍기
-  console.log('보낸 매치 요청 데이터:', sentMatchesData);
-  console.log('받은 매치 요청 데이터:', receivedMatchesData);
-
   // API 데이터 사용
   const pendingMatches =
     sentMatchesData?.data.filter(el => el.status !== 'expired') || [];
-  const receivedMatches = receivedMatchesData?.data || [];
-
-  const handleAccept = (matchId: number) => {
-    alert(`매치 요청을 수락했습니다: ${matchId}`);
-  };
-
-  const handleReject = (matchId: number, reason?: string) => {
-    alert(
-      `매치 요청을 거절했습니다: ${matchId}${reason ? `, 사유: ${reason}` : ''}`
-    );
-  };
+  const receivedMatches =
+    receivedMatchesData?.data.filter(el => el.status !== 'expired') || [];
 
   return (
     <MatchRequestSection>
@@ -155,11 +142,9 @@ export default function MatchRequestTabs() {
         {activeTab === 'received' && (
           <>
             {receivedMatches.length > 0 ? (
-              <MatchManagement
-                matches={receivedMatches as any}
-                onAccept={handleAccept}
-                onReject={handleReject}
-              />
+              <>
+                <MatchManagement matches={receivedMatches as any} />
+              </>
             ) : (
               <EmptyState>
                 <EmptyIcon>📥</EmptyIcon>

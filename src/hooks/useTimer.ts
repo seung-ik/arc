@@ -50,8 +50,6 @@ export const useTimer = (
         newColor = '#ffa500'; // 주황색
       }
 
-      console.log(`타이머: ${totalSeconds}초 남음`);
-
       setSeconds(totalSeconds);
       setProgress(newProgress);
       setColor(newColor);

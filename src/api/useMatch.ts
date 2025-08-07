@@ -119,6 +119,8 @@ export const useCreateMatchResultMutation = () => {
  * - 수락 시 ELO 점수가 반영되고 매치 기록이 생성됨
  */
 export const useHandleMatchRequestMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({
       matchId,
@@ -132,6 +134,9 @@ export const useHandleMatchRequestMutation = () => {
     },
     onSuccess: data => {
       console.log('매치 요청 처리 성공:', data);
+      // 관련 쿼리들 무효화하여 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ['sent-match-results'] });
+      queryClient.invalidateQueries({ queryKey: ['received-match-results'] });
     },
     onError: error => {
       console.error('매치 요청 처리 실패:', error);
