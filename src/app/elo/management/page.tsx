@@ -173,15 +173,6 @@ export default function ManagementPage() {
     router.push(`/community/post/${matchId}?type=match`);
   };
 
-  const handleMatchRegistration = (matchData: {
-    sport: string;
-    opponentId: string;
-    result: '승' | '패';
-    isHandicap: boolean;
-  }) => {
-    console.log('Match registration:', matchData);
-  };
-
   return (
     <Container>
       <EloTabCards />
@@ -216,7 +207,6 @@ export default function ManagementPage() {
       <MatchRegistrationModal
         isOpen={registrationModal.isOpen}
         onClose={registrationModal.closeModal}
-        onSubmit={handleMatchRegistration}
       />
     </Container>
   );

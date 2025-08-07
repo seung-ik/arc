@@ -7,6 +7,21 @@ import { useCommunityStore } from '@/stores/communityStore';
 import { useEffect } from 'react';
 import { getCategoryPath } from '@/lib/utils/categoryPath';
 
+// 스포츠 아이콘 매핑
+const getSportIcon = (sportName: string): string => {
+  const iconMap: Record<string, string> = {
+    탁구: '🏓',
+    배드민턴: '🏸',
+    당구: '🎱',
+    바둑: '🏁',
+    테니스: '🎾',
+    체스: '♟️',
+    자유글: '💬',
+    공지사항: '📢',
+  };
+  return iconMap[sportName] || '⚽';
+};
+
 interface PrefetchProviderProps {
   children: React.ReactNode;
 }
@@ -14,7 +29,7 @@ interface PrefetchProviderProps {
 export default function PrefetchProvider({ children }: PrefetchProviderProps) {
   const { data: profileData } = useProfileApi();
   const { setProfile, setUserElos, setIsLoggedIn, isLoggedIn } = useAuthStore();
-  const { setCommunityTabs } = useCommunityStore();
+  const { setCommunityTabs, setSportOptions } = useCommunityStore();
 
   const { data: sportCategoriesData } = useSportCategoriesApi(isLoggedIn);
 
@@ -41,9 +56,22 @@ export default function PrefetchProvider({ children }: PrefetchProviderProps) {
         {} as Record<string, any>
       );
 
+      // sportOptions 변환
+      const sportOptions = sportCategoriesData.data
+        .filter(
+          category => category.name !== '자유글' && category.name !== '공지사항'
+        )
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map(category => ({
+          value: category.id,
+          label: category.name,
+          icon: getSportIcon(category.name),
+        }));
+
       setCommunityTabs(transformedTabs);
+      setSportOptions(sportOptions);
     }
-  }, [sportCategoriesData, setCommunityTabs]);
+  }, [sportCategoriesData, setCommunityTabs, setSportOptions]);
 
   return <>{children}</>;
 }

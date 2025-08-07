@@ -3,6 +3,9 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import TwoButtonModal from './TwoButtonModal';
+import { useCommunityStore } from '@/stores/communityStore';
+import { useCreateMatchResultMutation } from '@/api/useMatch';
+import { useCheckNickname } from '@/api/useUser';
 
 const FormContainer = styled.div`
   display: flex;
@@ -110,96 +113,116 @@ const ResultButton = styled.button<{ $isSelected: boolean; $isWin: boolean }>`
   }
 `;
 
-const ErrorMessage = styled.div`
-  color: ${props => props.theme.colors.error};
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  margin-top: ${props => props.theme.spacing.xs};
-`;
+// ErrorMessage 스타일 컴포넌트 제거 - 사용하지 않음
 
 interface MatchRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (matchData: {
-    sport: string;
-    opponentId: string;
-    result: '승' | '패';
-    isHandicap: boolean;
-  }) => void;
 }
 
-const SPORTS = [
-  { value: 'table-tennis', label: '탁구', icon: '🏓' },
-  { value: 'badminton', label: '배드민턴', icon: '🏸' },
-  { value: 'billiards', label: '당구', icon: '🎱' },
-  { value: 'go', label: '바둑', icon: '🏁' },
-  { value: 'tennis', label: '테니스', icon: '🎾' },
-  { value: 'chess', label: '체스', icon: '♟️' },
-];
+// SPORTS 상수 제거 - sportOptions 사용
 
 export default function MatchRegistrationModal({
   isOpen,
   onClose,
-  onSubmit,
 }: MatchRegistrationModalProps) {
+  const { sportOptions } = useCommunityStore();
+  const createMatchResult = useCreateMatchResultMutation();
+
   const [sport, setSport] = useState('');
   const [opponentId, setOpponentId] = useState('');
-  const [result, setResult] = useState<'승' | '패' | null>(null);
+  const [result, setResult] = useState<'win' | 'lose' | null>(null);
   const [isHandicap, setIsHandicap] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [nicknameError, setNicknameError] = useState<string>('');
+
+  // 닉네임 체크
+  const { checkNickname } = useCheckNickname();
+
+  // 폼 초기화 함수
+  const initForm = () => {
+    setSport('');
+    setOpponentId('');
+    setResult(null);
+    setIsHandicap(false);
+    setNicknameError('');
+  };
+
+  // 닉네임 체크 핸들러
+  const handleNicknameBlur = async () => {
+    return;
+    if (opponentId.trim()) {
+      try {
+        const result = await checkNickname(opponentId.trim());
+        if (!result.status) {
+          setNicknameError('존재하지 않는 사용자입니다');
+        } else {
+          setNicknameError('');
+        }
+      } catch {
+        setNicknameError('사용자 확인 중 오류가 발생했습니다');
+      }
+    } else {
+      setNicknameError('');
+    }
+  };
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
     if (!sport) {
-      newErrors.sport = '종목을 선택해주세요';
+      alert('종목을 선택해주세요');
+      return false;
     }
 
     if (!opponentId.trim()) {
-      newErrors.opponentId = '상대방 ID를 입력해주세요';
-    } else if (opponentId.trim().length < 3) {
-      newErrors.opponentId = '상대방 ID는 3자 이상이어야 합니다';
+      alert('상대방 ID를 입력해주세요');
+      return false;
+    }
+
+    if (opponentId.trim().length < 3) {
+      alert('상대방 ID는 3자 이상이어야 합니다');
+      return false;
     }
 
     if (!result) {
-      newErrors.result = '결과를 선택해주세요';
+      alert('결과를 선택해주세요');
+      return false;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      // 실제 제출 로직
-      alert(`매치 결과가 등록되었습니다: ${sport} - ${opponentId} - ${result}`);
+      try {
+        const selectedSport = sportOptions.find(
+          s => s.value.toString() === sport
+        );
 
-      // onSubmit 콜백 호출
-      if (onSubmit && result) {
-        // sport 값을 한글 label로 변환
-        const selectedSport = SPORTS.find(s => s.value === sport);
-        const sportLabel = selectedSport ? selectedSport.label : sport;
+        if (!selectedSport) {
+          alert('유효하지 않은 종목입니다');
+          return;
+        }
 
-        onSubmit({ sport: sportLabel, opponentId, result, isHandicap });
+        const matchData = {
+          partnerNickname: opponentId,
+          sportCategoryId: selectedSport.value,
+          myResult: result as 'win' | 'lose',
+          isHandicap,
+        };
+
+        await createMatchResult.mutateAsync(matchData);
+
+        onClose();
+        initForm();
+      } catch (error) {
+        console.error('매치 결과 등록 실패:', error);
+        alert('매치 결과 등록에 실패했습니다');
       }
-
-      onClose();
-
-      // 폼 초기화
-      setSport('');
-      setOpponentId('');
-      setResult(null);
-      setErrors({});
     }
   };
 
   const handleClose = () => {
     onClose();
-    // 폼 초기화
-    setSport('');
-    setOpponentId('');
-    setResult(null);
-    setIsHandicap(false);
-    setErrors({});
+    initForm();
   };
 
   const formContent = (
@@ -208,13 +231,15 @@ export default function MatchRegistrationModal({
         <Label>종목</Label>
         <Select value={sport} onChange={e => setSport(e.target.value)}>
           <option value="">종목을 선택하세요</option>
-          {SPORTS.map(sportOption => (
-            <option key={sportOption.value} value={sportOption.value}>
+          {sportOptions.map(sportOption => (
+            <option
+              key={sportOption.value}
+              value={sportOption.value.toString()}
+            >
               {sportOption.icon} {sportOption.label}
             </option>
           ))}
         </Select>
-        {errors.sport && <ErrorMessage>{errors.sport}</ErrorMessage>}
       </FormGroup>
 
       <FormGroup>
@@ -223,25 +248,30 @@ export default function MatchRegistrationModal({
           type="text"
           value={opponentId}
           onChange={e => setOpponentId(e.target.value)}
+          onBlur={handleNicknameBlur}
           placeholder="상대방의 ID를 입력하세요"
         />
-        {errors.opponentId && <ErrorMessage>{errors.opponentId}</ErrorMessage>}
+        {nicknameError && (
+          <div style={{ color: 'red', fontSize: '14px', marginTop: '4px' }}>
+            {nicknameError}
+          </div>
+        )}
       </FormGroup>
 
       <FormGroup>
         <Label>결과</Label>
         <ResultGroup>
           <ResultButton
-            $isSelected={result === '승'}
+            $isSelected={result === 'win'}
             $isWin={true}
-            onClick={() => setResult('승')}
+            onClick={() => setResult('win')}
           >
             승
           </ResultButton>
           <ResultButton
-            $isSelected={result === '패'}
+            $isSelected={result === 'lose'}
             $isWin={false}
-            onClick={() => setResult('패')}
+            onClick={() => setResult('lose')}
           >
             패
           </ResultButton>
@@ -255,7 +285,6 @@ export default function MatchRegistrationModal({
           />
           <CheckboxLabel htmlFor="handicap">핸디캡 매치</CheckboxLabel>
         </HandicapGroup>
-        {errors.result && <ErrorMessage>{errors.result}</ErrorMessage>}
       </FormGroup>
     </FormContainer>
   );
