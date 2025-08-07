@@ -55,6 +55,36 @@ export interface ReceivedMatchResultsResponse {
   message: string;
 }
 
+// 매치 히스토리 타입
+export interface MatchHistoryResult {
+  id: number;
+  partner: number;
+  partner_nickname: string;
+  sportCategory: string;
+  result: 'win' | 'lose' | 'draw';
+  isHandicap: boolean;
+  created_at: string;
+  elo_before: number;
+  elo_after: number;
+  elo_delta: number;
+}
+
+export interface MatchHistoryResponse {
+  success: boolean;
+  data: {
+    matches: MatchHistoryResult[];
+  };
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+  message: string;
+}
+
 // API Hooks
 
 /**
@@ -134,5 +164,34 @@ export const useReceivedMatchResultsApi = (enabled: boolean = true) => {
       return response.data;
     },
     enabled,
+  });
+};
+
+/**
+ * 내 매치 히스토리 조회
+ * - 내가 지금까지 한 모든 매치 기록을 조회
+ * - 스포츠 카테고리, 페이지네이션, 파트너 필터링 지원
+ */
+export const useMatchHistory = (
+  sportCategoryId?: string,
+  page: number = 1,
+  limit: number = 10,
+  partnerName?: string
+) => {
+  return useQuery({
+    queryKey: ['matchHistory', sportCategoryId, page, limit, partnerName],
+    queryFn: async (): Promise<MatchHistoryResponse> => {
+      const params = new URLSearchParams();
+      if (sportCategoryId) params.append('sport', sportCategoryId);
+      if (page) params.append('page', page.toString());
+      if (limit) params.append('limit', limit.toString());
+      if (partnerName) params.append('partner', partnerName);
+
+      const response = await api.get(
+        `/users/me/match-results?${params.toString()}`
+      );
+      return response.data;
+    },
+    enabled: true, // 항상 활성화
   });
 };

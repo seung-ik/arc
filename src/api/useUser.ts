@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
+import axios from 'axios';
 
 // 유저 정보 타입
 export interface User {
@@ -114,4 +115,21 @@ export const useUserPostsApi = (userId: number) => {
     queryFn: () => api.get(`/users/${userId}/posts`).then(res => res.data),
     enabled: !!userId,
   });
+};
+
+// 닉네임 존재 여부 체크 훅
+export const useCheckNickname = () => {
+  const checkNickname = async (nickname: string) => {
+    try {
+      const response = await axios.get(
+        `/users/nickname-exists?nickname=${encodeURIComponent(nickname)}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('닉네임 체크 실패:', error);
+      throw error;
+    }
+  };
+
+  return { checkNickname };
 };
