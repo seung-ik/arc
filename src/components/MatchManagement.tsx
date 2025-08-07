@@ -5,21 +5,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import TwoButtonModal from '@/components/TwoButtonModal';
 import { ROUTES } from '@/constants/routes';
-
-interface Match {
-  id: number;
-  opponentId: string;
-  sport: string;
-  result: string;
-  date: string;
-  isWin: boolean;
-  myElo: number;
-  opponentElo: number;
-  createdAt: number;
-}
+import { MatchResult } from '@/api/useMatch';
+import { useTimer } from '@/hooks/useTimer';
 
 interface MatchManagementProps {
-  matches: Match[];
+  matches: MatchResult[];
   onAccept: (matchId: number) => void;
   onReject: (matchId: number, reason?: string) => void;
 }
@@ -156,34 +146,45 @@ const getSportEmoji = (sport: string) => {
   }
 };
 
-// 타이머 계산 함수
-const calculateTimeRemaining = (
-  createdAt: number
-): { hours: number; minutes: number; progress: number; color: string } => {
-  const now = Date.now();
-  const elapsed = now - createdAt;
-  const totalTime = 12 * 60 * 60 * 1000; // 12시간을 밀리초로
-  const remaining = totalTime - elapsed;
+// calculateTimeRemaining 함수 제거 - useTimer 훅으로 대체
 
-  if (remaining <= 0) {
-    return { hours: 0, minutes: 0, progress: 360, color: '#dc3545' }; // 빨간색
-  }
+// 개별 매치 행 컴포넌트
+const MatchRow: React.FC<{
+  match: MatchResult;
+  onAccept: (matchId: number) => void;
+  onReject: (matchId: number) => void;
+  onOpponentClick: (opponentId: string) => void;
+}> = ({ match, onAccept, onReject, onOpponentClick }) => {
+  const { seconds, progress, color } = useTimer(
+    match.expiredTime,
+    match.createdAt
+  );
 
-  const hours = Math.floor(remaining / (60 * 60 * 1000));
-  const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-  const progress = (elapsed / totalTime) * 360;
-
-  let color = '#28a745'; // 초록색
-  if (progress > 240) {
-    // 8시간 이상 경과
-    color = '#ffc107'; // 노란색
-  }
-  if (progress > 330) {
-    // 11시간 이상 경과
-    color = '#dc3545'; // 빨간색
-  }
-
-  return { hours, minutes, progress, color };
+  return (
+    <RowItem>
+      <SportBadge>{getSportEmoji(match.sportCategoryName)}</SportBadge>
+      <ContentSection>
+        <UserName onClick={() => onOpponentClick(match.senderNickname)}>
+          {match.senderNickname}
+        </UserName>
+        <UserInfo>
+          스포츠: {match.sportCategoryName} / 결과:{' '}
+          {match.myResult === 'win' ? '승' : '패'}
+        </UserInfo>
+      </ContentSection>
+      <CircularProgress $progress={progress} $color={color}>
+        <TimerText>{`${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`}</TimerText>
+      </CircularProgress>
+      <ActionButtons>
+        <ActionButton $variant="accept" onClick={() => onAccept(match.id)}>
+          승인
+        </ActionButton>
+        <ActionButton $variant="reject" onClick={() => onReject(match.id)}>
+          거부
+        </ActionButton>
+      </ActionButtons>
+    </RowItem>
+  );
 };
 
 export default function MatchManagement({
@@ -244,43 +245,15 @@ export default function MatchManagement({
     <>
       <div>
         {matches.length > 0 ? (
-          matches.map(match => {
-            const { hours, minutes, progress, color } = calculateTimeRemaining(
-              match.createdAt
-            );
-            return (
-              <RowItem key={match.id}>
-                <SportBadge>{getSportEmoji(match.sport)}</SportBadge>
-                <ContentSection>
-                  <UserName
-                    onClick={() => handleOpponentClick(match.opponentId)}
-                  >
-                    {match.opponentId}
-                  </UserName>
-                  <UserInfo>
-                    내 Elo: {match.myElo} / 상대 Elo: {match.opponentElo}
-                  </UserInfo>
-                </ContentSection>
-                <CircularProgress $progress={progress} $color={color}>
-                  <TimerText>{`${hours}:${minutes.toString().padStart(2, '0')}`}</TimerText>
-                </CircularProgress>
-                <ActionButtons>
-                  <ActionButton
-                    $variant="accept"
-                    onClick={() => handleAcceptClick(match.id)}
-                  >
-                    승인
-                  </ActionButton>
-                  <ActionButton
-                    $variant="reject"
-                    onClick={() => handleRejectClick(match.id)}
-                  >
-                    거부
-                  </ActionButton>
-                </ActionButtons>
-              </RowItem>
-            );
-          })
+          matches.map(match => (
+            <MatchRow
+              key={match.id}
+              match={match}
+              onAccept={handleAcceptClick}
+              onReject={handleRejectClick}
+              onOpponentClick={handleOpponentClick}
+            />
+          ))
         ) : (
           <EmptyState>
             <EmptyIcon>📋</EmptyIcon>

@@ -2,6 +2,8 @@
 
 import styled from 'styled-components';
 import React from 'react';
+import { MatchResult } from '@/api/useMatch';
+import { useTimer } from '@/hooks/useTimer';
 
 // 시계형 원형 프로그레스 바 컴포넌트
 const CircularProgress = styled.div<{ $progress: number; $color: string }>`
@@ -94,70 +96,39 @@ const getSportEmoji = (sport: string) => {
   }
 };
 
-// 타이머 계산 함수
-const calculateTimeRemaining = (
-  createdAt: number
-): { hours: number; minutes: number; progress: number; color: string } => {
-  const now = Date.now();
-  const elapsed = now - createdAt;
-  const totalTime = 12 * 60 * 60 * 1000; // 12시간을 밀리초로
-  const remaining = totalTime - elapsed;
-
-  if (remaining <= 0) {
-    return { hours: 0, minutes: 0, progress: 360, color: '#dc3545' }; // 빨간색
-  }
-
-  const hours = Math.floor(remaining / (60 * 60 * 1000));
-  const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-  const progress = (elapsed / totalTime) * 360;
-
-  let color = '#28a745'; // 초록색
-  if (progress > 240) {
-    // 8시간 이상 경과
-    color = '#ffc107'; // 노란색
-  }
-  if (progress > 330) {
-    // 11시간 이상 경과
-    color = '#dc3545'; // 빨간색
-  }
-
-  return { hours, minutes, progress, color };
-};
-
-export interface PendingMatch {
-  id: number;
-  opponentId: string;
-  sport: string;
-  result: string;
-  date: string;
-  isWin: boolean;
-  myElo: number;
-  opponentElo: number;
-  createdAt: number;
-}
+// calculateTimeRemaining 함수 제거 - useTimer 훅으로 대체
 
 interface PendingMatchCardProps {
-  match: PendingMatch;
+  match: MatchResult;
 }
 
 const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => {
-  const { hours, minutes, progress, color } = calculateTimeRemaining(
+  const { seconds, progress, color } = useTimer(
+    match.expiredTime,
     match.createdAt
   );
-
+  if (match.status === 'expired') return null;
+  console.log(match.expiredTime, seconds, progress, color);
   return (
     <RowItem>
-      <SportBadge>{getSportEmoji(match.sport)}</SportBadge>
+      <SportBadge>{getSportEmoji(match.sportCategoryName)}</SportBadge>
       <ContentSection>
-        <UserName>{match.opponentId}</UserName>
+        <UserName>{match.partnerNickname}</UserName>
         <UserInfo>
-          {match.result} • {match.date}
+          {match.myResult === 'win' ? '승' : '패'} •{' '}
+          {new Date(match.createdAt).toLocaleDateString()}
         </UserInfo>
       </ContentSection>
       <CircularProgress $progress={progress} $color={color}>
-        <TimerText>{`${hours}:${minutes.toString().padStart(2, '0')}`}</TimerText>
+        <TimerText>{`${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`}</TimerText>
       </CircularProgress>
-      <StatusBadge>대기중</StatusBadge>
+      <StatusBadge>
+        {match.status === 'pending'
+          ? '대기중'
+          : match.status === 'accepted'
+            ? '승인됨'
+            : '거부됨'}
+      </StatusBadge>
     </RowItem>
   );
 };

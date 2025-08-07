@@ -4,18 +4,10 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import PendingMatchCard from './PendingMatchCard';
 import MatchManagement from './MatchManagement';
-
-interface Match {
-  id: number;
-  opponentId: string;
-  sport: string;
-  result: string;
-  date: string;
-  isWin: boolean;
-  myElo: number;
-  opponentElo: number;
-  createdAt: number;
-}
+import {
+  useSentMatchResultsApi,
+  useReceivedMatchResultsApi,
+} from '@/api/useMatch';
 
 const MatchRequestSection = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -97,34 +89,18 @@ const EmptySubText = styled.div`
 export default function MatchRequestTabs() {
   const [activeTab, setActiveTab] = useState<'sent' | 'received'>('sent');
 
-  // 목업 데이터
-  const pendingMatches: Match[] = [
-    // {
-    //   id: 1,
-    //   opponentId: 'user123',
-    //   sport: '배드민턴',
-    //   result: '승',
-    //   date: '2025-07-30',
-    //   isWin: true,
-    //   myElo: 1300,
-    //   opponentElo: 1280,
-    //   createdAt: Date.now() - 2 * 60 * 60 * 1000, // 2시간 전
-    // },
-  ];
+  // API 데이터 가져오기
+  const { data: sentMatchesData } = useSentMatchResultsApi();
+  const { data: receivedMatchesData } = useReceivedMatchResultsApi();
 
-  const receivedMatches: Match[] = [
-    {
-      id: 2,
-      opponentId: 'user456',
-      sport: '탁구',
-      result: '승',
-      date: '2024-01-15',
-      isWin: true,
-      myElo: 1320,
-      opponentElo: 1280,
-      createdAt: Date.now() - 10 * 60 * 60 * 1000, // 10시간 전
-    },
-  ];
+  // 콘솔에 데이터 찍기
+  console.log('보낸 매치 요청 데이터:', sentMatchesData);
+  console.log('받은 매치 요청 데이터:', receivedMatchesData);
+
+  // API 데이터 사용
+  const pendingMatches =
+    sentMatchesData?.data.filter(el => el.status !== 'expired') || [];
+  const receivedMatches = receivedMatchesData?.data || [];
 
   const handleAccept = (matchId: number) => {
     alert(`매치 요청을 수락했습니다: ${matchId}`);
@@ -159,7 +135,7 @@ export default function MatchRequestTabs() {
             {pendingMatches.length > 0 ? (
               <div>
                 {pendingMatches.map(match => (
-                  <PendingMatchCard key={match.id} match={match} />
+                  <PendingMatchCard key={match.id} match={match as any} />
                 ))}
               </div>
             ) : (
@@ -180,7 +156,7 @@ export default function MatchRequestTabs() {
           <>
             {receivedMatches.length > 0 ? (
               <MatchManagement
-                matches={receivedMatches}
+                matches={receivedMatches as any}
                 onAccept={handleAccept}
                 onReject={handleReject}
               />

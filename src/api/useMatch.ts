@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
 
 // Types
@@ -19,7 +19,7 @@ export interface MatchResult {
   sportCategoryName: string;
   myResult: 'win' | 'lose';
   isHandicap: boolean;
-  status: 'pending' | 'accepted' | 'rejected';
+  status: 'pending' | 'accepted' | 'rejected' | 'expired';
   expiredTime: string;
   createdAt: string;
 }
@@ -93,6 +93,8 @@ export interface MatchHistoryResponse {
  * - 상대방이 승인하면 ELO 점수가 반영됨
  */
 export const useCreateMatchResultMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (
       data: CreateMatchResultRequest
@@ -102,6 +104,8 @@ export const useCreateMatchResultMutation = () => {
     },
     onSuccess: data => {
       console.log('매치 결과 등록 성공:', data);
+      // sent-match-results 쿼리 무효화하여 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ['sent-match-results'] });
     },
     onError: error => {
       console.error('매치 결과 등록 실패:', error);
