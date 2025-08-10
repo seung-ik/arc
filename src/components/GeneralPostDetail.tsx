@@ -2,7 +2,7 @@
 
 import PostHeader from '@/components/PostHeader';
 import PostActions from '@/components/PostActions';
-import Comments from '@/components/Comments';
+import Comments from '@/app/community/components/Comments';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import { GeneralPost } from '@/types/post';
 import HtmlContent from './HtmlContent';

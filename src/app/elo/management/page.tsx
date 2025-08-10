@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { useModal } from '@/hooks/useModal';
 import MatchRegistrationModal from '@/components/MatchRegistrationModal';
-import EloTabCards from '@/components/EloTabCards';
+import EloTabCards from '../components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
-import { MatchCard } from '@/components/match';
+import MatchCard from '../components/MatchCard';
 import { useRouter } from 'next/navigation';
 import { MatchPost } from '@/types/post';
 import Image from 'next/image';

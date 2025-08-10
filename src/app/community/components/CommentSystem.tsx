@@ -7,7 +7,7 @@ import {
   useCommentsApi,
   useDeleteCommentMutation,
 } from '@/api/useCommunity';
-import CommentList from '@/components/CommentList';
+import CommentList from './CommentList';
 import { Comment, normalizeApiComments } from '@/utils/commentUtils';
 import {
   CommentsSection,

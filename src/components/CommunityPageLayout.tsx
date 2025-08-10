@@ -2,8 +2,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import CategoryTabs from '@/app/community/component/CategoryTabs';
-import CommunityLayout from '@/app/community/component/CommunityLayout';
+import CategoryTabs from '@/app/community/components/CategoryTabs';
+import CommunityLayout from '@/app/community/components/CommunityLayout';
 import BottomNavigation from '@/components/BottomNavigation';
 
 const Container = styled.div`

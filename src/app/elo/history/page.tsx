@@ -2,8 +2,8 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import MatchHistory from '@/components/MatchHistory';
-import EloTabCards from '@/components/EloTabCards';
+import MatchHistory from '../components/MatchHistory';
+import EloTabCards from '../components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import Image from 'next/image';
 import { ICONS } from '@/assets';

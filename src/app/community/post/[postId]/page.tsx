@@ -2,7 +2,6 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
-import CommunityLayout from '../../component/CommunityLayout';
 import BottomNavigation from '@/components/BottomNavigation';
 import CommunityErrorLayout from '@/components/CommunityErrorLayout';
 import PostDetailHeader from '@/components/PostDetailHeader';
@@ -16,6 +15,7 @@ import MentorMyPostDetail from '@/components/MentorMyPostDetail';
 import { GeneralPost, MatchPost, MentorPost } from '@/types/post';
 import { usePostDetailApi } from '@/api/useCommunity';
 import { useAuthStore } from '@/stores/authStore';
+import CommunityLayout from '../../components/CommunityLayout';
 
 const Container = styled.div`
   min-height: 100vh;

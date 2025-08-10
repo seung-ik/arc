@@ -397,3 +397,38 @@ export const useLikeCommentMutation = () => {
     },
   });
 };
+
+// Image Upload Types
+export interface ImageUploadRequest {
+  image: File;
+}
+
+export interface ImageUploadResponse {
+  success: boolean;
+  imageUrl: string;
+  tempImageId: number;
+}
+
+export const useImageUploadMutation = () => {
+  return useMutation({
+    mutationFn: async (
+      data: ImageUploadRequest
+    ): Promise<ImageUploadResponse> => {
+      const formData = new FormData();
+      formData.append('image', data.image);
+
+      const response = await api.post('/images/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('이미지 업로드 성공:', data);
+    },
+    onError: error => {
+      console.error('이미지 업로드 실패:', error);
+    },
+  });
+};

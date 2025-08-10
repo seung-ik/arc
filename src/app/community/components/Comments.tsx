@@ -7,8 +7,8 @@ import {
   useCommentsApi,
   useDeleteCommentMutation,
 } from '@/api/useCommunity';
-import CommentList from '@/components/CommentList';
-import CommentForm from '@/components/CommentForm';
+import CommentList from './CommentList';
+import CommentForm from './CommentForm';
 import { Comment, normalizeApiComments } from '@/utils/commentUtils';
 import {
   CommentsSection,

@@ -13,7 +13,7 @@ import {
 import { GeneralPost } from '@/types/post';
 import HtmlContent from './HtmlContent';
 import PostActions from './PostActions';
-import Comments from './Comments';
+import Comments from '@/app/community/components/Comments';
 import { useDeletePostMutation } from '@/api/useCommunity';
 import { useRouter } from 'next/navigation';
 

@@ -2,7 +2,7 @@
 
 import { usePostsApi } from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
-import CommunityPageWrapper from '../component/CommunityPageWrapper';
+import CommunityPageWrapper from '../components/CommunityPageWrapper';
 
 // 인기글(3개만)
 const popularFreePosts = [

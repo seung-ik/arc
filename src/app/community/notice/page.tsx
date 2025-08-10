@@ -2,7 +2,7 @@
 
 import { usePostsApi } from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
-import CommunityPageWrapper from '../component/CommunityPageWrapper';
+import CommunityPageWrapper from '../components/CommunityPageWrapper';
 
 export default function NoticePage() {
   const currentTab = '공지사항';
