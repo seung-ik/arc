@@ -51,7 +51,9 @@ interface PopularPost {
 interface CommunityPageWrapperProps {
   currentTab: string;
   popularPosts: PopularPost[];
-  postsData: any;
+  posts: any[];
+  isLoading?: boolean;
+  hasNext?: boolean;
   onLoadMore?: () => void;
   showLoadMore?: boolean;
 }
@@ -59,22 +61,19 @@ interface CommunityPageWrapperProps {
 export default function CommunityPageWrapper({
   currentTab,
   popularPosts,
-  postsData,
+  posts,
+  isLoading = false,
+  hasNext = false,
   onLoadMore,
   showLoadMore = true,
 }: CommunityPageWrapperProps) {
   const handleAdClick = (business: any) => {
     console.log('업장 배너 클릭됨:', business.name);
-    // 실제로는 업장 상세 페이지로 이동하거나 모달을 열 수 있음
   };
 
-  const handleLoadMore = () => {
-    if (onLoadMore) {
-      onLoadMore();
-    } else {
-      console.log('더보기 클릭됨');
-    }
-  };
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Container>
@@ -84,8 +83,8 @@ export default function CommunityPageWrapper({
           <PopularPosts posts={popularPosts} />
           <BusinessBanner onClick={handleAdClick} />
           <PostList>
-            {postsData?.data && postsData?.data.length > 0 ? (
-              postsData?.data.map((post: any) => {
+            {posts && posts.length > 0 ? (
+              posts.map((post: any) => {
                 if (post.type === '매치') {
                   return (
                     <MatchPostCard
@@ -110,8 +109,10 @@ export default function CommunityPageWrapper({
               <NoResults>게시글이 없습니다.</NoResults>
             )}
           </PostList>
-          {showLoadMore && (
-            <LoadMoreButton onClick={handleLoadMore}>더보기</LoadMoreButton>
+          {showLoadMore && hasNext && onLoadMore && (
+            <LoadMoreButton onClick={onLoadMore} isLoading={isLoading}>
+              더보기
+            </LoadMoreButton>
           )}
         </Content>
       </CommunityLayout>

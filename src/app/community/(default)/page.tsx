@@ -1,8 +1,9 @@
 'use client';
 
-import { usePostsApi } from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
+import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 import CommunityPageWrapper from '../components/CommunityPageWrapper';
+import { usePostsApi } from '@/api/useCommunity';
 
 // 인기글(3개만)
 const popularFreePosts = [
@@ -46,16 +47,34 @@ export default function CommunityPage() {
 
   const { communityTabs } = useCommunityStore();
   const categoryId = communityTabs?.[currentTab]?.id || 0;
-  const { data: postsData } = usePostsApi(categoryId);
+  const { fetchPosts } = usePostsApi(categoryId, 1, 10);
 
-  const handleLoadMore = () => {};
+  const {
+    items: posts,
+    isLoading,
+    hasNext,
+    loadMore,
+  } = useInfinitePagination({
+    fetchFunction: async (page: number, limit: number) => {
+      const response = await fetchPosts(page, limit);
+
+      return {
+        data: response.data,
+        pagination: response.pagination,
+      };
+    },
+    pageSize: 10,
+    dependencies: [categoryId],
+  });
 
   return (
     <CommunityPageWrapper
       currentTab={currentTab}
       popularPosts={popularFreePosts}
-      postsData={postsData}
-      onLoadMore={handleLoadMore}
+      posts={posts}
+      isLoading={isLoading}
+      hasNext={hasNext}
+      onLoadMore={loadMore}
     />
   );
 }

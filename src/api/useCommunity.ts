@@ -19,6 +19,14 @@ export interface PostsResponse {
   success: boolean;
   message: string;
   data: Post[];
+  pagination: {
+    page: string;
+    limit: string;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
 }
 
 // Create Post Types
@@ -222,17 +230,46 @@ export const useSportCategoriesApi = (enabled: boolean = true) => {
 
 export const usePostsApi = (
   sportCategoryId?: number,
+  page: number = 1,
+  limit: number = 10,
   enabled: boolean = true
 ) => {
-  return useQuery({
-    queryKey: ['posts', sportCategoryId],
+  const query = useQuery({
+    queryKey: ['posts', sportCategoryId, page, limit],
     queryFn: async (): Promise<PostsResponse> => {
-      const params = sportCategoryId ? { sport: sportCategoryId } : {};
+      const params = {
+        ...(sportCategoryId ? { sport: sportCategoryId } : {}),
+        page: page.toString(),
+        limit: limit.toString(),
+      };
       const response = await api.get('/posts', { params });
       return response.data;
     },
     enabled: enabled && !!sportCategoryId,
   });
+
+  // fetchPosts 함수를 직접 제공
+  const fetchPosts = async (
+    newPage?: number,
+    newLimit?: number
+  ): Promise<PostsResponse> => {
+    const targetPage = newPage ?? page;
+    const targetLimit = newLimit ?? limit;
+
+    const params = {
+      ...(sportCategoryId ? { sport: sportCategoryId } : {}),
+      page: targetPage.toString(),
+      limit: targetLimit.toString(),
+    };
+
+    const response = await api.get('/posts', { params });
+    return response.data;
+  };
+
+  return {
+    ...query,
+    fetchPosts,
+  };
 };
 
 export const useCreatePostMutation = () => {
