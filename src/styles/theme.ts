@@ -31,6 +31,10 @@ export const theme = {
     error: '#D9675F',
     info: '#17a2b8',
 
+    // Additional colors
+    gray: '#6c757d',
+    primaryDark: '#1a3137',
+
     // Post type colors
     postType: {
       general: {

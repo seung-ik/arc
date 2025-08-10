@@ -53,7 +53,6 @@ export function useInfinitePagination<T>({
     [fetchFunction, pageSize]
   );
 
-  // 더보기 로드
   const loadMore = useCallback(() => {
     if (!isLoading && hasNext) {
       loadData(currentPage + 1, true);

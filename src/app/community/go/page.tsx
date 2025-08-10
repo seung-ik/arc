@@ -48,9 +48,7 @@ export default function GoPage() {
   const categoryId = communityTabs?.[currentTab]?.id || 0;
   const { data: postsData } = usePostsApi(categoryId);
 
-  const handleLoadMore = () => {
-    console.log('바둑 더보기 클됨');
-  };
+  const handleLoadMore = () => {};
 
   return (
     <CommunityPageWrapper

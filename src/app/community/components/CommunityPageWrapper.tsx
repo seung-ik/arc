@@ -9,6 +9,7 @@ import BusinessBanner from './BusinessBanner';
 import CommunityLayout from './CommunityLayout';
 import { GeneralPost, MatchPost } from '@/types/post';
 import PopularPosts from './PopularPosts';
+import LoadMoreButton from '@/components/LoadMoreButton';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -26,6 +27,7 @@ const Content = styled.div`
 const PostList = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const NoResults = styled.div`
@@ -33,26 +35,6 @@ const NoResults = styled.div`
   padding: ${props => props.theme.spacing.xl};
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.base};
-`;
-
-const LoadMoreButton = styled.button`
-  background-color: ${props => props.theme.colors.backgroundGray};
-  color: ${props => props.theme.colors.textBlack};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.md};
-  border: 1px solid ${props => props.theme.colors.textGray};
-  cursor: pointer;
-  margin: ${props => props.theme.spacing['xl']} auto;
-  display: block;
-  width: 80%;
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.borderLight};
-    border-color: ${props => props.theme.colors.textBlack};
-  }
 `;
 
 interface PopularPost {

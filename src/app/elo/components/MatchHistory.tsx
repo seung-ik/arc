@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import MatchCardItem from './MatchCardItem';
+import LoadMoreButton from '@/components/LoadMoreButton';
 
 interface HistoryMatch {
   id: number;
@@ -27,29 +28,6 @@ const MatchList = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${props => props.theme.spacing.md};
-`;
-
-const LoadMoreButton = styled.button`
-  width: 100%;
-  padding: ${props => props.theme.spacing.md};
-  background: ${props => props.theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-top: ${props => props.theme.spacing.md};
-
-  &:hover {
-    background: ${props => props.theme.colors.primaryHover};
-  }
-
-  &:disabled {
-    background: ${props => props.theme.colors.textGray};
-    cursor: not-allowed;
-  }
 `;
 
 const EmptyState = styled.div`
@@ -80,8 +58,8 @@ export default function MatchHistory({
           {matches.map(match => (
             <MatchCardItem key={match.id} match={match} />
           ))}
-          {hasNext && (
-            <LoadMoreButton onClick={onLoadMore} disabled={isLoading}>
+          {hasNext && onLoadMore && (
+            <LoadMoreButton onClick={onLoadMore} isLoading={isLoading}>
               {isLoading ? '로딩 중...' : '더보기'}
             </LoadMoreButton>
           )}
