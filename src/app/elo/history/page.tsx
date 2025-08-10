@@ -7,6 +7,10 @@ import EloTabCards from '@/components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { createMatchHistoryFetcher, MatchHistoryResult } from '@/api/useMatch';
+import React from 'react';
+import { useCommunityStore } from '@/stores/communityStore';
+import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 
 const FilterContainer = styled.div`
   display: flex;
@@ -94,6 +98,7 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
 
 const DropdownItem = styled.button`
   width: 100%;
+  min-width: 140px;
   padding: 8px 12px;
   background: none;
   border: none;
@@ -116,16 +121,6 @@ const DropdownItem = styled.button`
   }
 `;
 
-const sportsOptions = [
-  { value: '전체', label: '전체' },
-  { value: '바둑', label: '바둑' },
-  { value: '체스', label: '체스' },
-  { value: '배드민턴', label: '배드민턴' },
-  { value: '탁구', label: '탁구' },
-  { value: '당구', label: '당구' },
-  { value: '테니스', label: '테니스' },
-];
-
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
@@ -142,129 +137,39 @@ const ContentContainer = styled.div`
   // padding-top: ${props => props.theme.spacing.lg};
   margin-top: ${props => props.theme.spacing.sm};
 `;
-// 목업 데이터
-const historyMatches = [
-  {
-    id: 3,
-    opponentId: 'user789',
-    sport: '배드민턴',
-    result: '승',
-    date: '2024-01-10',
-    eloChange: '+15',
-    beforeElo: 1305,
-    afterElo: 1320,
-    opponentBeforeElo: 1280,
-    opponentAfterElo: 1265,
-    headToHead: {
-      wins: 3,
-      losses: 2,
-    },
-    opponentProfileImage: '',
-  },
-
-  {
-    id: 5,
-    opponentId: 'user202',
-    sport: '탁구',
-    result: '승',
-    date: '2024-01-05',
-    eloChange: '+8',
-    beforeElo: 1308,
-    afterElo: 1316,
-    opponentBeforeElo: 1275,
-    opponentAfterElo: 1267,
-    headToHead: {
-      wins: 2,
-      losses: 1,
-    },
-    opponentProfileImage: '',
-  },
-  {
-    id: 4,
-    opponentId: 'user101',
-    sport: '당구',
-    result: '패',
-    date: '2024-01-08',
-    eloChange: '-12',
-    beforeElo: 1320,
-    afterElo: 1308,
-    opponentBeforeElo: 1250,
-    opponentAfterElo: 1262,
-    headToHead: {
-      wins: 1,
-      losses: 4,
-    },
-    opponentProfileImage: '',
-  },
-  {
-    id: 6,
-    opponentId: 'user303',
-    sport: '체스',
-    result: '패',
-    date: '2024-01-03',
-    eloChange: '-5',
-    beforeElo: 1316,
-    afterElo: 1311,
-    opponentBeforeElo: 1240,
-    opponentAfterElo: 1245,
-    headToHead: {
-      wins: 0,
-      losses: 3,
-    },
-    opponentProfileImage: '',
-  },
-  {
-    id: 7,
-    opponentId: 'user404',
-    sport: '배드민턴',
-    result: '승',
-    date: '2024-01-01',
-    eloChange: '+10',
-    beforeElo: 1311,
-    afterElo: 1321,
-    opponentBeforeElo: 1230,
-    opponentAfterElo: 1240,
-    headToHead: {
-      wins: 1,
-      losses: 0,
-    },
-    opponentProfileImage: '',
-  },
-  {
-    id: 8,
-    opponentId: 'user505',
-    sport: '배드민턴',
-    result: '패',
-    date: '2024-01-01',
-    eloChange: '-10',
-    beforeElo: 1321,
-    afterElo: 1311,
-    opponentBeforeElo: 1240,
-    opponentAfterElo: 1230,
-    headToHead: {
-      wins: 0,
-      losses: 1,
-    },
-    opponentProfileImage: '',
-  },
-];
 
 export default function HistoryPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedSport, setSelectedSport] = useState('전체');
+  const [selectedSport, setSelectedSport] = useState<{
+    value: number;
+    label: string;
+  } | null>(null);
+  const { sportOptions } = useCommunityStore();
+
+  // 간단한 무한 스크롤 훅 사용
+  const {
+    items: matches,
+    isLoading,
+    hasNext,
+    loadMore,
+  } = useInfinitePagination<MatchHistoryResult>({
+    fetchFunction: createMatchHistoryFetcher(
+      selectedSport ? selectedSport.value.toString() : undefined
+    ),
+    pageSize: 10,
+    dependencies: [selectedSport?.value], // 스포츠 카테고리 변경 시 초기화
+  });
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleSportSelect = (sport: string) => {
+  const handleSportSelect = (
+    sport: { value: number; label: string } | null
+  ) => {
     setSelectedSport(sport);
     setIsDropdownOpen(false);
   };
-
-  // const handleAdClick = () => {
-  //   // 실제로는 광고 링크로 이동하거나 모달을 열 수 있음
-  // };
 
   return (
     <Container>
@@ -279,7 +184,7 @@ export default function HistoryPage() {
         <FilterContainer>
           <FilterDropdown>
             <FilterButton onClick={handleDropdownToggle}>
-              {selectedSport}
+              {selectedSport ? selectedSport.label : '전체'}
               <Image
                 src={ICONS.ARROW_DOWN}
                 alt="expand"
@@ -288,10 +193,13 @@ export default function HistoryPage() {
               />
             </FilterButton>
             <DropdownMenu $isOpen={isDropdownOpen}>
-              {sportsOptions.map(option => (
+              <DropdownItem key="전체" onClick={() => handleSportSelect(null)}>
+                전체
+              </DropdownItem>
+              {sportOptions.map(option => (
                 <DropdownItem
                   key={option.value}
-                  onClick={() => handleSportSelect(option.value)}
+                  onClick={() => handleSportSelect(option)}
                 >
                   {option.label}
                 </DropdownItem>
@@ -303,7 +211,13 @@ export default function HistoryPage() {
             <input type="text" placeholder="상대유저 검색" />
           </SearchContainer>
         </FilterContainer>
-        <MatchHistory matches={historyMatches} />
+
+        <MatchHistory
+          matches={matches}
+          hasNext={hasNext}
+          onLoadMore={loadMore}
+          isLoading={isLoading}
+        />
       </ContentContainer>
     </Container>
   );

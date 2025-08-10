@@ -31,13 +31,15 @@ const RegisterWrapper = styled.div`
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 20;
+  pointer-events: none;
 `;
 
 const RegisterButton = styled.button`
   position: absolute;
   bottom: 12px;
   right: 16px;
-  z-index: 10;
+  pointer-events: auto; /* 클릭 이벤트를 받음 */
 
   display: flex;
   gap: ${props => props.theme.spacing.xs};

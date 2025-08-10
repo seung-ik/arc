@@ -80,7 +80,7 @@ const ActionButtons = styled.div`
   margin-left: ${props => props.theme.spacing.sm};
   display: flex;
   gap: ${props => props.theme.spacing.sm};
-  z-index: 12;
+  z-index: 1;
 `;
 
 const ActionButton = styled.button<{ $variant: 'accept' | 'reject' }>`
@@ -99,6 +99,7 @@ const ActionButton = styled.button<{ $variant: 'accept' | 'reject' }>`
   &:hover {
     opacity: 0.8;
   }
+  z-index: 9;
 `;
 
 // 스포츠 이모지 매핑

@@ -7,7 +7,7 @@ interface CommunityTab {
   path: string;
 }
 
-interface SportOption {
+export interface SportOption {
   value: number;
   label: string;
   icon: string;

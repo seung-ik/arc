@@ -37,7 +37,6 @@ const TabButton = styled.button<{ $active: boolean }>`
   font-size: ${props => props.theme.typography.fontSizes.sm};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   position: relative;
-  z-index: 20; // RegisterWrapper 의 z-index: 10보다 높게 설정
 
   &:hover {
     background: ${props =>
@@ -95,9 +94,9 @@ export default function MatchRequestTabs() {
 
   // API 데이터 사용
   const pendingMatches =
-    sentMatchesData?.data.filter(el => el.status !== 'expired') || [];
+    sentMatchesData?.data.filter(el => el.status === 'pending') || [];
   const receivedMatches =
-    receivedMatchesData?.data.filter(el => el.status !== 'expired') || [];
+    receivedMatchesData?.data.filter(el => el.status === 'pending') || [];
 
   return (
     <MatchRequestSection>

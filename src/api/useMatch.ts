@@ -129,7 +129,7 @@ export const useHandleMatchRequestMutation = () => {
       matchId: number;
       action: 'accept' | 'reject';
     }): Promise<HandleMatchRequestResponse> => {
-      const response = await api.post(`/match-results/${matchId}`, { action });
+      const response = await api.put(`/match-results/${matchId}`, { action });
       return response.data;
     },
     onSuccess: data => {
@@ -203,4 +203,36 @@ export const useMatchHistory = (
     },
     enabled: true, // 항상 활성화
   });
+};
+
+/**
+ * 무한 스크롤을 위한 매치 히스토리 래퍼 함수
+ * - useInfinitePagination 훅과 연동하여 사용
+ */
+export const createMatchHistoryFetcher = (
+  sportCategoryId?: string,
+  partnerName?: string
+) => {
+  return async (page: number, limit: number) => {
+    const params = new URLSearchParams();
+    if (sportCategoryId) params.append('sport', sportCategoryId);
+    if (page) params.append('page', page.toString());
+    if (limit) params.append('limit', limit.toString());
+    if (partnerName) params.append('partner', partnerName);
+
+    const response = await api.get(
+      `/users/me/match-results?${params.toString()}`
+    );
+
+    return {
+      data: response.data.data.matches,
+      pagination: {
+        hasNext: response.data.pagination.hasNext,
+        page: response.data.pagination.page,
+        total: response.data.pagination.total,
+        totalPages: response.data.pagination.totalPages,
+        hasPrev: response.data.pagination.hasPrev,
+      },
+    };
+  };
 };

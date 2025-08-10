@@ -9,20 +9,15 @@ import { ICONS } from '@/assets';
 
 interface HistoryMatch {
   id: number;
-  opponentId: string;
-  sport: string;
-  result: string;
-  date: string;
-  eloChange: string;
-  beforeElo: number;
-  afterElo: number;
-  opponentBeforeElo?: number;
-  opponentAfterElo?: number;
-  headToHead?: {
-    wins: number;
-    losses: number;
-  };
-  opponentProfileImage?: string;
+  partner: number;
+  partner_nickname: string;
+  sportCategory: string;
+  result: 'win' | 'lose' | 'draw';
+  isHandicap: boolean;
+  created_at: string;
+  elo_before: number;
+  elo_after: number;
+  elo_delta: number;
 }
 
 interface MatchCardItemProps {
@@ -145,6 +140,7 @@ const DateText = styled.span`
   position: absolute;
   top: 4px;
   right: 12px;
+  white-space: nowrap;
 `;
 
 const SportText = styled.span`
@@ -248,7 +244,13 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
     setIsExpanded(!isExpanded);
   };
 
-  const isWin = match.result === '승';
+  const isWin = match.result === 'win';
+
+  // 서버에서 누락된 데이터는 0으로 대체
+  const opponentBeforeElo = 0; // 서버에서 제공되지 않음
+  const opponentAfterElo = 0; // 서버에서 제공되지 않음
+  const headToHeadWins = 0; // 서버에서 제공되지 않음
+  const headToHeadLosses = 0; // 서버에서 제공되지 않음
 
   return (
     <MatchCard $isWin={isWin}>
@@ -261,14 +263,18 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
             marginBottom: '12px',
           }}
         >
-          <SportText>{match.sport}</SportText>
+          <SportText>{match.sportCategory}</SportText>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <ResultText $isWin={isWin}>{match.result}</ResultText>
-            {match.headToHead && (
-              <span style={{ fontSize: '12px', color: '#666' }}>
-                ({match.headToHead.wins}승 {match.headToHead.losses}패)
-              </span>
-            )}
+            <ResultText $isWin={isWin}>
+              {match.result === 'win'
+                ? '승'
+                : match.result === 'lose'
+                  ? '패'
+                  : '무'}
+            </ResultText>
+            <span style={{ fontSize: '12px', color: '#666' }}>
+              ({headToHeadWins}승 {headToHeadLosses}패)
+            </span>
           </div>
         </div>
 
@@ -277,9 +283,11 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
           <PlayerProfile
             avatar="M"
             nickname="나"
-            beforeElo={match.beforeElo}
-            afterElo={match.afterElo}
-            eloChange={match.eloChange}
+            beforeElo={match.elo_before}
+            afterElo={match.elo_after}
+            eloChange={
+              match.elo_delta > 0 ? `+${match.elo_delta}` : `${match.elo_delta}`
+            }
             isWin={isWin}
           />
 
@@ -290,25 +298,27 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
 
           {/* 상대 정보 */}
           <PlayerProfile
-            avatar={match.opponentId.charAt(0).toUpperCase()}
-            nickname={match.opponentId}
-            beforeElo={match.opponentBeforeElo || 0}
-            afterElo={match.opponentAfterElo || 0}
+            avatar={match.partner_nickname.charAt(0).toUpperCase()}
+            nickname={match.partner_nickname}
+            beforeElo={opponentBeforeElo}
+            afterElo={opponentAfterElo}
             eloChange={
-              match.eloChange.startsWith('+')
-                ? match.eloChange.replace('+', '-')
-                : match.eloChange.replace('-', '+')
+              match.elo_delta > 0
+                ? `-${match.elo_delta}`
+                : `+${Math.abs(match.elo_delta)}`
             }
             isWin={!isWin}
             isOpponent={true}
-            profileImage={match.opponentProfileImage}
-            onNicknameClick={() => handleOpponentClick(match.opponentId)}
+            profileImage={undefined}
+            onNicknameClick={() => handleOpponentClick(match.partner_nickname)}
           />
         </MatchContainer>
       </MainContent>
 
       <ExpandSection $isWin={isWin}>
-        <DateText>{match.date}</DateText>
+        <DateText>
+          {new Date(match.created_at).toLocaleDateString('ko-KR')}
+        </DateText>
 
         <ExpandButton onClick={handleExpandClick}>
           <Image src={ICONS.ARROW_DOWN} alt="expand" width={20} height={20} />
