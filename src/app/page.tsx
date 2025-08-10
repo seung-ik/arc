@@ -17,7 +17,7 @@ export default function Home() {
     console.log(isLoggedIn, pathname);
     if (!isLoggedIn && !pathname.includes('auth')) {
       router.push(ROUTES.auth.login);
-    } else if (isLoggedIn && pathname.includes('auth')) {
+    } else if (isLoggedIn) {
       router.push(ROUTES.elo.root);
     }
   }, [isInitialized, isLoggedIn, pathname, router]);

@@ -18,6 +18,7 @@ export interface ToastEditorProps {
   initialEditType?: 'markdown' | 'wysiwyg';
   toolbarItems?: string[][];
   hideModeSwitch?: boolean;
+  onImageUpload?: (file: File) => Promise<string>;
 }
 
 const DEFAULT_TOOLBAR: string[][] = [
@@ -33,6 +34,7 @@ const ToastEditor: React.FC<ToastEditorProps> = ({
   initialEditType = 'wysiwyg',
   toolbarItems = DEFAULT_TOOLBAR,
   hideModeSwitch = false,
+  onImageUpload,
 }) => {
   const editorRef = useRef<any>(null);
 
@@ -70,6 +72,36 @@ const ToastEditor: React.FC<ToastEditorProps> = ({
     }
   };
 
+  const handleImageUpload = async (
+    blob: File | Blob,
+    callback: (url: string, altText?: string) => void
+  ) => {
+    if (!onImageUpload) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        callback(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
+      return;
+    }
+
+    try {
+      const file =
+        blob instanceof File
+          ? blob
+          : new File([blob], 'image.png', { type: blob.type });
+      const imageUrl = await onImageUpload(file);
+      callback(imageUrl);
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      const reader = new FileReader();
+      reader.onload = () => {
+        callback(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
+    }
+  };
+
   return (
     <Editor
       ref={editorRef}
@@ -82,6 +114,9 @@ const ToastEditor: React.FC<ToastEditorProps> = ({
       toolbarItems={toolbarItems}
       onChange={handleChange}
       hideModeSwitch={hideModeSwitch}
+      hooks={{
+        addImageBlobHook: handleImageUpload,
+      }}
     />
   );
 };

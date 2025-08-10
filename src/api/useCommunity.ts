@@ -416,7 +416,6 @@ export const useImageUploadMutation = () => {
     ): Promise<ImageUploadResponse> => {
       const formData = new FormData();
       formData.append('image', data.image);
-
       const response = await api.post('/images/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

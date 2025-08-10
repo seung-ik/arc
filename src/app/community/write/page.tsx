@@ -14,6 +14,7 @@ import MatchPostFormSection from './components/MatchPostFormSection';
 import MentorPostFormSection from './components/MentorPostFormSection';
 import ShortContentInput from './components/ShortContentInput';
 import CancelConfirmModal from '@/components/modal/CancelConfirmModal';
+import { useImageUploadMutation } from '@/api/useCommunity';
 
 const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {
   ssr: false,
@@ -234,6 +235,9 @@ function WritePostForm() {
 
   const [showCancelModal, setShowCancelModal] = useState(false);
 
+  // 이미지 업로드 뮤테이션
+  const imageUploadMutation = useImageUploadMutation();
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -391,6 +395,17 @@ function WritePostForm() {
     setShowCancelModal(false);
   };
 
+  // 이미지 업로드 핸들러
+  const handleImageUpload = async (file: File): Promise<string> => {
+    try {
+      const result = await imageUploadMutation.mutateAsync({ image: file });
+      return result.imageUrl;
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      throw error;
+    }
+  };
+
   return (
     <Container>
       <Content>
@@ -491,6 +506,7 @@ function WritePostForm() {
                   height="100%"
                   initialEditType="wysiwyg"
                   hideModeSwitch={true}
+                  onImageUpload={handleImageUpload}
                 />
               </EditorWrapper>
             )}
