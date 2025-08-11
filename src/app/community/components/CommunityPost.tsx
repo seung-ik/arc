@@ -86,6 +86,11 @@ const ContentText = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  & img {
+    max-height: 60px;
+    width: auto;
+  }
 `;
 
 const PostFooter = styled.div`

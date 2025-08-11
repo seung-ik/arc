@@ -1,7 +1,8 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { debounce } from 'lodash';
 import MatchHistory from '../components/MatchHistory';
 import EloTabCards from '../components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
@@ -144,7 +145,18 @@ export default function HistoryPage() {
     value: number;
     label: string;
   } | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>('');
   const { sportOptions } = useCommunityStore();
+
+  // 디바운스된 검색 함수 생성 (800ms 지연)
+  const debouncedSetSearchTerm = useCallback(
+    () =>
+      debounce((value: string) => {
+        setSearchTerm(value);
+      }, 800),
+    []
+  );
 
   // 간단한 무한 스크롤 훅 사용
   const {
@@ -154,10 +166,11 @@ export default function HistoryPage() {
     loadMore,
   } = useInfinitePagination<MatchHistoryResult>({
     fetchFunction: createMatchHistoryFetcher(
-      selectedSport ? selectedSport.value.toString() : undefined
+      selectedSport ? selectedSport.value.toString() : undefined,
+      searchTerm || undefined
     ),
     pageSize: 10,
-    dependencies: [selectedSport?.value], // 스포츠 카테고리 변경 시 초기화
+    dependencies: [selectedSport?.value, searchTerm], // 검색어 변경 시에도 초기화
   });
 
   const handleDropdownToggle = () => {
@@ -169,6 +182,14 @@ export default function HistoryPage() {
   ) => {
     setSelectedSport(sport);
     setIsDropdownOpen(false);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // 입력창은 즉시 업데이트 (사용자 경험 향상)
+    setInputValue(value);
+    // API 요청만 디바운스 (300ms 후 실행)
+    debouncedSetSearchTerm()(value);
   };
 
   return (
@@ -208,7 +229,12 @@ export default function HistoryPage() {
           </FilterDropdown>
           <SearchContainer>
             <Image src={ICONS.SEARCH} alt="search" width={16} height={16} />
-            <input type="text" placeholder="상대유저 검색" />
+            <input
+              type="text"
+              placeholder="상대유저 검색"
+              value={inputValue}
+              onChange={handleSearchChange}
+            />
           </SearchContainer>
         </FilterContainer>
 

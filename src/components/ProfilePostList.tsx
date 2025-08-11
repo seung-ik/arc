@@ -103,10 +103,17 @@ const PostContent = styled.div`
   font-size: ${props => props.theme.typography.fontSizes.sm};
   margin: 0 0 ${props => props.theme.spacing.sm} 0;
   line-height: 1.5;
+
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+
+  & img {
+    max-height: 60px;
+    width: auto;
+  }
 `;
 
 const PostFooter = styled.div`

@@ -71,10 +71,6 @@ export default function CommunityPageWrapper({
     console.log('업장 배너 클릭됨:', business.name);
   };
 
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <Container>
       <CategoryTabs currentLabel={currentTab} />
