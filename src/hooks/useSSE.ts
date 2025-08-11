@@ -83,6 +83,7 @@ export function useSSE({ onMessage, onOpen, onError }: UseSSEOptions = {}) {
     };
 
     es.onmessage = evt => {
+      console.log('onmessage', evt);
       try {
         const parsed: SseMessage = JSON.parse(evt.data);
         onMessageRef.current?.(parsed);
