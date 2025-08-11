@@ -115,7 +115,7 @@ const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => {
       <ContentSection>
         <UserName>{match.partnerNickname}</UserName>
         <UserInfo>
-          {match.myResult === 'win' ? '승' : '패'} •{' '}
+          {match.senderResult === 'win' ? '승' : '패'} •{' '}
           {new Date(match.createdAt).toLocaleDateString()}
         </UserInfo>
       </ContentSection>

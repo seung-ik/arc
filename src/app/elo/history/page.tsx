@@ -137,6 +137,8 @@ const ContentContainer = styled.div`
   width: 100%;
   // padding-top: ${props => props.theme.spacing.lg};
   margin-top: ${props => props.theme.spacing.sm};
+  display: flex;
+  flex-direction: column;
 `;
 
 export default function HistoryPage() {

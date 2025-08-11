@@ -3,22 +3,10 @@
 import styled from 'styled-components';
 import MatchCardItem from './MatchCardItem';
 import LoadMoreButton from '@/components/LoadMoreButton';
-
-interface HistoryMatch {
-  id: number;
-  partner: number;
-  partner_nickname: string;
-  sportCategory: string;
-  result: 'win' | 'lose' | 'draw';
-  isHandicap: boolean;
-  created_at: string;
-  elo_before: number;
-  elo_after: number;
-  elo_delta: number;
-}
+import { MatchHistoryResult } from '@/api/useMatch';
 
 interface MatchHistoryProps {
-  matches: HistoryMatch[];
+  matches: MatchHistoryResult[];
   hasNext?: boolean;
   onLoadMore?: () => void;
   isLoading?: boolean;
@@ -28,6 +16,7 @@ const MatchList = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${props => props.theme.spacing.md};
+  flex: 1;
 `;
 
 const EmptyState = styled.div`
@@ -38,6 +27,7 @@ const EmptyState = styled.div`
   padding: ${props => props.theme.spacing.xl};
   color: ${props => props.theme.colors.textGray};
   text-align: center;
+  flex: 1;
 `;
 
 const EmptyIcon = styled.div`

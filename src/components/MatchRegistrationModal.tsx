@@ -205,7 +205,7 @@ export default function MatchRegistrationModal({
         const matchData = {
           partnerNickname: opponentId,
           sportCategoryId: selectedSport.value,
-          myResult: result as 'win' | 'lose',
+          senderResult: result as 'win' | 'lose',
           isHandicap,
         };
 

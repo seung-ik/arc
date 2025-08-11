@@ -5,7 +5,7 @@ import api from '@/lib/axios';
 export interface CreateMatchResultRequest {
   partnerNickname: string;
   sportCategoryId: number;
-  myResult: 'win' | 'lose';
+  senderResult: 'win' | 'lose';
   isHandicap: boolean;
 }
 
@@ -17,11 +17,15 @@ export interface MatchResult {
   senderNickname: string;
   sportCategoryId: number;
   sportCategoryName: string;
-  myResult: 'win' | 'lose';
+  senderResult: 'win' | 'lose';
+  partnerResult: 'win' | 'lose';
   isHandicap: boolean;
   status: 'pending' | 'accepted' | 'rejected' | 'expired';
   expiredTime: string;
   createdAt: string;
+  playedAt: string;
+  playedDate: string;
+  confirmedAt: string;
 }
 
 export interface CreateMatchResultResponse {
@@ -67,6 +71,18 @@ export interface MatchHistoryResult {
   elo_before: number;
   elo_after: number;
   elo_delta: number;
+  partner_elo_before: number;
+  partner_elo_after: number;
+  partner_elo_delta: number;
+  partner_current_elo: number;
+  my_wins: number;
+  my_losses: number;
+  my_draws: number;
+  my_total_matches: number;
+  partner_wins: number;
+  partner_losses: number;
+  partner_draws: number;
+  partner_total_matches: number;
 }
 
 export interface MatchHistoryResponse {

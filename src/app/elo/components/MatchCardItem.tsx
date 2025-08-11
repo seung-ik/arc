@@ -7,21 +7,10 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 
-interface HistoryMatch {
-  id: number;
-  partner: number;
-  partner_nickname: string;
-  sportCategory: string;
-  result: 'win' | 'lose' | 'draw';
-  isHandicap: boolean;
-  created_at: string;
-  elo_before: number;
-  elo_after: number;
-  elo_delta: number;
-}
+import type { MatchHistoryResult } from '@/api/useMatch';
 
 interface MatchCardItemProps {
-  match: HistoryMatch;
+  match: MatchHistoryResult;
 }
 
 interface PlayerProfileProps {
@@ -246,11 +235,9 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
 
   const isWin = match.result === 'win';
 
-  // 서버에서 누락된 데이터는 0으로 대체
-  const opponentBeforeElo = 0; // 서버에서 제공되지 않음
-  const opponentAfterElo = 0; // 서버에서 제공되지 않음
-  const headToHeadWins = 0; // 서버에서 제공되지 않음
-  const headToHeadLosses = 0; // 서버에서 제공되지 않음
+  const headToHeadWins = match.my_wins;
+  const headToHeadLosses = match.my_losses;
+  console.log(match);
 
   return (
     <MatchCard $isWin={isWin}>
@@ -300,12 +287,12 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
           <PlayerProfile
             avatar={match.partner_nickname.charAt(0).toUpperCase()}
             nickname={match.partner_nickname}
-            beforeElo={opponentBeforeElo}
-            afterElo={opponentAfterElo}
+            beforeElo={match.partner_elo_before}
+            afterElo={match.partner_elo_after}
             eloChange={
-              match.elo_delta > 0
-                ? `-${match.elo_delta}`
-                : `+${Math.abs(match.elo_delta)}`
+              match.partner_elo_delta > 0
+                ? `+${match.partner_elo_delta}`
+                : `${match.partner_elo_delta}`
             }
             isWin={!isWin}
             isOpponent={true}
