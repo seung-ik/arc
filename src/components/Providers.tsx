@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { WepinProvider } from '@/contexts/WepinContext';
 import PrefetchProvider from './PrefetchProvider';
 import AuthSyncer from './AuthSyncer';
+import SSEManager from './SSEManager';
+import { Toaster } from 'sonner';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -24,6 +26,14 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <WepinProvider>
         <PrefetchProvider>
           <AuthSyncer />
+          <SSEManager />
+          <Toaster
+            richColors
+            position="bottom-center"
+            offset={96}
+            duration={6000}
+            closeButton
+          />
           {children}
         </PrefetchProvider>
       </WepinProvider>

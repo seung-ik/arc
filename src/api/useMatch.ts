@@ -129,7 +129,9 @@ export const useHandleMatchRequestMutation = () => {
       matchId: number;
       action: 'accept' | 'reject';
     }): Promise<HandleMatchRequestResponse> => {
-      const response = await api.put(`/match-results/${matchId}`, { action });
+      const response = await api.post(`/match-results/${matchId}/respond`, {
+        action,
+      });
       return response.data;
     },
     onSuccess: data => {

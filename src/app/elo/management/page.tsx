@@ -12,7 +12,6 @@ import { MatchPost } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 import MatchRequestTabs from '@/components/MatchRequestTabs';
-import SSEManager from '@/components/SSEManager';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -178,7 +177,6 @@ export default function ManagementPage() {
 
   return (
     <Container>
-      <SSEManager />
       <EloTabCards />
       <AdBanner
         title="기록은 온라인에, 경험은 오프라인에."

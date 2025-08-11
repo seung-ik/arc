@@ -100,7 +100,6 @@ export function useSSE({ onMessage, onOpen, onError }: UseSSEOptions = {}) {
       esRef.current?.close();
       esRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
