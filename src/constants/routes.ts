@@ -1,6 +1,7 @@
 export const ROUTES = {
   auth: {
     login: '/auth/login',
+    nickname: '/auth/nickname',
   },
   elo: {
     root: '/elo',
