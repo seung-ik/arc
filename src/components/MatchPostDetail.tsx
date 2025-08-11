@@ -6,7 +6,7 @@ import PostHeader from '@/components/PostHeader';
 import MatchInfo from '@/components/MatchInfo';
 import MatchApplicationStatus from '@/components/MatchApplicationStatus';
 import { useModal } from '@/hooks/useModal';
-import TwoButtonModal from '@/components/TwoButtonModal';
+import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import HtmlContent from './HtmlContent';
 import { MatchPost } from '@/types/post';

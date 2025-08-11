@@ -3,7 +3,7 @@
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
 import BottomNavigation from '@/components/BottomNavigation';
-import CommunityErrorLayout from '@/components/CommunityErrorLayout';
+import CommunityErrorLayout from '@/components/layout/CommunityErrorLayout';
 import PostDetailHeader from '@/components/PostDetailHeader';
 import FullPageLoading from '@/components/FullPageLoading';
 import GeneralPostDetail from '@/components/GeneralPostDetail';

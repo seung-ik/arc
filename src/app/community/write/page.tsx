@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic';
 import MatchPostFormSection from './components/MatchPostFormSection';
 import MentorPostFormSection from './components/MentorPostFormSection';
 import ShortContentInput from './components/ShortContentInput';
-import CancelConfirmModal from '@/components/modal/CancelConfirmModal';
+import CancelConfirmModal from '@/components/modals/CancelConfirmModal';
 import { useImageUploadMutation } from '@/api/useCommunity';
 
 const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {

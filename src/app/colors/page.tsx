@@ -2,8 +2,8 @@
 
 import styled from 'styled-components';
 import { useModal } from '@/hooks/useModal';
-import OneButtonModal from '@/components/OneButtonModal';
-import TwoButtonModal from '@/components/TwoButtonModal';
+import OneButtonModal from '@/components/modals/OneButtonModal';
+import TwoButtonModal from '@/components/modals/TwoButtonModal';
 
 const Container = styled.div`
   min-height: 100vh;

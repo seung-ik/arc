@@ -6,7 +6,7 @@ import PostHeader from '@/components/PostHeader';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import HtmlContent from './HtmlContent';
 import { MentorPost } from '@/types/post';
-import TwoButtonModal from '@/components/TwoButtonModal';
+import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import PostInfoSection from './PostInfoSection';
 
 interface MentorPostDetailProps {

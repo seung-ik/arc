@@ -4,16 +4,16 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import ProfileHeader from '@/components/ProfileHeader';
+import ProfileHeader from '@/app/profile/components/ProfileHeader';
 import TokenDisplay from '@/components/TokenDisplay';
-import GameStatsGrid from '@/components/GameStatsGrid';
-import ProfilePostList from '@/components/ProfilePostList';
-import NicknameChangeModal from '@/components/NicknameChangeModal';
+import ProfilePostList from '@/app/profile/components/ProfilePostList';
+import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
+import GameStatsGrid from '../components/GameStatsGrid';
 
 const Container = styled.div`
   min-height: 100vh;

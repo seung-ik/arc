@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { MyPost } from '@/api/useUser';
-import HtmlContent from './HtmlContent';
+import HtmlContent from '../../../components/HtmlContent';
 
 interface ProfilePostListProps {
   posts: MyPost[];

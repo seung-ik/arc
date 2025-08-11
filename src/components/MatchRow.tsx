@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { MatchResult, useHandleMatchRequestMutation } from '@/api/useMatch';
 import { useTimer } from '@/hooks/useTimer';
-import TwoButtonModal from './TwoButtonModal';
+import TwoButtonModal from './modals/TwoButtonModal';
 
 // 스타일 컴포넌트들
 const RowItem = styled.div`

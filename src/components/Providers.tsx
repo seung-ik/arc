@@ -8,8 +8,8 @@ import { usePathname } from 'next/navigation';
 // import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
 import { useInitNicknameApi, useProfileApi } from '@/api/useUser';
-import NicknameModal from './NicknameModal';
 import PrefetchProvider from './PrefetchProvider';
+import NicknameModal from './modals/NicknameModal';
 
 function AuthSyncer() {
   const {
