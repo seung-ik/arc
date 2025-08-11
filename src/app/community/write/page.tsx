@@ -34,7 +34,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: ${props => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.md};
   height: 100%;
 `;
 
