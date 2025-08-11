@@ -17,22 +17,47 @@ const LoginContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  gap: 0;
   background-color: white;
-  padding: ${props => props.theme.spacing.lg};
   max-width: 768px;
   margin: 0 auto;
-  padding: 12vh 12vw;
+  padding: 10vh 12vw 8vh;
+  background: linear-gradient(to bottom, #ffffff, #f5fffb);
 
   img {
     background-color: transparent;
   }
 `;
 
+const BrandSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
+  margin-top: 0;
+`;
+
+const BrandTitle = styled.h1`
+  font-size: ${props => props.theme.typography.fontSizes['4xl']};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.textBlack};
+  margin: 0;
+`;
+
+const Slogan = styled.p`
+  text-align: center;
+  margin: 0;
+  color: #555;
+  font-size: ${props => props.theme.typography.fontSizes.xl};
+  font-weight: ${props => props.theme.typography.fontWeights.normal};
+  line-height: 1.8;
+`;
+
 const LoginButton = styled.button`
   background: ${props => props.theme.colors.primaryHover};
   border: 2px solid ${props => props.theme.colors.primaryDark};
   border-radius: ${props => props.theme.borderRadius['2xl']};
-  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.xl};
   font-size: ${props => props.theme.typography.fontSizes.lg};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
@@ -43,13 +68,14 @@ const LoginButton = styled.button`
   justify-content: center;
   gap: ${props => props.theme.spacing.md};
   color: white;
+  margin-top: ${props => props.theme.spacing.lg};
 
   &:hover,
   &:active {
-    background: white;
-    color: ${props => props.theme.colors.primaryDark};
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
+    background: ${props => props.theme.colors.primaryHover};
+    color: white;
+    transform: none;
+    box-shadow: none;
   }
 
   &:disabled {
@@ -124,12 +150,20 @@ export default function LoginClient() {
 
   return (
     <LoginContainer>
-      <Image
-        src={IMAGES.LOGO_TRIVUS}
-        alt="logo"
-        width={200}
-        style={{ marginTop: '4vh' }}
-      />
+      <BrandSection>
+        <Image
+          src={IMAGES.LOGO_TRIVUS}
+          alt="Trivus logo"
+          width={200}
+          style={{ marginTop: '4vh' }}
+        />
+        <BrandTitle>Trivus</BrandTitle>
+        <Slogan>
+          기록은 온라인에, 경험은 오프라인에,
+          <br />
+          가치는 모두에게.
+        </Slogan>
+      </BrandSection>
       <LoginButton onClick={handleGoogleLogin}>
         <Image src={IMAGES.LOGO_GOOGLE} alt="logo" width={30} />
         <span>구글 계정으로 시작하기</span>
