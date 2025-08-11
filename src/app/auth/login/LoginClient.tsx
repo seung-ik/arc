@@ -8,24 +8,33 @@ import FullPageLoading from '@/components/FullPageLoading';
 import { useLoginApi } from '@/api/useAuth';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
+import { IMAGES } from '@/assets';
+import Image from 'next/image';
 
 const LoginContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  justify-content: space-between;
+  background-color: white;
   padding: ${props => props.theme.spacing.lg};
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 12vh 12vw;
+
+  img {
+    background-color: transparent;
+  }
 `;
 
 const LoginButton = styled.button`
-  background: ${props => props.theme.colors.primary};
-  color: ${props => props.theme.colors.textWhite};
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.md};
+  // background: ${props => props.theme.colors.primaryDark};
+  color: ${props => props.theme.colors.primaryDark};
+  border: 2px solid ${props => props.theme.colors.primaryDark};
+  border-radius: ${props => props.theme.borderRadius['2xl']};
   padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
-  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: all 0.2s;
@@ -33,10 +42,12 @@ const LoginButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${props => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.md};
 
-  &:hover {
+  &:hover,
+  &:active {
     background: ${props => props.theme.colors.primaryHover};
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
   }
@@ -113,8 +124,10 @@ export default function LoginClient() {
 
   return (
     <LoginContainer>
+      <Image src={IMAGES.LOGO_TRIVUS} alt="logo" width={200} />
       <LoginButton onClick={handleGoogleLogin}>
-        구글 계정으로 시작하기
+        <Image src={IMAGES.LOGO_GOOGLE} alt="logo" width={30} />
+        <span>구글 계정으로 시작하기</span>
       </LoginButton>
     </LoginContainer>
   );

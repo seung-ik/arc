@@ -25,6 +25,9 @@ import TAB_ELO from '@/assets/images/icons/tab_elo.svg';
 
 import BANNER_EX01 from '@/assets/images/banners/ex_01.png';
 
+import LOGO_TRIVUS from '@/assets/images/project/logo_trivus.png';
+import LOGO_GOOGLE from '@/assets/images/project/logo_google.svg';
+
 export const BUSINESS_IMAGES = {
   EX_1: SHOP_TENNIS,
   EX_2: SHOP_TABLE_TENNIS,
@@ -62,4 +65,9 @@ export const sportsIcons = {} as const;
 // 플레이스홀더 이미지들
 export const BANNERS = {
   EX01: BANNER_EX01,
+} as const;
+
+export const IMAGES = {
+  LOGO_TRIVUS,
+  LOGO_GOOGLE,
 } as const;
