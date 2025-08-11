@@ -29,8 +29,7 @@ const LoginContainer = styled.div`
 `;
 
 const LoginButton = styled.button`
-  // background: ${props => props.theme.colors.primaryDark};
-  color: ${props => props.theme.colors.primaryDark};
+  background: ${props => props.theme.colors.primaryHover};
   border: 2px solid ${props => props.theme.colors.primaryDark};
   border-radius: ${props => props.theme.borderRadius['2xl']};
   padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
@@ -43,11 +42,12 @@ const LoginButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: ${props => props.theme.spacing.md};
+  color: white;
 
   &:hover,
   &:active {
-    background: ${props => props.theme.colors.primaryHover};
-    color: white;
+    background: white;
+    color: ${props => props.theme.colors.primaryDark};
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
   }
@@ -124,7 +124,12 @@ export default function LoginClient() {
 
   return (
     <LoginContainer>
-      <Image src={IMAGES.LOGO_TRIVUS} alt="logo" width={200} />
+      <Image
+        src={IMAGES.LOGO_TRIVUS}
+        alt="logo"
+        width={200}
+        style={{ marginTop: '4vh' }}
+      />
       <LoginButton onClick={handleGoogleLogin}>
         <Image src={IMAGES.LOGO_GOOGLE} alt="logo" width={30} />
         <span>구글 계정으로 시작하기</span>

@@ -108,7 +108,7 @@ const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => {
     match.createdAt
   );
   if (match.status === 'expired') return null;
-  console.log(match.expiredTime, seconds, progress, color);
+
   return (
     <RowItem>
       <SportBadge>{getSportEmoji(match.sportCategoryName)}</SportBadge>
