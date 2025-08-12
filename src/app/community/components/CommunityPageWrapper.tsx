@@ -10,6 +10,7 @@ import CommunityLayout from './CommunityLayout';
 import { GeneralPost, MatchPost } from '@/types/post';
 import PopularPosts from './PopularPosts';
 import LoadMoreButton from '@/components/LoadMoreButton';
+import type { HotPostItem } from '@/api/useCommunity';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -37,20 +38,9 @@ const NoResults = styled.div`
   font-size: ${props => props.theme.typography.fontSizes.base};
 `;
 
-interface PopularPost {
-  id: number;
-  title: string;
-  author: string;
-  views: number;
-  likes: number;
-  commentCount: number;
-  date: string;
-  content: string;
-}
-
 interface CommunityPageWrapperProps {
   currentTab: string;
-  popularPosts: PopularPost[];
+  popularPosts: HotPostItem[];
   posts: any[];
   isLoading?: boolean;
   hasNext?: boolean;

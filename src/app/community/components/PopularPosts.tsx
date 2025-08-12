@@ -1,19 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-
-interface Post {
-  id: number;
-  title: string;
-  author: string;
-  views: number;
-  likes: number;
-  commentCount: number;
-  date: string;
-  content: string;
-}
+import type { HotPostItem } from '@/api/useCommunity';
 
 interface PopularPostsProps {
-  posts: Post[];
+  posts: HotPostItem[];
 }
 
 const PopularPostsWrapper = styled.div`
@@ -96,27 +86,25 @@ const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
   return (
     <PopularPostsWrapper>
       {posts.map(post => {
-        // 제목에 댓글수 포함
-        const titleWithComments =
-          post.commentCount && post.commentCount > 0
-            ? `${post.title} (${post.commentCount})`
-            : post.title;
-
+        const titleText = post.title;
+        const authorName = post.author?.nickname ?? '';
+        const createdAt = post.createdAt;
+        const views = post.viewCount ?? 0;
         return (
           <PopularPostContainer key={post.id}>
             <PostHeader>
               <PopularTag>인기글</PopularTag>
-              <PostTitle>{titleWithComments}</PostTitle>
+              <PostTitle>{titleText}</PostTitle>
             </PostHeader>
 
             <ContentText>{post.content}</ContentText>
 
             <PostFooter>
-              <AuthorName>{post.author}</AuthorName>
+              <AuthorName>{authorName}</AuthorName>
               <span>•</span>
-              <PostDate>{post.date}</PostDate>
+              <PostDate>{createdAt}</PostDate>
               <span>•</span>
-              <ViewCount>조회 {post.views || 0}</ViewCount>
+              <ViewCount>조회 {views}</ViewCount>
             </PostFooter>
           </PopularPostContainer>
         );

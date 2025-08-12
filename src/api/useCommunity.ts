@@ -29,6 +29,40 @@ export interface PostsResponse {
   };
 }
 
+// Hot Posts Types
+export interface HotPostAuthor {
+  id: number;
+  nickname: string;
+}
+
+export interface HotPostSportCategory {
+  id: number;
+  name: string;
+}
+
+export interface HotPostItem {
+  id: number;
+  title: string;
+  content: string;
+  author: HotPostAuthor;
+  sportCategory: HotPostSportCategory;
+  popularityScore: number;
+  createdAt: string;
+  viewCount: number;
+}
+
+export interface HotPostCategoryGroup {
+  categoryId: number;
+  categoryName: string;
+  posts: HotPostItem[];
+}
+
+export interface HotPostsResponse {
+  success: boolean;
+  data: HotPostCategoryGroup[];
+  message: string;
+}
+
 // Create Post Types
 export interface CreatePostRequest {
   sportCategoryId: number;
@@ -331,6 +365,18 @@ export const useCommentsApi = (postId: number, enabled: boolean = true) => {
       return response.data;
     },
     enabled: enabled && !!postId,
+  });
+};
+
+// 인기 글 목록 조회
+export const useHotPostsApi = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['hot-posts'],
+    queryFn: async (): Promise<HotPostsResponse> => {
+      const response = await api.get('/posts/hot');
+      return response.data;
+    },
+    enabled,
   });
 };
 
