@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
 import { Post } from '@/types/post';
 
@@ -391,13 +391,19 @@ export const usePostDetailApi = (postId: number, enabled: boolean = true) => {
 };
 
 export const useLikePostMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (postId: number): Promise<LikePostResponse> => {
       const response = await api.post(`/posts/${postId}/likes`);
       return response.data;
     },
-    onSuccess: data => {
+    onSuccess: (data, postId) => {
       console.log('좋아요 성공:', data);
+      // 관련 목록/상세 쿼리 무효화
+      if (typeof postId === 'number') {
+        queryClient.invalidateQueries({ queryKey: ['post-detail', postId] });
+      }
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: error => {
       console.error('좋아요 실패:', error);
@@ -406,13 +412,19 @@ export const useLikePostMutation = () => {
 };
 
 export const useHatePostMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (postId: number): Promise<HatePostResponse> => {
       const response = await api.post(`/posts/${postId}/hates`);
       return response.data;
     },
-    onSuccess: data => {
+    onSuccess: (data, postId) => {
       console.log('싫어요 성공:', data);
+      // 관련 목록/상세 쿼리 무효화
+      if (typeof postId === 'number') {
+        queryClient.invalidateQueries({ queryKey: ['post-detail', postId] });
+      }
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: error => {
       console.error('싫어요 실패:', error);
