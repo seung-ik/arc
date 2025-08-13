@@ -36,6 +36,7 @@ const convertUserElosToObject = (userElos: UserElo[]) => {
       eloPoint: number;
       percentile: string;
       tier: string;
+      sportId?: number;
     }
   > = {};
 
@@ -50,6 +51,7 @@ const convertUserElosToObject = (userElos: UserElo[]) => {
         eloPoint: userElo.eloPoint,
         percentile: userElo.percentile,
         tier: userElo.tier,
+        sportId: userElo.sportCategory.id,
       };
     }
   });

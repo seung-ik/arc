@@ -14,7 +14,6 @@ export default function Home() {
     if (!isInitialized) {
       return; // SDK 초기화 대기
     }
-    console.log(isLoggedIn, pathname);
     if (!isLoggedIn && !pathname.includes('auth')) {
       router.push(ROUTES.auth.login);
     } else if (isLoggedIn) {

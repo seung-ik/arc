@@ -1,9 +1,11 @@
 'use client';
+
 import styled from 'styled-components';
 import Image from 'next/image';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 // import { useRouter } from 'next/navigation';
-import { ICONS } from '@/assets';
+import { ICONS, BUSINESS_IMAGES } from '@/assets';
 import { useCommunityStore } from '@/stores/communityStore';
 
 const HeaderContainer = styled.div`
@@ -170,12 +172,19 @@ const AvatarWrapper = styled.div<{ $size: 'lg' | 'md' }>`
       : 'clamp(52px, 15vw, 84px)'};
 `;
 
-const AvatarCircle = styled.div<{ $size: 'lg' | 'md'; $rank: number }>`
+const AvatarCircle = styled.div<{
+  $size: 'lg' | 'md';
+  $rank: number;
+  $img?: string;
+}>`
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background-color: ${props => props.theme.colors.backgroundGray};
-  border: 2px solid
+  background-image: ${props => (props.$img ? `url(${props.$img})` : 'none')};
+  background-size: cover;
+  background-position: center;
+  border: 4px solid
     ${props =>
       props.$rank === 1
         ? '#FFD700'
@@ -189,10 +198,11 @@ const AvatarCircle = styled.div<{ $size: 'lg' | 'md'; $rank: number }>`
 
 const RankBadge = styled.div<{ $rank: number }>`
   position: absolute;
-  right: -4px;
-  bottom: -4px;
-  width: clamp(14px, 4vw, 20px);
-  height: clamp(14px, 4vw, 20px);
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(16px, 4.5vw, 22px);
+  height: clamp(16px, 4.5vw, 22px);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -200,6 +210,7 @@ const RankBadge = styled.div<{ $rank: number }>`
   font-size: clamp(10px, 3vw, 12px);
   font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: #000;
+  z-index: 1;
   background-color: ${props =>
     props.$rank === 1
       ? '#FFD700'
@@ -323,6 +334,8 @@ const EloCol = styled.div`
 
 // 배너 스타일
 const PromoBanner = styled.div`
+  position: relative;
+  width: 100%;
   background: linear-gradient(135deg, #6c5ce7, #74b9ff);
   border-radius: ${props => props.theme.borderRadius.xl};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
@@ -437,8 +450,36 @@ const CardLabel = styled.div`
   color: ${props => props.theme.colors.textLightGray};
 `;
 
+// 검색 파라미터 초기화 전용 컴포넌트 (Suspense로 감쌈)
+function InitFromSearch({
+  sortedCategories,
+  selectedId,
+  onInit,
+}: {
+  sortedCategories: Array<{ value: number | string }>;
+  selectedId: number | null;
+  onInit: (id: number) => void;
+}) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const last =
+      typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+    const urlSport = searchParams?.get('sport');
+    if (selectedId == null && sortedCategories.length > 0) {
+      const initial = urlSport
+        ? Number(urlSport)
+        : last
+          ? Number(last)
+          : Number(sortedCategories[0].value);
+      onInit(initial);
+    }
+    if (urlSport) localStorage.setItem(STORAGE_KEY, String(urlSport));
+  }, [sortedCategories, selectedId, searchParams, onInit]);
+  return null;
+}
+
 export default function LeaderboardPage() {
-  // const router = useRouter();
+  const router = useRouter();
   const { sportOptions } = useCommunityStore();
   const sortedCategories = useMemo(() => {
     return [...sportOptions].sort((a, b) => (a.value ?? 0) - (b.value ?? 0));
@@ -448,14 +489,7 @@ export default function LeaderboardPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const last =
-      typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
-    if (selectedId == null && sortedCategories.length > 0) {
-      const initial = last ? Number(last) : Number(sortedCategories[0].value);
-      setSelectedId(initial);
-    }
-  }, [sortedCategories, selectedId]);
+  // URL 쿼리 → 상태 초기화는 Suspense 경계 내 별도 컴포넌트에서 처리
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -479,6 +513,10 @@ export default function LeaderboardPage() {
     setSelectedId(id);
     localStorage.setItem(STORAGE_KEY, String(id));
     setIsDropdownOpen(false);
+    // URL 쿼리도 동기화
+    const params = new URLSearchParams(window.location.search);
+    params.set('sport', String(id));
+    router.push(`/leaderboard?${params.toString()}`);
   };
 
   // 섹션 3: 목업 데이터와 페이지 상태
@@ -548,7 +586,17 @@ export default function LeaderboardPage() {
               {[1, 2, 3].map(rank => (
                 <AvatarCard key={rank} aria-label={`Top ${rank}`}>
                   <AvatarWrapper $size="lg">
-                    <AvatarCircle $size="lg" $rank={rank} />
+                    <AvatarCircle
+                      $size="lg"
+                      $rank={rank}
+                      $img={
+                        rank === 1
+                          ? BUSINESS_IMAGES.PEOPLE_01.src
+                          : rank === 2
+                            ? BUSINESS_IMAGES.PEOPLE_02.src
+                            : BUSINESS_IMAGES.PEOPLE_03.src
+                      }
+                    />
                     <RankBadge $rank={rank}>{rank}</RankBadge>
                   </AvatarWrapper>
                   <Meta>
@@ -563,7 +611,19 @@ export default function LeaderboardPage() {
               {[4, 5, 6, 7].map(rank => (
                 <AvatarCard key={rank} aria-label={`Top ${rank}`}>
                   <AvatarWrapper $size="md">
-                    <AvatarCircle $size="md" $rank={rank} />
+                    <AvatarCircle
+                      $size="md"
+                      $rank={rank}
+                      $img={
+                        rank === 4
+                          ? BUSINESS_IMAGES.PEOPLE_04.src
+                          : rank === 5
+                            ? BUSINESS_IMAGES.PEOPLE_05.src
+                            : rank === 6
+                              ? BUSINESS_IMAGES.PEOPLE_06.src
+                              : BUSINESS_IMAGES.PEOPLE_07.src
+                      }
+                    />
                     <RankBadge $rank={rank}>{rank}</RankBadge>
                   </AvatarWrapper>
                   <Meta>
@@ -617,6 +677,7 @@ export default function LeaderboardPage() {
             </InfoCardButton>
           </CardsRow>
         </Section>
+
         <Section>
           <PromoBanner>
             <BannerText>
@@ -667,6 +728,14 @@ export default function LeaderboardPage() {
             ))}
           </ListContainer>
         </Section>
+        {/* URL 쿼리 기반 초기화 (Suspense 필요 API 분리) */}
+        <Suspense fallback={null}>
+          <InitFromSearch
+            sortedCategories={sortedCategories}
+            selectedId={selectedId}
+            onInit={setSelectedId}
+          />
+        </Suspense>
       </PageContent>
     </div>
   );

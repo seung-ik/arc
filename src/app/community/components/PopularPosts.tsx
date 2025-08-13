@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import type { HotPostItem } from '@/api/useCommunity';
+import HtmlContent from '@/components/HtmlContent';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 
 interface PopularPostsProps {
   posts: HotPostItem[];
@@ -83,6 +86,12 @@ const ViewCount = styled.span`
 `;
 
 const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
+  const router = useRouter();
+  const handleClick = (post: HotPostItem) => {
+    const type = '일반';
+    router.push(`${ROUTES.community.post(String(post.id))}?type=${type}`);
+  };
+
   return (
     <PopularPostsWrapper>
       {posts.map(post => {
@@ -91,13 +100,15 @@ const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
         const createdAt = post.createdAt;
         const views = post.viewCount ?? 0;
         return (
-          <PopularPostContainer key={post.id}>
+          <PopularPostContainer key={post.id} onClick={() => handleClick(post)}>
             <PostHeader>
               <PopularTag>인기글</PopularTag>
               <PostTitle>{titleText}</PostTitle>
             </PostHeader>
 
-            <ContentText>{post.content}</ContentText>
+            <ContentText>
+              <HtmlContent content={post.content} />
+            </ContentText>
 
             <PostFooter>
               <AuthorName>{authorName}</AuthorName>

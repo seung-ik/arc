@@ -12,7 +12,12 @@ const LayoutContainer = styled.div`
   margin: 0 auto;
   position: relative;
   overflow: hidden;
-  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    135deg,
+    ${props => props.theme.colors.primaryLight} 0%,
+    ${props => props.theme.colors.secondaryLight} 90%,
+    ${props => props.theme.colors.background} 100%
+  );
 `;
 
 const ContentWrapper = styled.div`

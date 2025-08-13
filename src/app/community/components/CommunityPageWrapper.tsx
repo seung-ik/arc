@@ -95,7 +95,7 @@ export default function CommunityPageWrapper({
               <NoResults>게시글이 없습니다.</NoResults>
             )}
           </PostList>
-          {showLoadMore && hasNext && onLoadMore && (
+          {!showLoadMore && hasNext && onLoadMore && (
             <LoadMoreButton onClick={onLoadMore} isLoading={isLoading}>
               더보기
             </LoadMoreButton>

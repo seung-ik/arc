@@ -1,6 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
+import { useRouter } from 'next/navigation';
 
 interface GameStatCardProps {
   data: {
@@ -8,6 +9,7 @@ interface GameStatCardProps {
     eloPoint: number;
     percentile: string;
     tier: string;
+    sportId?: number;
   };
 }
 
@@ -21,6 +23,7 @@ const Card = styled.div`
   align-items: center;
   gap: 8px;
   transition: all 0.2s ease;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-2px);
@@ -68,10 +71,19 @@ const getGameIcon = (gameName: string): string => {
 };
 
 export default function GameStatCard({ data }: GameStatCardProps) {
-  const { name, eloPoint, percentile, tier } = data;
+  const router = useRouter();
+  const { name, eloPoint, percentile, tier, sportId } = data;
+
+  const handleClick = () => {
+    if (typeof window !== 'undefined') {
+      if (sportId)
+        localStorage.setItem('leaderboard:lastSportId', String(sportId));
+    }
+    router.push('/leaderboard');
+  };
 
   return (
-    <Card>
+    <Card onClick={handleClick}>
       <GameIcon>{getGameIcon(name)}</GameIcon>
       <GameName>{name}</GameName>
 

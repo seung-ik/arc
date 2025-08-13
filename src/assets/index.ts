@@ -22,11 +22,22 @@ import HATE from '@/assets/images/icons/hate.svg';
 import TAB_COMMUNITY from '@/assets/images/icons/tab_community.svg';
 import TAB_USER from '@/assets/images/icons/tab_user.svg';
 import TAB_ELO from '@/assets/images/icons/tab_elo.svg';
+import TAB_SCORE from '@/assets/images/icons/tab_score.svg';
+import TAB_RANK from '@/assets/images/icons/tab_rank.svg';
 
 import BANNER_EX01 from '@/assets/images/banners/ex_01.png';
+import BANNER_EX02 from '@/assets/images/banners/ex_02.png';
 
 import LOGO_TRIVUS from '@/assets/images/project/logo_trivus.png';
 import LOGO_GOOGLE from '@/assets/images/project/logo_google.svg';
+
+import PEOPLE_01 from '@/assets/images/peoples/people_01.jpg';
+import PEOPLE_02 from '@/assets/images/peoples/people_02.jpg';
+import PEOPLE_03 from '@/assets/images/peoples/people_03.jpg';
+import PEOPLE_04 from '@/assets/images/peoples/people_04.jpg';
+import PEOPLE_05 from '@/assets/images/peoples/people_05.jpg';
+import PEOPLE_06 from '@/assets/images/peoples/people_06.jpg';
+import PEOPLE_07 from '@/assets/images/peoples/people_07.jpg';
 
 export const BUSINESS_IMAGES = {
   EX_1: SHOP_TENNIS,
@@ -37,6 +48,13 @@ export const BUSINESS_IMAGES = {
   EX_6: SHOP_SPORTS,
   EX_7: SHOP_UNDER,
   EX_8: SHOP_BADMINTON,
+  PEOPLE_01,
+  PEOPLE_02,
+  PEOPLE_03,
+  PEOPLE_04,
+  PEOPLE_05,
+  PEOPLE_06,
+  PEOPLE_07,
 } as const;
 
 // UI 아이콘들
@@ -57,6 +75,8 @@ export const TAB_ICONS = {
   COMMUNITY: TAB_COMMUNITY,
   USER: TAB_USER,
   ELO: TAB_ELO,
+  SCORE: TAB_SCORE,
+  RANK: TAB_RANK,
 } as const;
 
 // 스포츠 아이콘들
@@ -65,6 +85,7 @@ export const sportsIcons = {} as const;
 // 플레이스홀더 이미지들
 export const BANNERS = {
   EX01: BANNER_EX01,
+  EX02: BANNER_EX02,
 } as const;
 
 export const IMAGES = {

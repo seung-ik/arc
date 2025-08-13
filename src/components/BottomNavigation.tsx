@@ -70,8 +70,7 @@ export default function BottomNavigation() {
   const pathname = usePathname();
 
   const tabs = [
-    { path: ROUTES.elo.management, label: '매치', icon: TAB_ICONS.ELO },
-    { path: ROUTES.profile.root, label: '내 정보', icon: TAB_ICONS.USER },
+    { path: ROUTES.elo.management, label: '매치', icon: TAB_ICONS.SCORE },
     {
       path: ROUTES.community.root,
       label: '커뮤니티',
@@ -80,8 +79,9 @@ export default function BottomNavigation() {
     {
       path: ROUTES.leaderboard.root,
       label: '랭킹',
-      icon: TAB_ICONS.COMMUNITY,
+      icon: TAB_ICONS.RANK,
     },
+    { path: ROUTES.profile.root, label: '내 정보', icon: TAB_ICONS.USER },
   ];
 
   return (
