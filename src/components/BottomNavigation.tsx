@@ -77,6 +77,11 @@ export default function BottomNavigation() {
       label: '커뮤니티',
       icon: TAB_ICONS.COMMUNITY,
     },
+    {
+      path: ROUTES.leaderboard.root,
+      label: '랭킹',
+      icon: TAB_ICONS.COMMUNITY,
+    },
   ];
 
   return (
@@ -90,7 +95,9 @@ export default function BottomNavigation() {
                 ? pathname.startsWith('/elo')
                 : tab.path === '/profile'
                   ? pathname.startsWith('/profile')
-                  : pathname === tab.path;
+                  : tab.path === '/leaderboard'
+                    ? pathname.startsWith('/leaderboard')
+                    : pathname === tab.path;
 
           return (
             <TabItem key={tab.label}>

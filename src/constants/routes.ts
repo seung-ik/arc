@@ -8,6 +8,9 @@ export const ROUTES = {
     management: '/elo/management',
     history: '/elo/history',
   },
+  leaderboard: {
+    root: '/leaderboard',
+  },
   profile: {
     root: '/profile',
     user: (userId: string) => `/profile/${userId}`,
