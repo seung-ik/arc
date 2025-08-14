@@ -157,6 +157,11 @@ export default function LeaderboardPage() {
           <MySummaryCards />
         </Section>
 
+        {/* 섹션 3: Top 4–100 리스트 (목업) */}
+        <Section>
+          <RankListSection />
+        </Section>
+
         <Section>
           <PromoBanner>
             <BannerText>
@@ -168,12 +173,6 @@ export default function LeaderboardPage() {
             <BannerCTA>지금 참여하기</BannerCTA>
           </PromoBanner>
         </Section>
-
-        {/* 섹션 3: Top 4–100 리스트 (목업) */}
-        <Section>
-          <RankListSection />
-        </Section>
-        {/* URL 쿼리 기반 초기화는 헤더 내부에서 처리 */}
       </PageContent>
     </div>
   );

@@ -9,7 +9,7 @@ const ListHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: ${props => props.theme.spacing['2xl']};
+  margin-top: ${props => props.theme.spacing['xl']};
   margin-bottom: ${props => props.theme.spacing.sm};
 `;
 

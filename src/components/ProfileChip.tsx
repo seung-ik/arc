@@ -10,33 +10,41 @@ const ChipContainer = styled.div`
   display: inline-flex;
   align-items: center;
   gap: ${props => props.theme.spacing.xs};
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  padding-right: ${props => props.theme.spacing.md};
+  padding: 0.15rem;
   border: 1px solid ${props => props.theme.colors.primary};
-  border-radius: 9999px;
-
+  border-radius: 50%;
   cursor: default;
+  transition: all 0.2s ease;
+  background: rgb(47, 90, 100);
+
+  &:hover {
+    background: white;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+  }
 `;
 
 const Avatar = styled.div<{ $url?: string }>`
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
   /* 강한 대비의 딥 톤 그라데이션 (프로필 이미지 대체용) */
-  background: linear-gradient(135deg, #0f172a, #23424a, #0ea5a0);
+  background: linear-gradient(
+    135deg,
+    rgb(20, 30, 53),
+    rgb(47, 90, 100),
+    #0ea5a0
+  );
   ${props => (props.$url ? `background-image: url(${props.$url});` : '')}
   background-size: cover;
   background-position: center;
-`;
-
-const NicknameText = styled.span`
-  color: ${props => props.theme.colors.textBlack};
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  font-weight: ${props => props.theme.typography.fontWeights.bold};
-  max-width: 60px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
 const Dropdown = styled.div`
@@ -48,7 +56,7 @@ const Dropdown = styled.div`
   border-radius: ${props => props.theme.borderRadius.md};
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   padding: 8px 0;
-  min-width: 80px;
+  min-width: 90px;
   z-index: 1000;
 `;
 
@@ -115,8 +123,8 @@ export default function ProfileChip() {
   return (
     <Wrapper data-chip-wrapper>
       <ChipContainer onClick={handleToggle}>
-        <Avatar $url={imageUrl} />
-        <NicknameText>{displayName}</NicknameText>
+        <Avatar $url={imageUrl}>{displayName.charAt(0)}</Avatar>
+        {/* <NicknameText>{displayName}</NicknameText> */}
       </ChipContainer>
       {open && (
         <Dropdown>

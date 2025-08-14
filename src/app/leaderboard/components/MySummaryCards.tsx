@@ -14,7 +14,8 @@ const CardsRow = styled.div`
 `;
 
 const InfoCard = styled.div`
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.secondary};
+
   border-radius: ${props => props.theme.borderRadius.xl};
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   padding: ${props => props.theme.spacing.sm};
@@ -53,17 +54,18 @@ const DotIcon = styled.div<{ $color: string }>`
 const CardValue = styled.div`
   font-size: clamp(0.95rem, 3.5vw, 1.125rem);
   font-weight: ${props => props.theme.typography.fontWeights.bold};
-  color: ${props => props.theme.colors.textBlack};
+  color: ${props => props.theme.colors.primary};
 `;
 
 const CardLabel = styled.div`
   font-size: ${props => props.theme.typography.fontSizes.sm};
-  color: ${props => props.theme.colors.textLightGray};
+  color: ${props => props.theme.colors.primary};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
 `;
 
 const SubText = styled.div`
   font-size: ${props => props.theme.typography.fontSizes.sm};
-  color: ${props => props.theme.colors.textLightGray};
+  color: ${props => props.theme.colors.primary};
 `;
 
 export default function MySummaryCards() {
@@ -80,7 +82,7 @@ export default function MySummaryCards() {
 
       <InfoCard>
         <CardHeader>
-          <DotIcon $color="#E8C87D" />
+          <DotIcon $color="#23424A" />
           <CardLabel>내 순위</CardLabel>
         </CardHeader>
         <CardValue>#123</CardValue>
@@ -89,7 +91,7 @@ export default function MySummaryCards() {
 
       <InfoCardButton>
         <CardHeader>
-          <DotIcon $color="#6c757d" />
+          <DotIcon $color="#23424A" />
           <CardLabel>내 활동</CardLabel>
         </CardHeader>
         <CardValue>전적/NFT</CardValue>

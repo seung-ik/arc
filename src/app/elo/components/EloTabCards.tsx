@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ROUTES } from '@/constants/routes';
-import { ICONS } from '@/assets';
-import Image from 'next/image';
+
 import ProfileChip from '@/components/ProfileChip';
 
 const TabContainer = styled.div`

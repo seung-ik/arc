@@ -29,6 +29,21 @@ const AvatarWrapper = styled.div<{ $size: 'lg' | 'md' }>`
     props.$size === 'lg'
       ? 'clamp(72px, 20vw, 112px)'
       : 'clamp(52px, 15vw, 84px)'};
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  border-radius: 50%;
 `;
 const AvatarCircle = styled.div<{ $img?: string; $rank: number }>`
   width: 100%;
