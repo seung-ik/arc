@@ -10,10 +10,11 @@ import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
 import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
-import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
 import GameStatsGrid from '../components/GameStatsGrid';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -24,26 +25,6 @@ const Container = styled.div`
 
 const Content = styled.div`
   flex: 1;
-`;
-
-const LogoutButton = styled.button`
-  position: absolute;
-  top: ${props => props.theme.spacing.md};
-  left: ${props => props.theme.spacing.md};
-  background-color: white;
-  color: ${props => props.theme.colors.error};
-  border: 1px solid ${props => props.theme.colors.error};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  padding: 4px 8px;
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.error};
-    color: white;
-  }
 `;
 
 const ProfileTopWrapper = styled.div`
@@ -81,7 +62,6 @@ const ProfileRightCol = styled.div`
 
 export default function ProfilePage() {
   const router = useRouter();
-  const logoutAll = useLogoutAll();
 
   const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
@@ -146,10 +126,6 @@ export default function ProfilePage() {
     router.push(ROUTES.profile.tokenHistory);
   };
 
-  const handleLogout = async () => {
-    await logoutAll();
-  };
-
   useEffect(() => {
     if (profileData) {
       setProfile(profileData.user); // 유저 프로필 정보 저장
@@ -163,7 +139,13 @@ export default function ProfilePage() {
 
   return (
     <Container>
-      <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+      <Image
+        src={ICONS.SETTING}
+        alt="setting"
+        width={24}
+        height={24}
+        style={{ position: 'absolute', top: '16px', left: '32px' }}
+      />
       <Content>
         <ProfileTopWrapper>
           <ProfileLeftCol>

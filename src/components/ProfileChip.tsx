@@ -9,12 +9,12 @@ import { useLogoutAll } from '@/hooks';
 const ChipContainer = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: ${props => props.theme.spacing.sm};
+  gap: ${props => props.theme.spacing.xs};
   padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
   padding-right: ${props => props.theme.spacing.md};
   border: 1px solid ${props => props.theme.colors.primary};
   border-radius: 9999px;
-  background-color: transparent;
+
   cursor: default;
 `;
 
@@ -22,17 +22,18 @@ const Avatar = styled.div<{ $url?: string }>`
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: ${props => props.theme.colors.primary};
-  background-image: ${props => (props.$url ? `url(${props.$url})` : 'none')};
+  /* 강한 대비의 딥 톤 그라데이션 (프로필 이미지 대체용) */
+  background: linear-gradient(135deg, #0f172a, #23424a, #0ea5a0);
+  ${props => (props.$url ? `background-image: url(${props.$url});` : '')}
   background-size: cover;
   background-position: center;
 `;
 
 const NicknameText = styled.span`
   color: ${props => props.theme.colors.textBlack};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  max-width: 84px;
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  max-width: 60px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

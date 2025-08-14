@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { MyPost } from '@/api/useUser';
 import HtmlContent from '../../../components/HtmlContent';
+import NoData from '@/components/NoData';
 
 interface ProfilePostListProps {
   posts: MyPost[];
@@ -231,20 +232,7 @@ const LikeButton = styled.button`
 //   }
 // `;
 
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: ${props => props.theme.spacing.xl};
-  color: ${props => props.theme.colors.textGray};
-  text-align: center;
-`;
-
-const EmptyIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
+// NoData 공통 컴포넌트 사용으로 제거
 
 export default function ProfilePostList({
   posts,
@@ -321,14 +309,13 @@ export default function ProfilePostList({
     return (
       <PostListContainer>
         <SectionTitle>{isMyProfile ? '내 글' : '작성한 글'}</SectionTitle>
-        <EmptyState>
-          <EmptyIcon>📝</EmptyIcon>
-          <p>
-            {isMyProfile
+        <NoData
+          message={
+            isMyProfile
               ? '아직 작성한 글이 없습니다'
-              : '프로필에 노출된 글이 없습니다'}
-          </p>
-        </EmptyState>
+              : '프로필에 노출된 글이 없습니다'
+          }
+        />
       </PostListContainer>
     );
   }

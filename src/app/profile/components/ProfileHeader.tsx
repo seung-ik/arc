@@ -21,7 +21,8 @@ const ProfileImage = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* 더 진한 파스텔 블루 계열 그라데이션 */
+  background: linear-gradient(135deg, #b2ccff, #84acff, #4a90ff);
   display: flex;
   align-items: center;
   justify-content: center;

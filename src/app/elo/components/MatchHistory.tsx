@@ -1,6 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
+import NoData from '@/components/NoData';
 import MatchCardItem from './MatchCardItem';
 import LoadMoreButton from '@/components/LoadMoreButton';
 import { MatchHistoryResult } from '@/api/useMatch';
@@ -19,21 +20,7 @@ const MatchList = styled.div`
   flex: 1;
 `;
 
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: ${props => props.theme.spacing.xl};
-  color: ${props => props.theme.colors.textGray};
-  text-align: center;
-  flex: 1;
-`;
-
-const EmptyIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
+// NoData 공통 컴포넌트 사용으로 대체
 
 export default function MatchHistory({
   matches,
@@ -55,10 +42,7 @@ export default function MatchHistory({
           )}
         </>
       ) : (
-        <EmptyState>
-          <EmptyIcon>📊</EmptyIcon>
-          <p>매치 히스토리가 없습니다</p>
-        </EmptyState>
+        <NoData message="매치 히스토리가 없습니다" />
       )}
     </MatchList>
   );

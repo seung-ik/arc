@@ -2,18 +2,20 @@
 
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 const ListHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: ${props => props.theme.spacing.lg};
+  margin-top: ${props => props.theme.spacing['2xl']};
   margin-bottom: ${props => props.theme.spacing.sm};
 `;
 
 const ListTitle = styled.h3`
   margin: 0;
-  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-size: ${props => props.theme.typography.fontSizes.lg};
   font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: ${props => props.theme.colors.textBlack};
 `;
@@ -25,6 +27,9 @@ const Pager = styled.div`
 `;
 
 const PagerButton = styled.button<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
   border-radius: ${props => props.theme.borderRadius.md};
@@ -37,6 +42,8 @@ const PagerButton = styled.button<{ disabled?: boolean }>`
 const PagerInfo = styled.span`
   font-size: ${props => props.theme.typography.fontSizes.sm};
   color: ${props => props.theme.colors.textGray};
+  min-width: 58px;
+  text-align: center;
 `;
 
 const ListContainer = styled.div`
@@ -114,24 +121,35 @@ export default function RankListSection() {
   return (
     <>
       <ListHeader>
-        <ListTitle>Top 4–100</ListTitle>
+        <ListTitle>Top 4 – 100</ListTitle>
         <Pager>
           <PagerButton
             disabled={page === 1}
             onClick={() => setPage(p => Math.max(1, p - 1))}
             aria-label="이전"
           >
-            ‹
+            <Image
+              src={ICONS.ARROW_LEFT}
+              alt="arrow-left"
+              width={16}
+              height={16}
+            />
           </PagerButton>
           <PagerInfo>
-            {startRank}–{endRank}
+            {startRank} – {endRank}
           </PagerInfo>
           <PagerButton
             disabled={page === lastPage}
             onClick={() => setPage(p => Math.min(lastPage, p + 1))}
             aria-label="다음"
           >
-            ›
+            <Image
+              src={ICONS.ARROW_LEFT}
+              alt="arrow-left"
+              width={16}
+              height={16}
+              style={{ transform: 'rotate(180deg)' }}
+            />
           </PagerButton>
         </Pager>
       </ListHeader>

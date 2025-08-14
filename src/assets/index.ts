@@ -17,6 +17,8 @@ import HAMBURGER from '@/assets/images/icons/hamburger.svg';
 import PLUS from '@/assets/images/icons/plus.svg';
 import GOOD from '@/assets/images/icons/good.svg';
 import HATE from '@/assets/images/icons/hate.svg';
+import SETTING from '@/assets/images/icons/setting.svg';
+import NO_DATA from '@/assets/images/icons/no_data.svg';
 
 // 탭 아이콘들
 import TAB_COMMUNITY from '@/assets/images/icons/tab_community.svg';
@@ -68,6 +70,8 @@ export const ICONS = {
   PLUS,
   GOOD,
   HATE,
+  SETTING,
+  NO_DATA,
 } as const;
 
 // 탭 아이콘들

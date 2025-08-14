@@ -16,10 +16,10 @@ const TokenContainer = styled.div`
   justify-content: space-between;
   gap: ${props => props.theme.spacing.sm};
   padding: ${props => props.theme.spacing.md};
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid ${props => props.theme.colors.border};
+
   border-radius: ${props => props.theme.borderRadius.md};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  color: ${props => props.theme.colors.textWhite};
+  color: ${props => props.theme.colors.textBlack};
 `;
 
 const TokenInfo = styled.div`
@@ -32,6 +32,7 @@ const TokenLabel = styled.div`
   font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   opacity: 0.9;
+  color: ${props => props.theme.colors.textBlack};
 `;
 
 const TokenAmount = styled.div`
@@ -47,12 +48,11 @@ const TokenIcon = styled.span`
 `;
 
 const HarvestSection = styled.div`
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: 2px solid ${props => props.theme.colors.border};
   border-radius: 12px;
   padding: 14px;
   margin: 0;
-  color: ${props => props.theme.colors.textWhite};
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  color: ${props => props.theme.colors.textBlack};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -66,19 +66,21 @@ const HarvestInfo = styled.div`
 `;
 
 const HarvestButton = styled.button`
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+
   border-radius: 8px;
   padding: 4px 10px;
-  color: white;
+  color: ${props => props.theme.colors.textBlack};
   font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
 
+  border: 1px solid ${props => props.theme.colors.border};
+
   &:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.28);
   }
 
   &:active {
@@ -88,16 +90,15 @@ const HarvestButton = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
   }
 `;
 
 const HistoryButton = styled.button`
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   padding: 4px 10px;
-  color: white;
+  color: ${props => props.theme.colors.textBlack};
   font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
   cursor: pointer;
@@ -105,7 +106,7 @@ const HistoryButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: ${props => props.theme.colors.backgroundGray};
   }
 
   &:active {

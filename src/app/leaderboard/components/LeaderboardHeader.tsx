@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
@@ -9,7 +9,7 @@ import { useCommunityStore } from '@/stores/communityStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const HeaderContainer = styled.div`
-  background-color: ${props => props.theme.colors.background};
+  // background-color: ${props => props.theme.colors.background};
   padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   border-bottom: 5px solid ${props => props.theme.colors.borderLight};
 `;
@@ -44,16 +44,16 @@ const CategoryButton = styled.div<{ $isOpen: boolean }>`
   align-items: center;
   gap: ${props => props.theme.spacing.xs};
   padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  background-color: ${props => props.theme.colors.background};
+  // background-color: ${props => props.theme.colors.background};
   font-size: ${props => props.theme.typography.fontSizes.xl};
   font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: ${props => props.theme.colors.textBlack};
   transition: all 0.2s;
   cursor: pointer;
 
-  &:hover {
-    background-color: ${props => props.theme.colors.backgroundGray};
-  }
+  // &:hover {
+  //   background-color: ${props => props.theme.colors.backgroundGray};
+  // }
 `;
 
 const DropdownArrow = styled.span<{ $isOpen: boolean }>`
@@ -108,6 +108,28 @@ export default function LeaderboardHeader() {
   );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const selectedLabel = useMemo(() => {
     const urlSport = searchParams?.get('sport');

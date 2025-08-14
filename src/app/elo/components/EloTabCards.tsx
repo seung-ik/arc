@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { ROUTES } from '@/constants/routes';
 import { ICONS } from '@/assets';
 import Image from 'next/image';
+import ProfileChip from '@/components/ProfileChip';
 
 const TabContainer = styled.div`
   display: flex;
@@ -86,7 +87,8 @@ export default function EloTabCards() {
         ))}
       </div>
       <div>
-        <Image src={ICONS.BELL} alt="bell" width={24} height={24} />
+        <ProfileChip />
+        {/* <Image src={ICONS.BELL} alt="bell" width={24} height={24} /> */}
         {/* <div
           style={{
             width: '40px',
