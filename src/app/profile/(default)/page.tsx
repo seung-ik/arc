@@ -144,7 +144,19 @@ export default function ProfilePage() {
         alt="setting"
         width={24}
         height={24}
-        style={{ position: 'absolute', top: '16px', left: '32px' }}
+        style={{
+          position: 'absolute',
+          top: '16px',
+          left: '20px',
+          transition: 'transform 0.3s ease',
+          cursor: 'pointer',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.transform = 'rotate(200deg)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.transform = 'rotate(0deg)';
+        }}
       />
       <Content>
         <ProfileTopWrapper>
