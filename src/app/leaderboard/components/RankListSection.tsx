@@ -47,7 +47,7 @@ const PagerInfo = styled.span`
 `;
 
 const ListContainer = styled.div`
-  border: 1px solid ${props => props.theme.colors.borderLight};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
   overflow: hidden;
 `;
@@ -57,7 +57,7 @@ const ListRow = styled.div`
   grid-template-columns: 48px 1fr 80px;
   align-items: center;
   padding: 10px 12px;
-  border-top: 1px solid ${props => props.theme.colors.borderLight};
+  border-top: 1px solid ${props => props.theme.colors.border};
   background: ${props => props.theme.colors.background};
   cursor: pointer;
 
