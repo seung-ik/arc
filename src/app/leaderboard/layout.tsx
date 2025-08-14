@@ -14,9 +14,8 @@ const LayoutContainer = styled.div`
   overflow: hidden;
   background: linear-gradient(
     135deg,
-    ${props => props.theme.colors.primaryLight} 0%,
-    ${props => props.theme.colors.secondaryLight} 90%,
-    ${props => props.theme.colors.background} 100%
+    rgba(82, 89, 92, 0.14) 0%,
+    rgba(83, 83, 80, 0.01) 100%
   );
 `;
 
