@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useLikePostMutation, useHatePostMutation } from '@/api/useCommunity';
+import { useLikeSignatureData } from '@/api/usePrevContract';
 import { GeneralPost } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
@@ -65,8 +66,23 @@ export default function PostActions({ post }: PostActionsProps) {
 
   const likePostMutation = useLikePostMutation();
   const hatePostMutation = useHatePostMutation();
+  const likeSignatureData = useLikeSignatureData();
+
+  console.log(post);
 
   const handleLike = () => {
+    // 1. 컨트랙트 콜 전 필요한 데이터 받아오기
+    likeSignatureData.mutate(
+      { postId: post.id },
+      {
+        onSuccess: response => {
+          console.log('컨트랙트 콜을 위한 데이터:', response);
+        },
+      }
+    );
+    return;
+
+    // 2. 기존 좋아요 로직 실행
     likePostMutation.mutate(post.id, {
       onSuccess: data => {
         setLocalLikeCount(data.data.likeCount);

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ROUTES } from '@/constants/routes';
 import type { WepinSDK, WepinSDKModule, WepinLogin } from '@/types/wepin';
+import { WepinProvider as WepinProviderSDK } from '@wepin/provider-js';
 
 interface WepinContextType {
   wepinLogin: WepinLogin | null;
@@ -21,6 +22,23 @@ interface WepinContextType {
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setUserInfo: (userInfo: any) => void;
   setAccounts: (accounts: any[]) => void;
+  // 컨트랙트 함수 콜 (읽기 전용)
+  callContract: (
+    network: string,
+    contractAddress: string,
+    abi: any[],
+    methodName: string,
+    params: any[]
+  ) => Promise<any>;
+  // 컨트랙트 함수 콜 (상태 변경)
+  executeContract: (
+    network: string,
+    contractAddress: string,
+    abi: any[],
+    methodName: string,
+    params: any[],
+    value?: string
+  ) => Promise<any>;
 }
 
 const WepinContext = createContext<WepinContextType | undefined>(undefined);
@@ -32,6 +50,9 @@ interface WepinProviderProps {
 export function WepinProvider({ children }: WepinProviderProps) {
   const [wepinLogin, setWepinLogin] = useState<any | null>(null);
   const [wepinSDK, setWepinSDK] = useState<WepinSDK | null>(null);
+  const [wepinProvider, setWepinProvider] = useState<WepinProviderSDK | null>(
+    null
+  );
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
@@ -58,9 +79,17 @@ export function WepinProvider({ children }: WepinProviderProps) {
         });
         await widgetInstance.init({ loginProviders: ['google'] });
 
+        // Wepin Provider 초기화
+        const providerInstance = new WepinProviderSDK({
+          appId: '3f2b52c0c69e1c63ad720046a6977c0b',
+          appKey: 'ak_live_TN4xwt5fFxoxfhV67etTmg1neIZi1mz9tE1AfIarghl',
+        });
+        await providerInstance.init();
+
         if (!isMounted) return;
         setWepinLogin(loginInstance);
         setWepinSDK(widgetInstance);
+        setWepinProvider(providerInstance);
         setIsInitialized(true);
 
         // 로그인 상태 확인
@@ -219,6 +248,68 @@ export function WepinProvider({ children }: WepinProviderProps) {
     return Array.isArray(result) && result.length > 0 ? result[0] : null;
   };
 
+  // 컨트랙트 함수 콜 (읽기 전용)
+  const callContract = async (
+    network: string,
+    contractAddress: string,
+    abi: any[],
+    methodName: string,
+    params: any[]
+  ) => {
+    if (!wepinProvider) {
+      throw new Error('Wepin Provider가 초기화되지 않았습니다.');
+    }
+    try {
+      // 위핀 프로바이더에서 이더리움 프로바이더 가져오기
+      const provider = await wepinProvider.getProvider(network);
+
+      // ethers.js로 컨트랙트 인스턴스 생성
+      const { ethers } = await import('ethers');
+      const contract = new ethers.Contract(
+        contractAddress,
+        abi,
+        provider as any
+      );
+
+      // 컨트랙트 함수 호출
+      const result = await contract[methodName](...params);
+      return result;
+    } catch (error) {
+      console.error('Error calling contract:', error);
+      throw error;
+    }
+  };
+
+  // 컨트랙트 함수 콜 (상태 변경)
+  const executeContract = async (
+    network: string,
+    contractAddress: string,
+    abi: any[],
+    methodName: string,
+    params: any[],
+    value?: string
+  ) => {
+    if (!wepinProvider) {
+      throw new Error('Wepin Provider가 초기화되지 않았습니다.');
+    }
+    try {
+      // 위핀 프로바이더에서 이더리움 프로바이더 가져오기
+      const provider = await wepinProvider.getProvider(network);
+
+      // ethers.js로 컨트랙트 인스턴스 생성 (서명자 연결)
+      const { ethers } = await import('ethers');
+      const signer = (provider as any).getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      // 컨트랙트 함수 호출
+      const tx = await contract[methodName](...params, { value });
+      return await tx.wait();
+    } catch (error) {
+      console.error('Error executing contract:', error);
+      throw error;
+    }
+  };
+
   const initWepinSDK = async (): Promise<WepinSDK | null> => {
     if (wepinSDK) {
       return wepinSDK; // 이미 초기화된 경우
@@ -260,6 +351,8 @@ export function WepinProvider({ children }: WepinProviderProps) {
         logout,
         getAccounts,
         getBalance,
+        callContract,
+        executeContract,
       }}
     >
       {children}
