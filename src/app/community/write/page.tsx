@@ -156,7 +156,7 @@ const TopFormGroup = styled.div`
 const POST_TYPES = [
   { value: '일반', label: '일반' },
   { value: '매치', label: '매치' },
-  { value: '멘토', label: '멘토' },
+  // { value: '멘토', label: '멘토' },
 ];
 
 function WritePostForm() {
@@ -221,6 +221,8 @@ function WritePostForm() {
     myElo: '',
     preferredElo: '',
     validityPeriod: '',
+    participantCount: '', // 참가 인원 필드 추가
+    customParticipantCount: '', // 직접 입력 필드 추가
   });
 
   // defaultCategory가 변경될 때 formData.category 업데이트
@@ -239,10 +241,21 @@ function WritePostForm() {
   const imageUploadMutation = useImageUploadMutation();
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData(prev => {
+      // postType이 바뀔 때 content 초기화
+      if (field === 'postType') {
+        return {
+          ...prev,
+          [field]: value,
+          content: '', // postType 변경 시 content 초기화
+        };
+      }
+
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -405,6 +418,8 @@ function WritePostForm() {
       throw error;
     }
   };
+
+  console.log(formData);
 
   return (
     <Container>

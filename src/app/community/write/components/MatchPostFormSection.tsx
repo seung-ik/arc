@@ -8,17 +8,11 @@ interface MatchPostFormSectionProps {
     myElo: string;
     preferredElo: string;
     validityPeriod: string;
+    participantCount: string; // 참가 인원 필드 추가
+    customParticipantCount?: string; // 직접 입력 필드 추가
   };
   onInputChange: (field: string, value: string) => void;
 }
-
-const VALIDITY_PERIODS = [
-  { value: '1day', label: '1일', token: 10 },
-  { value: '3days', label: '3일', token: 25 },
-  { value: '7days', label: '7일', token: 50 },
-  { value: '14days', label: '14일', token: 90 },
-  { value: '30days', label: '30일', token: 150 },
-];
 
 const MatchFields = styled.div`
   display: flex;
@@ -86,82 +80,6 @@ const TimeLocationRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${props => props.theme.spacing.md};
-`;
-
-const ValidityPeriodSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${props => props.theme.spacing.sm};
-`;
-
-const ValidityTitle = styled.h3`
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  color: ${props => props.theme.colors.textBlack};
-  margin: 0;
-`;
-
-const ValidityCards = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: ${props => props.theme.spacing.xs};
-`;
-
-const ValidityCard = styled.div<{ $selected: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: ${props => props.theme.spacing.sm};
-  border: 2px solid
-    ${props =>
-      props.$selected ? props.theme.colors.primary : props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  background-color: ${props =>
-    props.$selected
-      ? props.theme.colors.primaryLight
-      : props.theme.colors.background};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.primary};
-    background-color: ${props => props.theme.colors.primaryLight};
-  }
-`;
-
-const ValidityPeriod = styled.span`
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  color: ${props => props.theme.colors.textBlack};
-  margin-bottom: 4px;
-`;
-
-const ValidityToken = styled.span`
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  color: ${props => props.theme.colors.textGray};
-`;
-
-const TokenInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing.xs};
-  padding: ${props => props.theme.spacing.sm};
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius.sm};
-`;
-
-const TokenLabel = styled.span`
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  color: ${props => props.theme.colors.textBlack};
-`;
-
-const TokenAmount = styled.span<{ $insufficient: boolean }>`
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  color: ${props =>
-    props.$insufficient
-      ? props.theme.colors.error
-      : props.theme.colors.primary};
 `;
 
 export default function MatchPostFormSection({
@@ -251,34 +169,48 @@ export default function MatchPostFormSection({
             </Select>
           </FormGroup>
         </TimeLocationRow>
+
+        <FormGroup>
+          <FieldDescription>
+            <FieldLabel htmlFor="participantCount">참가 인원</FieldLabel>
+            <FieldHelp>매칭에 참가할 총 인원 수를 설정하세요</FieldHelp>
+          </FieldDescription>
+          <Select
+            id="participantCount"
+            value={formData.participantCount}
+            onChange={e => onInputChange('participantCount', e.target.value)}
+          >
+            <option value="">인원 수 선택</option>
+            <option value="2">1:1 (2명)</option>
+            <option value="4">2:2 (4명)</option>
+            <option value="6">3:3 (6명)</option>
+            <option value="8">4:4 (8명)</option>
+            <option value="custom">직접 입력</option>
+          </Select>
+        </FormGroup>
+
+        {formData.participantCount === 'custom' && (
+          <FormGroup>
+            <FieldDescription>
+              <FieldLabel htmlFor="customParticipantCount">
+                직접 입력
+              </FieldLabel>
+              <FieldHelp>원하는 참가 인원 수를 직접 입력하세요</FieldHelp>
+            </FieldDescription>
+            <Input
+              id="customParticipantCount"
+              type="number"
+              value={formData.customParticipantCount || ''}
+              onChange={e =>
+                onInputChange('customParticipantCount', e.target.value)
+              }
+              placeholder="예: 10"
+              min="2"
+              max="20"
+            />
+          </FormGroup>
+        )}
       </MatchFields>
-
-      <ValidityPeriodSection>
-        <ValidityTitle>유효기간 선택 *</ValidityTitle>
-        <ValidityCards>
-          {VALIDITY_PERIODS.map(period => (
-            <ValidityCard
-              key={period.value}
-              $selected={formData.validityPeriod === period.value}
-              onClick={() => onInputChange('validityPeriod', period.value)}
-            >
-              <ValidityPeriod>{period.label}</ValidityPeriod>
-              <ValidityToken>{period.token} 토큰</ValidityToken>
-            </ValidityCard>
-          ))}
-        </ValidityCards>
-
-        <TokenInfo>
-          <TokenLabel>필요 토큰:</TokenLabel>
-          <TokenAmount $insufficient={false}>
-            {formData.validityPeriod
-              ? VALIDITY_PERIODS.find(p => p.value === formData.validityPeriod)
-                  ?.token || 0
-              : 0}{' '}
-            토큰
-          </TokenAmount>
-        </TokenInfo>
-      </ValidityPeriodSection>
     </>
   );
 }
