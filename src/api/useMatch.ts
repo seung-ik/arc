@@ -254,3 +254,78 @@ export const createMatchHistoryFetcher = (
     };
   };
 };
+
+// 매치글 관련 타입들
+export interface MatchPostAuthor {
+  id: number;
+  walletUserId: string;
+  walletAddress: string;
+  nickname: string;
+  email: string;
+  createdAt: string;
+  tokenAmount: string;
+  availableToken: string;
+  profileImageUrl: string | null;
+  tutorialFirstPostCompleted: boolean;
+  tutorialFirstMatchCompleted: boolean;
+  tutorialFirstPostCompletedAt: string;
+  tutorialFirstMatchCompletedAt: string | null;
+}
+
+export interface MatchPostSportCategory {
+  id: number;
+  name: string;
+  sortOrder: number;
+}
+
+export interface MatchPostItem {
+  id: number;
+  author: MatchPostAuthor;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  type: string;
+  isHidden: boolean;
+  viewCount: number;
+  sportCategory: MatchPostSportCategory;
+  imageUrls: string[];
+  matchLocation: string;
+  myElo: number;
+  preferredElo: string;
+  participantCount: number;
+  matchStatus: string;
+  deadline: string;
+  matchDate: string | null;
+}
+
+export interface MatchPostsResponse {
+  success: boolean;
+  data: {
+    posts: MatchPostItem[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+// 매치글 목록 조회 훅
+export const useMatchPostsApi = (
+  page: number = 1,
+  limit: number = 10,
+  enabled: boolean = true
+) => {
+  return useQuery({
+    queryKey: ['match-posts', page, limit],
+    queryFn: async (): Promise<MatchPostsResponse> => {
+      const params = new URLSearchParams();
+      params.append('page', page.toString());
+      params.append('limit', limit.toString());
+
+      const response = await api.get(`/match-posts?${params.toString()}`);
+      return response.data;
+    },
+    enabled,
+  });
+};

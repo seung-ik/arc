@@ -84,7 +84,12 @@ export function WepinProvider({ children }: WepinProviderProps) {
           appId: '3f2b52c0c69e1c63ad720046a6977c0b',
           appKey: 'ak_live_TN4xwt5fFxoxfhV67etTmg1neIZi1mz9tE1AfIarghl',
         });
-        await providerInstance.init();
+        await providerInstance.init({
+          defaultLanguage: 'ko',
+          defaultCurrency: 'KRW',
+        });
+
+        console.log(providerInstance.isInitialized(), '초기화 완료?');
 
         if (!isMounted) return;
         setWepinLogin(loginInstance);
@@ -265,10 +270,13 @@ export function WepinProvider({ children }: WepinProviderProps) {
 
       // ethers.js로 컨트랙트 인스턴스 생성
       const { ethers } = await import('ethers');
+
+      // BrowserProvider로 EIP-1193 provider를 래핑
+      const browserProvider = new ethers.BrowserProvider(provider);
       const contract = new ethers.Contract(
         contractAddress,
         abi,
-        provider as any
+        browserProvider
       );
 
       // 컨트랙트 함수 호출
@@ -286,8 +294,7 @@ export function WepinProvider({ children }: WepinProviderProps) {
     contractAddress: string,
     abi: any[],
     methodName: string,
-    params: any[],
-    value?: string
+    params: any[]
   ) => {
     if (!wepinProvider) {
       throw new Error('Wepin Provider가 초기화되지 않았습니다.');
@@ -295,14 +302,19 @@ export function WepinProvider({ children }: WepinProviderProps) {
     try {
       // 위핀 프로바이더에서 이더리움 프로바이더 가져오기
       const provider = await wepinProvider.getProvider(network);
-
+      console.log(provider);
       // ethers.js로 컨트랙트 인스턴스 생성 (서명자 연결)
       const { ethers } = await import('ethers');
-      const signer = (provider as any).getSigner();
-      const contract = new ethers.Contract(contractAddress, abi, signer);
 
+      // BrowserProvider로 EIP-1193 provider를 래핑하여 getSigner() 사용 가능하게 함
+      const browserProvider = new ethers.BrowserProvider(provider);
+      const signer = await browserProvider.getSigner();
+      console.log(signer, 'signer');
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      console.log(contract, 'contract');
       // 컨트랙트 함수 호출
-      const tx = await contract[methodName](...params, { value });
+      const tx = await contract[methodName](...params);
+      console.log(tx, 'tx');
       return await tx.wait();
     } catch (error) {
       console.error('Error executing contract:', error);

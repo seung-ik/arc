@@ -7,7 +7,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
 
 import { getCategoryPath } from '@/lib/utils/categoryPath';
-import { useCreatePostMutation } from '@/api/useCommunity';
+import {
+  useCreatePostMutation,
+  useCreateMatchPostMutation,
+  validateGeneralPost,
+  validateMatchPost,
+  validateMentorPost,
+} from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
 import dynamic from 'next/dynamic';
 import MatchPostFormSection from './components/MatchPostFormSection';
@@ -223,6 +229,7 @@ function WritePostForm() {
     validityPeriod: '',
     participantCount: '', // 참가 인원 필드 추가
     customParticipantCount: '', // 직접 입력 필드 추가
+    matchDate: '', // 매치 날짜 필드 추가
   });
 
   // defaultCategory가 변경될 때 formData.category 업데이트
@@ -236,9 +243,10 @@ function WritePostForm() {
   }, [defaultCategory, formData.category]);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
-
-  // 이미지 업로드 뮤테이션
   const imageUploadMutation = useImageUploadMutation();
+
+  // 매치글 작성 뮤테이션
+  const createMatchPostMutation = useCreateMatchPostMutation();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => {
@@ -290,6 +298,11 @@ function WritePostForm() {
   };
 
   const handleGeneralSubmit = () => {
+    // 일반 글 검증
+    if (!validateGeneralPost(formData)) {
+      return;
+    }
+
     // 일반 글 작성
     const generalData = {
       sportCategoryId: parseInt(formData.category, 10),
@@ -318,48 +331,43 @@ function WritePostForm() {
   };
 
   const handleMatchSubmit = () => {
-    alert('준비중 입니다.');
-    return;
-    // 매치 글 필드 검증
-    if (!formData.validityPeriod) {
-      alert('매칭 요청에 필요한 모든 정보를 입력해주세요.');
+    // 매치 글 검증
+    if (!validateMatchPost(formData)) {
       return;
     }
 
     // 매치 글 작성
     const matchData = {
+      sportCategoryId: parseInt(formData.category) || 0,
       title: formData.title,
       content: formData.content,
-      postType: formData.postType,
-      category: formData.category,
+      type: formData.postType,
       matchLocation: formData.matchLocation,
-      myElo: formData.myElo,
+      myElo: parseInt(formData.myElo) || 0,
       preferredElo: formData.preferredElo,
-      validityPeriod: formData.validityPeriod,
+      participantCount: formData.participantCount || '2',
+      matchDate: formData.matchDate || undefined, // 매치 날짜 추가
     };
 
     console.log('매치 글 작성:', matchData);
-    // TODO: 매치 글 API 호출
-    navigateToCategory();
+
+    // 매치 글 API 호출
+    createMatchPostMutation.mutate(matchData, {
+      onSuccess: data => {
+        console.log('매치글 작성 성공:', data);
+        alert('매치글이 성공적으로 작성되었습니다!');
+        navigateToCategory();
+      },
+      onError: error => {
+        console.error('매치글 작성 실패:', error);
+        alert('매치글 작성에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   };
 
   const handleMentorSubmit = () => {
-    alert('준비중 입니다.');
-    return;
-    // 멘토 글 필드 검증
-    if (
-      !formData.sport ||
-      !formData.elo ||
-      !formData.location ||
-      !formData.tokenReward
-    ) {
-      alert('멘토링 요청에 필요한 모든 정보를 입력해주세요.');
-      return;
-    }
-
-    // 직접 입력한 경우 customSport도 확인
-    if (formData.sport === '직접입력' && !formData.customSport.trim()) {
-      alert('종목을 직접 입력해주세요.');
+    // 멘토 글 검증
+    if (!validateMentorPost(formData)) {
       return;
     }
 

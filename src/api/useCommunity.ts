@@ -71,6 +71,61 @@ export interface CreatePostRequest {
   type: string;
 }
 
+// Create Match Post Types
+export interface CreateMatchPostRequest {
+  sportCategoryId: number;
+  title: string;
+  content: string;
+  type: string;
+  matchLocation: string;
+  myElo: number;
+  preferredElo: string;
+  participantCount: string;
+}
+
+export interface MatchPostAuthor {
+  id: number;
+  walletUserId: string;
+  walletAddress: string;
+  nickname: string;
+  email: string;
+  createdAt: string;
+  tokenAmount: string;
+  availableToken: string;
+  profileImageUrl: string | null;
+}
+
+export interface MatchPostSportCategory {
+  id: number;
+  name: string;
+  sortOrder: number;
+}
+
+export interface CreateMatchPostResponse {
+  success: boolean;
+  data: {
+    id: number;
+    author: MatchPostAuthor;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    type: string;
+    isHidden: boolean;
+    viewCount: number;
+    sportCategory: MatchPostSportCategory;
+    imageUrls: string[];
+    matchLocation: string;
+    myElo: number;
+    preferredElo: string;
+    participantCount: string;
+    matchStatus: string;
+    deadline: string;
+    matchDate: string | null;
+  };
+  message: string;
+}
+
 export interface Author {
   id: number;
   nickname: string | null;
@@ -323,6 +378,26 @@ export const useCreatePostMutation = () => {
   });
 };
 
+export const useCreateMatchPostMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      data: CreateMatchPostRequest
+    ): Promise<CreateMatchPostResponse> => {
+      const response = await api.post('/match-posts', data);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('매치글 작성 성공:', data);
+      // 관련 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+    onError: error => {
+      console.error('매치글 작성 실패:', error);
+    },
+  });
+};
+
 export const useCreateCommentMutation = () => {
   return useMutation({
     mutationFn: async (
@@ -525,4 +600,95 @@ export const useImageUploadMutation = () => {
       console.error('이미지 업로드 실패:', error);
     },
   });
+};
+
+// 글 작성 검증 함수들
+export interface FormData {
+  title: string;
+  content: string;
+  category: string;
+  postType: string;
+  matchLocation: string;
+  myElo: string;
+  preferredElo: string;
+  participantCount: string;
+  elo: string;
+  location: string;
+  tokenReward: string;
+}
+
+export const validateGeneralPost = (formData: FormData): boolean => {
+  if (!formData.title.trim()) {
+    alert('제목을 입력해주세요.');
+    return false;
+  }
+  if (!formData.content.trim() || formData.content.trim() === '<p><br></p>') {
+    alert('내용을 입력해주세요.');
+    return false;
+  }
+  if (!formData.category) {
+    alert('카테고리를 선택해주세요.');
+    return false;
+  }
+  return true;
+};
+
+export const validateMatchPost = (formData: FormData): boolean => {
+  if (!formData.title.trim()) {
+    alert('제목을 입력해주세요.');
+    return false;
+  }
+  if (!formData.content.trim()) {
+    alert('내용을 입력해주세요.');
+    return false;
+  }
+  if (!formData.category) {
+    alert('카테고리를 선택해주세요.');
+    return false;
+  }
+  if (!formData.matchLocation.trim()) {
+    alert('매치 장소를 입력해주세요.');
+    return false;
+  }
+  if (!formData.myElo) {
+    alert('내 ELO 점수를 입력해주세요.');
+    return false;
+  }
+  if (!formData.preferredElo) {
+    alert('선호하는 ELO 범위를 선택해주세요.');
+    return false;
+  }
+  if (!formData.participantCount) {
+    alert('참가 인원을 선택해주세요.');
+    return false;
+  }
+  return true;
+};
+
+export const validateMentorPost = (formData: FormData): boolean => {
+  if (!formData.title.trim()) {
+    alert('제목을 입력해주세요.');
+    return false;
+  }
+  if (!formData.content.trim()) {
+    alert('내용을 입력해주세요.');
+    return false;
+  }
+  if (!formData.category) {
+    alert('카테고리를 선택해주세요.');
+    return false;
+  }
+  if (!formData.elo) {
+    alert('ELO 점수를 입력해주세요.');
+    return false;
+  }
+  if (!formData.location.trim()) {
+    alert('지역을 입력해주세요.');
+    return false;
+  }
+  if (!formData.tokenReward) {
+    alert('토큰 보상을 입력해주세요.');
+    return false;
+  }
+  return true;
 };

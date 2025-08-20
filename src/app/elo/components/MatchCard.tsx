@@ -3,12 +3,12 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { MatchPost } from '@/types/post';
+import { MatchPostItem } from '@/api/useMatch';
 import Image from 'next/image';
 import { BUSINESS_IMAGES } from '@/assets';
 
 interface MatchCardProps {
-  post: MatchPost;
+  post: MatchPostItem;
   onClick?: (postId: number) => void;
 }
 
@@ -102,6 +102,7 @@ const DateTimeInfo = styled.div`
 `;
 
 export default function MatchCard({ post, onClick }: MatchCardProps) {
+  console.log(post);
   const router = useRouter();
 
   const handleClick = () => {
@@ -112,9 +113,9 @@ export default function MatchCard({ post, onClick }: MatchCardProps) {
     }
   };
 
-  // 참가자 수 계산 (임시 데이터)
-  const currentParticipants = 1;
-  const maxParticipants = 2;
+  // 참가자 수 계산
+  const currentParticipants = 1; // API에서 제공되지 않는 필드
+  const maxParticipants = post.participantCount || 2;
 
   return (
     <MatchCardContainer onClick={handleClick}>

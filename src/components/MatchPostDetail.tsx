@@ -62,7 +62,7 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
   const [isJoined, setIsJoined] = useState(false);
   const [comment, setComment] = useState('');
   const applicationModal = useModal();
-
+  console.log(post);
   // Mock data - 실제로는 API에서 가져올 데이터
   const [myApplication, setMyApplication] = useState<{
     status: 'pending' | 'approved' | 'rejected';
@@ -116,6 +116,7 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
           date={post.createdAt}
           postType={post.type}
           viewCount={post.viewCount}
+          authorProfileImage={post.author.profileImageUrl || undefined}
         />
 
         <MatchInfo

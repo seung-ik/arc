@@ -5,6 +5,7 @@ import api from '@/lib/axios';
 interface LikeSignatureResponse {
   success: boolean;
   data: {
+    contractABI: any[];
     postId: number;
     encodedData: string; // 0x로 시작하는 hex 문자열
     contractAddress: string;

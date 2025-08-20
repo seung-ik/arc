@@ -8,10 +8,11 @@ import EloTabCards from '../components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import MatchCard from '../components/MatchCard';
 import { useRouter } from 'next/navigation';
-import { MatchPost } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 import MatchRequestTabs from '@/components/MatchRequestTabs';
+import { useMatchPostsApi, MatchPostItem } from '@/api/useMatch';
+import { useState, useEffect } from 'react';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -80,96 +81,74 @@ const SectionTitle = styled.h2`
   letter-spacing: -0.5px;
 `;
 
+const ShowMoreButton = styled.button`
+  background: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.textWhite};
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: ${props => props.theme.spacing.md} auto;
+  display: block;
+
+  &:hover {
+    background: ${props => props.theme.colors.primaryHover};
+  }
+
+  &:disabled {
+    background: ${props => props.theme.colors.border};
+    cursor: not-allowed;
+  }
+`;
+
 export default function ManagementPage() {
   const router = useRouter();
   const registrationModal = useModal();
 
-  // 목업 데이터
-  const recommendedMatchPosts = [
-    {
-      id: 1,
-      title: '테니스 매칭 구합니다',
-      content:
-        '테니스 실력 향상을 위해 매칭을 구합니다. 실력은 무관하고 즐겁게 치실 분 환영합니다.',
-      authorId: 'tennis_pro',
-      authorName: 'tennis_pro',
-      date: '2024-01-10',
-      postType: '매치',
-      category: 'tennis',
-      matchLocation: '서울 강남구 테니스장',
-      myElo: '1350',
-      preferredElo: 'similar',
-      validityPeriod: '7',
-      viewCount: 45,
-      commentCount: 12,
-      likeCount: 28,
-      dislikeCount: 1,
-      isLiked: true,
-      isDisliked: false,
-    },
-    {
-      id: 2,
-      title: '체스 친선 대국 상대',
-      content:
-        '체스 친선 대국 상대를 구합니다. 실력에 관계없이 즐겁게 두실 분 환영합니다.',
-      authorId: 'chess_master',
-      authorName: 'chess_master',
-      date: '2024-01-12',
-      postType: '매치',
-      category: 'chess',
-      matchLocation: '서울 서초구 체스클럽',
-      myElo: '1420',
-      preferredElo: 'any',
-      validityPeriod: '3',
-      viewCount: 32,
-      commentCount: 8,
-      likeCount: 34,
-      dislikeCount: 0,
-      isLiked: false,
-      isDisliked: false,
-    },
-    {
-      id: 3,
-      title: '탁구 연습 상대 구합니다',
-      content: '탁구 연습 상대를 구합니다. 초급부터 중급까지 환영합니다.',
-      authorId: 'ping_pong_king',
-      authorName: 'ping_pong_king',
-      date: '2024-01-14',
-      postType: '매치',
-      category: 'table-tennis',
-      matchLocation: '서울 강남구 탁구장',
-      myElo: '1280',
-      preferredElo: 'similar',
-      validityPeriod: '1',
-      viewCount: 28,
-      commentCount: 6,
-      likeCount: 42,
-      dislikeCount: 1,
-      isLiked: false,
-      isDisliked: false,
-    },
-    {
-      id: 4,
-      title: '배드민턴 매칭 구합니다',
-      content:
-        '배드민턴 동호인과 함께 치고 싶습니다. 실력은 비슷하거나 조금 높은 분이면 좋겠어요.',
-      authorId: 'badminton_ace',
-      authorName: 'badminton_ace',
-      date: '2024-01-11',
-      postType: '매치',
-      category: 'badminton',
-      matchLocation: '서울 송파구 배드민턴장',
-      myElo: '1380',
-      preferredElo: 'higher',
-      validityPeriod: '5',
-      viewCount: 38,
-      commentCount: 15,
-      likeCount: 34,
-      dislikeCount: 0,
-      isLiked: false,
-      isDisliked: false,
-    },
-  ];
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(4); // 한 번에 보여줄 매치글 수
+
+  // 누적된 매치글 데이터 상태
+  const [accumulatedPosts, setAccumulatedPosts] = useState<MatchPostItem[]>([]);
+
+  // 매치글 데이터 가져오기
+  const {
+    data: matchPostsData,
+    isLoading,
+    error,
+  } = useMatchPostsApi(currentPage, limit);
+
+  // 새로운 데이터가 로드되면 기존 데이터에 추가
+  useEffect(() => {
+    if (matchPostsData?.data.posts) {
+      if (currentPage === 1) {
+        // 첫 페이지는 기존 데이터 교체
+        setAccumulatedPosts(matchPostsData.data.posts);
+      } else {
+        // 추가 페이지는 기존 데이터에 추가 (중복 제거)
+        setAccumulatedPosts(prev => {
+          const existingIds = new Set(prev.map(post => post.id));
+          const newPosts = matchPostsData.data.posts.filter(
+            post => !existingIds.has(post.id)
+          );
+          return [...prev, ...newPosts];
+        });
+      }
+    }
+  }, [matchPostsData, currentPage]);
+
+  const hasNextPage =
+    matchPostsData?.data.page && matchPostsData?.data.totalPages
+      ? matchPostsData.data.page < matchPostsData.data.totalPages
+      : false;
+
+  const handleShowMore = () => {
+    setCurrentPage(prev => prev + 1);
+  };
 
   const handleChallenge = (matchId: number) => {
     router.push(`/community/post/${matchId}?type=match`);
@@ -189,14 +168,30 @@ export default function ManagementPage() {
         <MatchRequestTabs />
 
         <SectionTitle>추천매치</SectionTitle>
-        {recommendedMatchPosts.map(post => (
+
+        {isLoading && currentPage === 1 && (
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+            매치글을 불러오는 중...
+          </div>
+        )}
+
+        {error && (
+          <div style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
+            매치글을 불러오는데 실패했습니다.
+          </div>
+        )}
+
+        {accumulatedPosts.map((post: MatchPostItem) => (
           <div key={post.id}>
-            <MatchCard
-              post={post as unknown as MatchPost}
-              onClick={handleChallenge}
-            />
+            <MatchCard post={post} onClick={handleChallenge} />
           </div>
         ))}
+
+        {hasNextPage && (
+          <ShowMoreButton onClick={handleShowMore} disabled={isLoading}>
+            {isLoading ? '불러오는 중...' : '더보기'}
+          </ShowMoreButton>
+        )}
       </ContentContainer>
 
       <RegisterWrapper>

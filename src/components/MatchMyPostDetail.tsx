@@ -31,6 +31,7 @@ interface MatchMyPostDetailProps {
 }
 
 export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
+  console.log(post);
   const [applications, setApplications] = useState<MatchApplication[]>([
     {
       id: 1,

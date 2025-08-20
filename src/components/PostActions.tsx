@@ -7,6 +7,8 @@ import { useLikeSignatureData } from '@/api/usePrevContract';
 import { GeneralPost } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { useWepin } from '@/contexts/WepinContext';
+import { TRIVUS_ABI } from '@/constants/abi';
 
 const PostActionsContainer = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -68,15 +70,35 @@ export default function PostActions({ post }: PostActionsProps) {
   const hatePostMutation = useHatePostMutation();
   const likeSignatureData = useLikeSignatureData();
 
-  console.log(post);
+  const { executeContract } = useWepin();
 
-  const handleLike = () => {
+  const handleLike = async () => {
     // 1. 컨트랙트 콜 전 필요한 데이터 받아오기
     likeSignatureData.mutate(
       { postId: post.id },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           console.log('컨트랙트 콜을 위한 데이터:', response);
+
+          // 토큰의 decimals 확인
+          try {
+            // 1 토큰을 wei 단위로 변환
+            const { parseUnits } = await import('ethers');
+            const oneToken = parseUnits('1', 18);
+            await executeContract(
+              'evmpolygon-amoy',
+              '0x5BF617D9d68868414611618336603B37f8061819',
+              TRIVUS_ABI,
+              'transferAndCall(address,uint256,bytes)',
+              [
+                response.data.contractAddress,
+                oneToken.toString(),
+                response.data.encodedData,
+              ]
+            );
+          } catch (error) {
+            console.error('토큰 정보 조회 실패:', error);
+          }
         },
       }
     );

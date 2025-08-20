@@ -10,6 +10,7 @@ interface MatchPostFormSectionProps {
     validityPeriod: string;
     participantCount: string; // 참가 인원 필드 추가
     customParticipantCount?: string; // 직접 입력 필드 추가
+    matchDate?: string; // 매치 날짜 필드 추가
   };
   onInputChange: (field: string, value: string) => void;
 }
@@ -210,6 +211,20 @@ export default function MatchPostFormSection({
             />
           </FormGroup>
         )}
+
+        <FormGroup>
+          <FieldDescription>
+            <FieldLabel htmlFor="matchDate">매치 날짜</FieldLabel>
+            <FieldHelp>희망하는 매치 날짜를 선택하세요 (선택사항)</FieldHelp>
+          </FieldDescription>
+          <Input
+            id="matchDate"
+            type="date"
+            value={formData.matchDate || ''}
+            onChange={e => onInputChange('matchDate', e.target.value)}
+            min={new Date().toISOString().split('T')[0]} // 오늘 이후 날짜만 선택 가능
+          />
+        </FormGroup>
       </MatchFields>
     </>
   );
