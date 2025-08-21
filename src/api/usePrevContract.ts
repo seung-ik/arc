@@ -31,12 +31,12 @@ interface TokenClaimSignatureResponse {
 interface ClaimAllAccumulatedResponse {
   success: boolean;
   data: {
-    postId: number;
-    to: string;
-    amount: string;
-    deadline: number;
-    nonce: string;
     signature: string;
+    nonce: string;
+    deadline: number;
+    amount: string;
+    contractAddress: string;
+    contractABI: any[];
   };
   message: string;
 }
@@ -55,7 +55,7 @@ interface TokenClaimSignatureRequest {
 // 한번에 모든 토큰 수확을 위한 요청 타입 정의
 interface ClaimAllAccumulatedRequest {
   address: string;
-  reason: string;
+  reason?: string;
 }
 
 // 컨트랙트 콜 전 필요한 데이터를 받아오는 API

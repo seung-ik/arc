@@ -15,6 +15,8 @@ import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
 import GameStatsGrid from '../components/GameStatsGrid';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { useClaimAllAccumulatedTokens } from '@/api/usePrevContract';
+import { useWepin } from '@/contexts/WepinContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -67,6 +69,8 @@ export default function ProfilePage() {
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
+  const claimAllAccumulatedTokens = useClaimAllAccumulatedTokens();
+
   const { data: profileData, isLoading } = useProfileApi();
   const {
     setProfile,
@@ -77,6 +81,8 @@ export default function ProfilePage() {
     userElos,
   } = useAuthStore();
   const { data: myPostsData } = useMyPostsApi();
+
+  const { executeContract } = useWepin();
 
   // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
   useEffect(() => {
@@ -98,14 +104,45 @@ export default function ProfilePage() {
   };
 
   const handleHarvestAll = () => {
+    console.log('handleHarvest', userProfile.walletAddress, harvestableTokens);
+    claimAllAccumulatedTokens.mutate(
+      {
+        address: userProfile.walletAddress,
+      },
+      {
+        onSuccess: async response => {
+          console.log(response);
+          const { parseUnits } = await import('ethers');
+          const amount = parseUnits(response.data.amount, 18);
+
+          await executeContract(
+            'evmpolygon-amoy',
+            response.data.contractAddress,
+            response.data.contractABI,
+            'claimWithSignature',
+            [
+              userProfile.walletAddress,
+              amount,
+              response.data.deadline,
+              response.data.nonce,
+              response.data.signature,
+            ]
+          );
+          console.log('claimAllAccumulatedTokens success');
+        },
+        onError: () => {
+          console.log('claimAllAccumulatedTokens error');
+        },
+      }
+    );
     // 실제로는 Web3 트랜잭션 처리
-    if (harvestableTokens > 0 && userProfile.tokenAmount) {
-      setTokenAmount((prev: string) => {
-        const currentAmount = parseFloat(prev || '0');
-        return (currentAmount + harvestableTokens).toFixed(8);
-      });
-      setHarvestableTokens(0);
-    }
+    // if (harvestableTokens > 0 && userProfile.tokenAmount) {
+    //   setTokenAmount((prev: string) => {
+    //     const currentAmount = parseFloat(prev || '0');
+    //     return (currentAmount + harvestableTokens).toFixed(8);
+    //   });
+    //   setHarvestableTokens(0);
+    // }
   };
 
   const handleNicknameChange = () => {

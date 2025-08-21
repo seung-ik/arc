@@ -10,7 +10,8 @@ export default function CommunityPage() {
   const currentTab = '자유글';
 
   const { communityTabs } = useCommunityStore();
-  const categoryId = communityTabs?.[currentTab]?.id || 0;
+  const categoryId = communityTabs?.[currentTab]?.id || 1;
+  console.log('categoryId', categoryId);
   const { fetchPosts } = usePostsApi(categoryId, 1, 10);
   const { data: hotPosts } = useHotPostsApi();
 

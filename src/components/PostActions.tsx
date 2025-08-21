@@ -8,7 +8,6 @@ import { GeneralPost } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 import { useWepin } from '@/contexts/WepinContext';
-import { TRIVUS_ABI } from '@/constants/abi';
 
 const PostActionsContainer = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -87,11 +86,11 @@ export default function PostActions({ post }: PostActionsProps) {
             const oneToken = parseUnits('1', 18);
             await executeContract(
               'evmpolygon-amoy',
-              '0x5BF617D9d68868414611618336603B37f8061819',
-              TRIVUS_ABI,
+              response.data.contractAddress,
+              response.data.contractABI,
               'transferAndCall(address,uint256,bytes)',
               [
-                response.data.contractAddress,
+                '0x3c94a51F408c6BFcEbB93b7716d496c0015b68ee',
                 oneToken.toString(),
                 response.data.encodedData,
               ]

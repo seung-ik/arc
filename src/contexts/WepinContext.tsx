@@ -313,7 +313,10 @@ export function WepinProvider({ children }: WepinProviderProps) {
       const contract = new ethers.Contract(contractAddress, abi, signer);
       console.log(contract, 'contract');
       // 컨트랙트 함수 호출
-      const tx = await contract[methodName](...params);
+      const fn = contract.getFunction(methodName);
+      console.log(...params, 'fn');
+      const tx = await fn(...params);
+      // const tx = await contract[methodName](...params);
       console.log(tx, 'tx');
 
       return await tx.wait();
