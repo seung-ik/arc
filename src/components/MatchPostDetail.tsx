@@ -9,10 +9,11 @@ import { useModal } from '@/hooks/useModal';
 import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import HtmlContent from './HtmlContent';
-import { MatchPost } from '@/types/post';
+import { MatchPostType } from '@/api/useCommunity';
+import { useApplyToMatchPostMutation } from '@/api/useMatch';
 
 interface MatchPostDetailProps {
-  post: MatchPost;
+  post: MatchPostType;
 }
 
 const JoinButton = styled.button`
@@ -62,28 +63,34 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
   const [isJoined, setIsJoined] = useState(false);
   const [comment, setComment] = useState('');
   const applicationModal = useModal();
+  const applyToMatchPost = useApplyToMatchPostMutation();
   console.log(post);
-  // Mock data - 실제로는 API에서 가져올 데이터
-  const [myApplication, setMyApplication] = useState<{
-    status: 'pending' | 'approved' | 'rejected';
-    comment: string;
-    date: string;
-  } | null>(null);
-  const totalApplications = 3; // Mock data
 
   const handleJoin = () => {
     applicationModal.openModal();
   };
 
   const handleSubmit = () => {
-    setIsJoined(true);
-    setMyApplication({
-      status: 'pending',
-      comment: comment,
-      date: new Date().toISOString().split('T')[0],
-    });
-    applicationModal.closeModal();
-    setComment('');
+    // 실제 API 호출로 매치 신청
+    applyToMatchPost.mutate(
+      {
+        postId: post.id,
+        message: comment,
+      },
+      {
+        onSuccess: response => {
+          console.log('매치 신청 응답:', response);
+          setIsJoined(true);
+
+          applicationModal.closeModal();
+          setComment('');
+        },
+        onError: error => {
+          console.error('매치 신청 실패:', error);
+          alert('매치 신청에 실패했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
   };
 
   const handleCancel = () => {
@@ -91,11 +98,10 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
     setComment('');
   };
 
-  const isExpired = (validityPeriod: string | number | undefined) => {
-    if (typeof validityPeriod === 'string') {
-      return parseInt(validityPeriod) <= 0;
-    }
-    return (validityPeriod || 0) <= 0;
+  const isExpired = (deadline: string) => {
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    return deadlineDate <= now;
   };
 
   const modalContent = (
@@ -115,20 +121,11 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
           authorName={post.author.nickname}
           date={post.createdAt}
           postType={post.type}
-          viewCount={post.viewCount}
+          viewCount={0} // 서버 데이터에 없으므로 기본값 사용
           authorProfileImage={post.author.profileImageUrl || undefined}
         />
 
-        <MatchInfo
-          elo={typeof post.elo === 'string' ? parseInt(post.elo) : post.elo}
-          location={post.location}
-          desiredSkillLevel={post.desiredSkillLevel}
-          validityPeriod={
-            typeof post.validityPeriod === 'string'
-              ? parseInt(post.validityPeriod)
-              : post.validityPeriod
-          }
-        />
+        <MatchInfo matchInfo={post.matchInfo} />
 
         <PostContent>
           <HtmlContent content={post.content} />
@@ -136,18 +133,18 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
 
         <JoinButton
           onClick={handleJoin}
-          disabled={isJoined || isExpired(post.validityPeriod || 0)}
+          disabled={isJoined || isExpired(post.matchInfo.deadline)}
         >
           {isJoined
             ? '참가 신청 완료'
-            : isExpired(post.validityPeriod || 0)
+            : isExpired(post.matchInfo.deadline)
               ? '마감된 매치'
               : '매치 참가하기'}
         </JoinButton>
 
         <MatchApplicationStatus
-          totalApplications={totalApplications}
-          myApplication={myApplication}
+          postId={post.id}
+          participants={post.participants}
         />
       </Content>
 

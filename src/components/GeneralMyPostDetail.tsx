@@ -60,6 +60,7 @@ export default function GeneralMyPostDetail({
 
         <PostActions post={post} />
 
+        <Comments postId={post.id} commentCount={post.commentCount} />
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>
           <ManagementButtons>
@@ -68,8 +69,6 @@ export default function GeneralMyPostDetail({
             </ManagementButton>
           </ManagementButtons>
         </ManagementSection>
-
-        <Comments postId={post.id} commentCount={post.commentCount} />
       </Content>
     </Container>
   );

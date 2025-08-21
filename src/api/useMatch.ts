@@ -255,6 +255,120 @@ export const createMatchHistoryFetcher = (
   };
 };
 
+// 매치 신청 관련 타입들
+export interface MatchRequestUser {
+  id: number;
+  walletUserId: string;
+  walletAddress: string;
+  nickname: string;
+  email: string;
+  createdAt: string;
+  tokenAmount: string;
+  availableToken: string;
+  profileImageUrl: string | null;
+  userElos: Array<{
+    id: number;
+    sportCategory: {
+      id: number;
+      name: string;
+      sortOrder: number;
+    };
+    eloPoint: number;
+    tier: string;
+    percentile: string;
+    wins: number;
+    losses: number;
+    draws: number;
+    totalMatches: number;
+  }>;
+}
+
+export interface MatchRequestPost {
+  id: number;
+  author: {
+    id: number;
+    walletUserId: string;
+    walletAddress: string;
+    nickname: string;
+    email: string;
+    createdAt: string;
+    tokenAmount: string;
+    availableToken: string;
+    profileImageUrl: string | null;
+  };
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  type: string;
+  isHidden: boolean;
+  viewCount: number;
+  imageUrls: string[];
+  matchLocation: string;
+  myElo: number;
+  preferredElo: string;
+  participantCount: number;
+  matchStatus: string;
+  deadline: string;
+  matchDate: string | null;
+}
+
+export interface MatchRequest {
+  id: number;
+  post: MatchRequestPost;
+  user: MatchRequestUser;
+  status: 'pending' | 'approved' | 'rejected';
+  message: string;
+  userElo: number | null;
+  respondedAt: string | null;
+  responseMessage: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateMatchRequestRequest {
+  postId: number;
+  message: string;
+}
+
+export interface CreateMatchRequestResponse {
+  success: boolean;
+  data: MatchRequest;
+  message: string;
+}
+
+export interface RespondToMatchRequestRequest {
+  postId: number;
+  action: 'accept' | 'reject';
+  responseMessage: string;
+}
+
+export interface RespondToMatchRequestResponse {
+  success: boolean;
+  data: {
+    id: number;
+    user: {
+      id: number;
+      walletUserId: string;
+      walletAddress: string;
+      nickname: string;
+      email: string;
+      createdAt: string;
+      tokenAmount: string;
+      availableToken: string;
+      profileImageUrl: string | null;
+    };
+    status: 'pending' | 'approved' | 'rejected';
+    message: string;
+    userElo: number | null;
+    respondedAt: string | null;
+    responseMessage: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+  message: string;
+}
+
 // 매치글 관련 타입들
 export interface MatchPostAuthor {
   id: number;
@@ -309,6 +423,60 @@ export interface MatchPostsResponse {
     totalPages: number;
   };
 }
+
+/**
+ * 매치글 참가 신청하기
+ * - 특정 매치글에 참가 신청을 보냄
+ * - 작성자가 승인/거절할 수 있음
+ */
+export const useApplyToMatchPostMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      data: CreateMatchRequestRequest
+    ): Promise<CreateMatchRequestResponse> => {
+      const response = await api.post('/match-posts/request', data);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('매치글 참가 신청 성공:', data);
+      // 매치글 상세 정보와 신청자 목록을 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ['match-post-detail'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+    onError: error => {
+      console.error('매치글 참가 신청 실패:', error);
+    },
+  });
+};
+
+/**
+ * 매치 신청 승인/거절하기
+ * - 글작성자가 참가 신청을 승인하거나 거절
+ * - 승인 시 참가자로 확정, 거절 시 신청 거부
+ */
+export const useRespondToMatchRequestMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      data: RespondToMatchRequestRequest
+    ): Promise<RespondToMatchRequestResponse> => {
+      const response = await api.post('/match-posts/respond', data);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('매치 신청 응답 성공:', data);
+      // 매치글 상세 정보와 신청자 목록을 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ['match-post-detail'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+    onError: error => {
+      console.error('매치 신청 응답 실패:', error);
+    },
+  });
+};
 
 // 매치글 목록 조회 훅
 export const useMatchPostsApi = (

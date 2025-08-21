@@ -526,8 +526,8 @@ export const ManagementSection = styled.div`
   background-color: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
-  padding: ${props => props.theme.spacing.lg};
-  margin-bottom: ${props => props.theme.spacing.lg};
+  padding: ${props => props.theme.spacing.md};
+  margin-top: ${props => props.theme.spacing.sm};
 `;
 
 export const ManagementTitle = styled.h3`

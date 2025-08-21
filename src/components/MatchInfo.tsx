@@ -11,52 +11,61 @@ import {
 } from '@/styles/PostDetailStyles';
 
 interface MatchInfoProps {
-  elo?: number;
-  location?: string;
-  desiredSkillLevel?: string;
-  validityPeriod?: number;
+  matchInfo: {
+    matchLocation: string;
+    myElo: number;
+    preferredElo: string;
+    status: string;
+    participantCount: number;
+    createdAt: string;
+    deadline: string;
+    matchDate: string;
+  };
 }
 
-export default function MatchInfo({
-  elo,
-  location,
-  desiredSkillLevel,
-  validityPeriod,
-}: MatchInfoProps) {
-  const getValidityText = (validityPeriod: number) => {
-    if (validityPeriod <= 0) return '유효기간 만료';
-    if (validityPeriod === 1) return '유효기간: 오늘까지';
-    return `유효기간: ${validityPeriod}일 남음`;
+export default function MatchInfo({ matchInfo }: MatchInfoProps) {
+  // deadline과 현재 시간을 비교하여 유효기간 계산
+  const getValidityText = () => {
+    const now = new Date();
+    const deadline = new Date(matchInfo.deadline);
+    const diffTime = deadline.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) return '유효기간 만료';
+    if (diffDays === 1) return '유효기간: 오늘까지';
+    return `유효기간: ${diffDays}일 남음`;
   };
 
   return (
     <>
-      {validityPeriod !== undefined && (
-        <ValidityPeriod>{getValidityText(validityPeriod)}</ValidityPeriod>
-      )}
+      <ValidityPeriod>{getValidityText()}</ValidityPeriod>
 
       <MatchInfoSection>
         <MatchInfoGrid>
-          {elo !== undefined && (
-            <MatchInfoItem>
-              <MatchInfoLabel>ELO</MatchInfoLabel>
-              <EloValue>{elo}</EloValue>
-            </MatchInfoItem>
-          )}
+          <MatchInfoItem>
+            <MatchInfoLabel>ELO</MatchInfoLabel>
+            <EloValue>{matchInfo.myElo}</EloValue>
+          </MatchInfoItem>
 
-          {location && (
-            <MatchInfoItem>
-              <MatchInfoLabel>위치</MatchInfoLabel>
-              <MatchInfoValue>{location}</MatchInfoValue>
-            </MatchInfoItem>
-          )}
+          <MatchInfoItem>
+            <MatchInfoLabel>위치</MatchInfoLabel>
+            <MatchInfoValue>{matchInfo.matchLocation}</MatchInfoValue>
+          </MatchInfoItem>
 
-          {desiredSkillLevel && (
-            <MatchInfoItem>
-              <MatchInfoLabel>희망 상대실력</MatchInfoLabel>
-              <MatchInfoValue>{desiredSkillLevel}</MatchInfoValue>
-            </MatchInfoItem>
-          )}
+          <MatchInfoItem>
+            <MatchInfoLabel>희망 상대실력</MatchInfoLabel>
+            <MatchInfoValue>{matchInfo.preferredElo}</MatchInfoValue>
+          </MatchInfoItem>
+
+          <MatchInfoItem>
+            <MatchInfoLabel>참가 인원</MatchInfoLabel>
+            <MatchInfoValue>{matchInfo.participantCount}명</MatchInfoValue>
+          </MatchInfoItem>
+
+          <MatchInfoItem>
+            <MatchInfoLabel>상태</MatchInfoLabel>
+            <MatchInfoValue>{matchInfo.status}</MatchInfoValue>
+          </MatchInfoItem>
         </MatchInfoGrid>
       </MatchInfoSection>
     </>

@@ -7,10 +7,10 @@ import CommunityPost from './CommunityPost';
 import MatchPostCard from './MatchPostCard';
 import BusinessBanner from './BusinessBanner';
 import CommunityLayout from './CommunityLayout';
-import { GeneralPost, MatchPost } from '@/types/post';
+import { GeneralPost } from '@/types/post';
 import PopularPosts from './PopularPosts';
 import LoadMoreButton from '@/components/LoadMoreButton';
-import type { HotPostItem } from '@/api/useCommunity';
+import type { HotPostItem, MatchPostType } from '@/api/useCommunity';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -71,11 +71,11 @@ export default function CommunityPageWrapper({
           <PostList>
             {posts && posts.length > 0 ? (
               posts.map((post: any) => {
-                if (post.type === '매치') {
+                if (post.type === '매치' || post.type === 'match') {
                   return (
                     <MatchPostCard
                       key={post.id}
-                      post={post as unknown as MatchPost}
+                      post={post as unknown as MatchPostType}
                     />
                   );
                 }

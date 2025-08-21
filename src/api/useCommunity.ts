@@ -602,6 +602,71 @@ export const useImageUploadMutation = () => {
   });
 };
 
+// 매치글 단일조회 타입들
+export interface MatchPostParticipant {
+  userId: number;
+  nickname: string;
+  profileImageUrl: string | null;
+  elo: number | null;
+  requestedAt: string;
+  message: string;
+}
+
+export interface MatchPostParticipants {
+  confirmed: MatchPostParticipant[];
+  pending: MatchPostParticipant[];
+  rejected: MatchPostParticipant[];
+}
+
+export interface MatchPostMatchInfo {
+  matchLocation: string;
+  myElo: number;
+  preferredElo: string;
+  status: string;
+  participantCount: number;
+  createdAt: string;
+  deadline: string;
+  matchDate: string;
+}
+
+export interface MatchPostType {
+  id: number;
+  title: string;
+  content: string;
+  type: string;
+  sportCategoryId: number;
+  author: {
+    id: number;
+    nickname: string;
+    profileImageUrl: string | null;
+  };
+  createdAt: string;
+  updatedAt: string;
+  matchInfo: MatchPostMatchInfo;
+  participants: MatchPostParticipants;
+}
+
+export interface MatchPostDetailResponse {
+  success: boolean;
+  data: MatchPostType;
+  message: string;
+}
+
+// 매치글 단일조회 훅
+export const useMatchPostDetailApi = (
+  postId: number,
+  enabled: boolean = true
+) => {
+  return useQuery({
+    queryKey: ['match-post-detail', postId],
+    queryFn: async (): Promise<MatchPostDetailResponse> => {
+      const response = await api.get(`/match-posts/${postId}`);
+      return response.data;
+    },
+    enabled: enabled && !!postId,
+  });
+};
+
 // 글 작성 검증 함수들
 export interface FormData {
   title: string;

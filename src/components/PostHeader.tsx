@@ -24,7 +24,7 @@ interface PostHeaderProps {
   authorName: string;
   date: string;
   postType: string;
-  viewCount: number;
+  viewCount?: number;
   authorProfileImage?: string;
 }
 
@@ -79,7 +79,7 @@ export default function PostHeader({
           <PostTypeBadge>{postType}</PostTypeBadge>
           <PostTitle>{title}</PostTitle>
         </PostTitleContainer>
-        <ViewCount>조회 {viewCount}</ViewCount>
+        {viewCount && <ViewCount>조회 {viewCount}</ViewCount>}
       </PostTitleRow>
     </PostHeaderStyled>
   );

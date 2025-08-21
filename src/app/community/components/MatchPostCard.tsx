@@ -3,11 +3,11 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { MatchPost } from '@/types/post';
 import { calculateValidityPeriod } from '../utils/matchUtils';
+import { MatchPostType } from '@/api/useCommunity';
 
 interface MatchPostCardProps {
-  post: MatchPost;
+  post: MatchPostType;
   onClick?: (postId: number) => void;
 }
 
@@ -92,7 +92,7 @@ const StatusText = styled.span`
 
 export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
   const router = useRouter();
-
+  console.log(post, '?????????');
   const handleClick = () => {
     if (onClick) {
       onClick(post.id);
@@ -103,11 +103,11 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
 
   // 상태 결정 (유효기간 기반)
   const getStatus = () => {
-    if (!post.validityPeriod) return '진행중';
+    if (!post.matchInfo.deadline) return '진행중';
 
     const validityText = calculateValidityPeriod(
       post.createdAt,
-      post.validityPeriod
+      post.matchInfo.deadline
     );
     if (validityText === '만료됨') {
       return '만료됨';
@@ -125,13 +125,15 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
           <MatchTag>매치</MatchTag>
           <MatchTitle>{post.title}</MatchTitle>
         </TitleSection>
-        {post.matchLocation && (
-          <LocationText>{post.matchLocation}</LocationText>
+        {post.matchInfo.matchLocation && (
+          <LocationText>{post.matchInfo.matchLocation}</LocationText>
         )}
       </MatchHeader>
 
       <MatchInfo>
-        {post.myElo && <EloBadge>ELO {post.myElo}</EloBadge>}
+        {post.matchInfo.myElo && (
+          <EloBadge>ELO {post.matchInfo.myElo}</EloBadge>
+        )}
         <StatusText>{status}</StatusText>
       </MatchInfo>
     </MatchContainer>
