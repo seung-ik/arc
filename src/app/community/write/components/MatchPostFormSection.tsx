@@ -162,11 +162,10 @@ export default function MatchPostFormSection({
               value={formData.preferredElo}
               onChange={e => onInputChange('preferredElo', e.target.value)}
             >
-              <option value="">실력 무관</option>
+              <option value="any">실력 무관</option>
               <option value="similar">비슷한 실력</option>
               <option value="higher">더 높은 실력</option>
               <option value="lower">더 낮은 실력</option>
-              <option value="any">모든 실력</option>
             </Select>
           </FormGroup>
         </TimeLocationRow>

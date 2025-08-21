@@ -225,7 +225,7 @@ function WritePostForm() {
     // 매치 관련 필드
     matchLocation: '',
     myElo: '',
-    preferredElo: '',
+    preferredElo: 'any',
     validityPeriod: '',
     participantCount: '', // 참가 인원 필드 추가
     customParticipantCount: '', // 직접 입력 필드 추가

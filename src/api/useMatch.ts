@@ -413,6 +413,12 @@ export interface MatchPostItem {
   matchDate: string | null;
 }
 
+export interface RecommendedMatchPostsResponse {
+  success: boolean;
+  data: MatchPostItem[];
+  message: string;
+}
+
 export interface MatchPostsResponse {
   success: boolean;
   data: {
@@ -475,6 +481,30 @@ export const useRespondToMatchRequestMutation = () => {
     onError: error => {
       console.error('매치 신청 응답 실패:', error);
     },
+  });
+};
+
+// 추천 매치글 목록 조회 훅
+export const useRecommendedMatchPostsApi = (
+  limit: number = 3,
+  sportCategoryId?: number,
+  enabled: boolean = true
+) => {
+  return useQuery({
+    queryKey: ['recommended-match-posts', limit, sportCategoryId],
+    queryFn: async (): Promise<RecommendedMatchPostsResponse> => {
+      const params = new URLSearchParams();
+      params.append('limit', limit.toString());
+      if (sportCategoryId) {
+        params.append('sport', sportCategoryId.toString());
+      }
+
+      const response = await api.get(
+        `/match-posts/recommended?${params.toString()}`
+      );
+      return response.data;
+    },
+    enabled,
   });
 };
 

@@ -79,7 +79,7 @@ export default function PostHeader({
           <PostTypeBadge>{postType}</PostTypeBadge>
           <PostTitle>{title}</PostTitle>
         </PostTitleContainer>
-        {viewCount && <ViewCount>조회 {viewCount}</ViewCount>}
+        {!!viewCount && <ViewCount>조회 {viewCount}</ViewCount>}
       </PostTitleRow>
     </PostHeaderStyled>
   );
