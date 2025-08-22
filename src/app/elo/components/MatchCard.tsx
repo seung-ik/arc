@@ -102,7 +102,6 @@ const DateTimeInfo = styled.div`
 `;
 
 export default function MatchCard({ post, onClick }: MatchCardProps) {
-  console.log(post);
   const router = useRouter();
 
   const handleClick = () => {

@@ -13,7 +13,7 @@ const NavigationContainer = styled.nav`
   right: 0;
   background-color: ${props => props.theme.colors.background};
   // border-top: 1px solid ${props => props.theme.colors.border};
-  z-index: 9999;
+  z-index: 1000;
   box-shadow: 0 -1px 0.5px rgba(0, 0, 0, 0.1);
   max-width: 768px;
   margin: 0 auto;

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { useModal } from '@/hooks/useModal';
 import MatchRegistrationModal from '@/components/MatchRegistrationModal';
+import ProjectIntroModal from '@/components/modals/ProjectIntroModal';
 import EloTabCards from '../components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import MatchCard from '../components/MatchCard';
@@ -83,6 +84,7 @@ const SectionTitle = styled.h2`
 export default function ManagementPage() {
   const router = useRouter();
   const registrationModal = useModal();
+  const projectIntroModal = useModal();
 
   // 추천 매치글 데이터 가져오기 (5개, 전체 스포츠 카테고리)
   const {
@@ -95,6 +97,10 @@ export default function ManagementPage() {
     router.push(`/community/post/${matchId}?type=match`);
   };
 
+  const handleAdBannerClick = () => {
+    projectIntroModal.openModal();
+  };
+
   return (
     <Container>
       <EloTabCards />
@@ -102,7 +108,7 @@ export default function ManagementPage() {
         title="기록은 온라인에, 경험은 오프라인에."
         description={`기록은 당신의 이야기를 남기고,\n보상은 더 넓은 경험으로 이어집니다.`}
         badge="할인"
-        onClick={() => alert('구장 예약 클릭')}
+        onClick={handleAdBannerClick}
       />
 
       <ContentContainer>
@@ -145,6 +151,11 @@ export default function ManagementPage() {
       <MatchRegistrationModal
         isOpen={registrationModal.isOpen}
         onClose={registrationModal.closeModal}
+      />
+
+      <ProjectIntroModal
+        isOpen={projectIntroModal.isOpen}
+        onClose={projectIntroModal.closeModal}
       />
     </Container>
   );
