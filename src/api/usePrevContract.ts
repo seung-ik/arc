@@ -9,6 +9,7 @@ interface LikeSignatureResponse {
     postId: number;
     encodedData: string; // 0x로 시작하는 hex 문자열
     contractAddress: string;
+    to: string;
   };
   message: string;
 }

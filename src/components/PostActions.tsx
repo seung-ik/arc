@@ -79,22 +79,18 @@ export default function PostActions({ post }: PostActionsProps) {
         onSuccess: async response => {
           console.log('컨트랙트 콜을 위한 데이터:', response);
 
-          // 토큰의 decimals 확인
           try {
             // 1 토큰을 wei 단위로 변환
             const { parseUnits } = await import('ethers');
             const oneToken = parseUnits('1', 18);
-            await executeContract(
+            const tx = await executeContract(
               'evmpolygon-amoy',
               response.data.contractAddress,
               response.data.contractABI,
               'transferAndCall(address,uint256,bytes)',
-              [
-                '0x3c94a51F408c6BFcEbB93b7716d496c0015b68ee',
-                oneToken.toString(),
-                response.data.encodedData,
-              ]
+              [response.data.to, oneToken.toString(), response.data.encodedData]
             );
+            console.log(tx, 'txResponse');
           } catch (error) {
             console.error('토큰 정보 조회 실패:', error);
           }

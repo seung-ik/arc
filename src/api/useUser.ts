@@ -68,6 +68,18 @@ interface ProfileResponse {
   userElos: UserElo[];
 }
 
+// 유저 토큰 정보 응답 타입
+interface UserTokensResponse {
+  success: boolean;
+  data: {
+    userId: number;
+    walletAddress: string;
+    totalTokens: string;
+    availableTokens: string;
+  };
+  message: string;
+}
+
 // 닉네임 수정 응답 타입
 interface InitNicknameResponse {
   success: boolean;
@@ -113,6 +125,15 @@ export const useUserPostsApi = (userId: number) => {
   return useQuery<MyPostsResponse>({
     queryKey: ['user-posts', userId],
     queryFn: () => api.get(`/users/${userId}/posts`).then(res => res.data),
+    enabled: !!userId,
+  });
+};
+
+// 유저 토큰 정보 조회
+export const useUserTokensApi = (userId: number) => {
+  return useQuery<UserTokensResponse>({
+    queryKey: ['user-tokens', userId],
+    queryFn: () => api.get(`/users/${userId}/tokens`).then(res => res.data),
     enabled: !!userId,
   });
 };

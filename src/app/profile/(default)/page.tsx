@@ -12,6 +12,7 @@ import { ROUTES } from '@/constants/routes';
 import FullPageLoading from '@/components/FullPageLoading';
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
+import { useQueryClient } from '@tanstack/react-query';
 import GameStatsGrid from '../components/GameStatsGrid';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
@@ -64,6 +65,7 @@ const ProfileRightCol = styled.div`
 
 export default function ProfilePage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
@@ -129,6 +131,9 @@ export default function ProfilePage() {
             ]
           );
           console.log('claimAllAccumulatedTokens success');
+
+          // 수확 완료 후 프로필 데이터 리패치하여 밸런스 업데이트
+          queryClient.refetchQueries({ queryKey: ['user-profile'] });
         },
         onError: () => {
           console.log('claimAllAccumulatedTokens error');
