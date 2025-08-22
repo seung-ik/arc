@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import MatchApplicationStatus from '@/components/MatchApplicationStatus';
 import MatchInfo from '@/components/MatchInfo';
 import PostHeader from '@/components/PostHeader';
@@ -12,17 +14,41 @@ import {
   ManagementButtons,
   ManagementButton,
 } from '@/styles/PostDetailStyles';
-import { MatchPostType } from '@/api/useCommunity';
 import HtmlContent from './HtmlContent';
+import { MatchPostData } from '@/types/post';
+import { useDeletePostMutation } from '@/api/useCommunity';
+import TwoButtonModal from './modals/TwoButtonModal';
+import { ROUTES } from '@/constants/routes';
 
 interface MatchMyPostDetailProps {
-  post: MatchPostType;
+  post: MatchPostData;
 }
 
 export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
-  console.log(post, 'myDetail');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const router = useRouter();
+  const deletePostMutation = useDeletePostMutation();
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deletePostMutation.mutateAsync(post.id);
+      router.push(ROUTES.community.root);
+    } catch (error) {
+      console.error('매치글 삭제 실패:', error);
+    } finally {
+      setShowDeleteModal(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+
+  console.log(post, 'myDetail');
 
   return (
     <Container>
@@ -53,12 +79,23 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
             <ManagementButton onClick={handleDelete} $variant="delete">
               삭제
             </ManagementButton>
-            <ManagementButton onClick={handleDelete} $variant="edit">
-              마감
-            </ManagementButton>
           </ManagementButtons>
         </ManagementSection>
       </Content>
+
+      {/* 삭제 확인 모달 */}
+      {showDeleteModal && (
+        <TwoButtonModal
+          isOpen={showDeleteModal}
+          onClose={cancelDelete}
+          title="매치글 삭제"
+          content="정말로 이 매치글을 삭제하시겠습니까? 삭제된 글은 복구할 수 없습니다."
+          confirmText="삭제"
+          cancelText="취소"
+          onSubmit={confirmDelete}
+          isLoading={deletePostMutation.isPending}
+        />
+      )}
     </Container>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { formatDate } from '@/utils';
 import {
   MatchInfoSection,
   MatchInfoGrid,
@@ -65,6 +66,13 @@ export default function MatchInfo({ matchInfo }: MatchInfoProps) {
           <MatchInfoItem>
             <MatchInfoLabel>상태</MatchInfoLabel>
             <MatchInfoValue>{matchInfo.status}</MatchInfoValue>
+          </MatchInfoItem>
+
+          <MatchInfoItem>
+            <MatchInfoLabel>매치 날짜</MatchInfoLabel>
+            <MatchInfoValue>
+              {matchInfo.matchDate ? formatDate(matchInfo.matchDate) : '미정'}
+            </MatchInfoValue>
           </MatchInfoItem>
         </MatchInfoGrid>
       </MatchInfoSection>

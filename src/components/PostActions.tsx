@@ -2,12 +2,12 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useLikePostMutation, useHatePostMutation } from '@/api/useCommunity';
+import { useWepin } from '@/contexts/WepinContext';
+import { useLikePostMutation, useHatePostMutation } from '@/api/useReaction';
 import { useLikeSignatureData } from '@/api/usePrevContract';
-import { GeneralPost } from '@/types/post';
+import { GeneralPostData } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
-import { useWepin } from '@/contexts/WepinContext';
 
 const PostActionsContainer = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -56,7 +56,7 @@ const ButtonCount = styled.span`
 `;
 
 interface PostActionsProps {
-  post: GeneralPost;
+  post: GeneralPostData;
 }
 
 export default function PostActions({ post }: PostActionsProps) {

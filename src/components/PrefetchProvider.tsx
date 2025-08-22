@@ -5,7 +5,7 @@ import { useSportCategoriesApi } from '@/api/useCommunity';
 import { useAuthStore } from '@/stores/authStore';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useEffect } from 'react';
-import { getCategoryPath } from '@/lib/utils/categoryPath';
+import { getCategoryPath } from '@/utils/categoryPath';
 
 // 스포츠 아이콘 매핑
 const getSportIcon = (sportName: string): string => {

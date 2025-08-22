@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import styled from 'styled-components';
 
 const TopRows = styled.div`
@@ -45,14 +46,11 @@ const AvatarWrapper = styled.div<{ $size: 'lg' | 'md' }>`
   }
   border-radius: 50%;
 `;
-const AvatarCircle = styled.div<{ $img?: string; $rank: number }>`
+const AvatarCircle = styled.div<{ $rank: number }>`
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background-color: ${props => props.theme.colors.backgroundGray};
-  background-image: ${props => (props.$img ? `url(${props.$img})` : 'none')};
-  background-size: cover;
-  background-position: center;
   border: 4px solid
     ${props =>
       props.$rank === 1
@@ -62,6 +60,8 @@ const AvatarCircle = styled.div<{ $img?: string; $rank: number }>`
           : props.$rank === 3
             ? '#CD7F32'
             : 'transparent'};
+  overflow: hidden;
+  position: relative;
 `;
 const RankBadge = styled.div<{ $rank: number }>`
   position: absolute;
@@ -129,7 +129,20 @@ export default function HighRankerSection({
         {top3.map(r => (
           <AvatarCard key={r.id} aria-label={`Top ${r.rank}`}>
             <AvatarWrapper $size="lg">
-              <AvatarCircle $img={r.avatarUrl} $rank={r.rank} />
+              <AvatarCircle $rank={r.rank}>
+                {r.avatarUrl && (
+                  <Image
+                    src={r.avatarUrl}
+                    alt={`${r.name}의 프로필 이미지`}
+                    fill
+                    sizes="(max-width: 768px) 72px, 112px"
+                    priority={r.rank <= 3}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                    style={{ objectFit: 'cover' }}
+                  />
+                )}
+              </AvatarCircle>
               <RankBadge $rank={r.rank}>{r.rank}</RankBadge>
             </AvatarWrapper>
             <Meta>
@@ -145,7 +158,19 @@ export default function HighRankerSection({
         {next4.map(r => (
           <AvatarCard key={r.id} aria-label={`Top ${r.rank}`}>
             <AvatarWrapper $size="md">
-              <AvatarCircle $img={r.avatarUrl} $rank={r.rank} />
+              <AvatarCircle $rank={r.rank}>
+                {r.avatarUrl && (
+                  <Image
+                    src={r.avatarUrl}
+                    alt={`${r.name}의 프로필 이미지`}
+                    fill
+                    sizes="(max-width: 768px) 52px, 84px"
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                    style={{ objectFit: 'cover' }}
+                  />
+                )}
+              </AvatarCircle>
               <RankBadge $rank={r.rank}>{r.rank}</RankBadge>
             </AvatarWrapper>
             <Meta>

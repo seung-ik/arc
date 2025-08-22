@@ -8,10 +8,11 @@ import EloTabCards from '../components/EloTabCards';
 import AdBanner from '@/components/AdBanner';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
-import { createMatchHistoryFetcher, MatchHistoryResult } from '@/api/useMatch';
+import { createMatchHistoryFetcher } from '@/api/useMatch';
 import React from 'react';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useInfinitePagination } from '@/hooks/useInfinitePagination';
+import { MatchHistoryResult } from '@/types/match';
 
 const FilterContainer = styled.div`
   display: flex;

@@ -5,22 +5,19 @@ import { useState, Suspense, useMemo, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import BottomNavigation from '@/components/BottomNavigation';
-
-import { getCategoryPath } from '@/lib/utils/categoryPath';
+import { getCategoryPath } from '@/utils/categoryPath';
 import {
   useCreatePostMutation,
   useCreateMatchPostMutation,
-  validateGeneralPost,
-  validateMatchPost,
-  validateMentorPost,
 } from '@/api/useCommunity';
+import { validateGeneralPost, validateMatchPost } from '@/utils';
 import { useCommunityStore } from '@/stores/communityStore';
 import dynamic from 'next/dynamic';
 import MatchPostFormSection from './components/MatchPostFormSection';
-import MentorPostFormSection from './components/MentorPostFormSection';
 import ShortContentInput from './components/ShortContentInput';
 import CancelConfirmModal from '@/components/modals/CancelConfirmModal';
 import { useImageUploadMutation } from '@/api/useCommunity';
+import { PostFormData } from '@/types/post';
 
 const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {
   ssr: false,
@@ -162,7 +159,6 @@ const TopFormGroup = styled.div`
 const POST_TYPES = [
   { value: '일반', label: '일반' },
   { value: '매치', label: '매치' },
-  // { value: '멘토', label: '멘토' },
 ];
 
 function WritePostForm() {
@@ -212,13 +208,11 @@ function WritePostForm() {
     }
   }, [categoryParam, categories, mappedCategory]);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PostFormData>({
     title: '',
     content: '',
     postType: '일반',
     category: '',
-    sport: '',
-    customSport: '',
     elo: '',
     location: '',
     tokenReward: '',
@@ -226,7 +220,6 @@ function WritePostForm() {
     matchLocation: '',
     myElo: '',
     preferredElo: 'any',
-    validityPeriod: '',
     participantCount: '', // 참가 인원 필드 추가
     customParticipantCount: '', // 직접 입력 필드 추가
     matchDate: '', // 매치 날짜 필드 추가
@@ -287,9 +280,6 @@ function WritePostForm() {
         break;
       case '매치':
         handleMatchSubmit();
-        break;
-      case '멘토':
-        handleMentorSubmit();
         break;
       default:
         alert('올바른 글 타입을 선택해주세요.');
@@ -365,30 +355,6 @@ function WritePostForm() {
     });
   };
 
-  const handleMentorSubmit = () => {
-    // 멘토 글 검증
-    if (!validateMentorPost(formData)) {
-      return;
-    }
-
-    // 멘토 글 작성
-    const mentorData = {
-      title: formData.title,
-      content: formData.content,
-      postType: formData.postType,
-      category: formData.category,
-      sport:
-        formData.sport === '직접입력' ? formData.customSport : formData.sport,
-      elo: formData.elo,
-      location: formData.location,
-      tokenReward: formData.tokenReward,
-    };
-
-    console.log('멘토 글 작성:', mentorData);
-    // TODO: 멘토 글 API 호출
-    navigateToCategory();
-  };
-
   const navigateToCategory = () => {
     // 작성 완료 후 해당 카테고리 페이지로 이동
     const categoryName = categories.filter(
@@ -426,8 +392,6 @@ function WritePostForm() {
       throw error;
     }
   };
-
-  console.log(formData);
 
   return (
     <Container>
@@ -478,14 +442,6 @@ function WritePostForm() {
               </Select>
             </FormGroup>
           </TopFormGroup>
-
-          {formData.postType === '멘토' && (
-            <MentorPostFormSection
-              formData={formData}
-              onInputChange={handleInputChange}
-              categories={categories}
-            />
-          )}
 
           {formData.postType === '매치' && (
             <MatchPostFormSection

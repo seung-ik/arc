@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { MatchResult } from '@/api/useMatch';
+import { MatchResult } from '@/types/match';
 import MatchRow from './MatchRow';
 
 interface MatchManagementProps {

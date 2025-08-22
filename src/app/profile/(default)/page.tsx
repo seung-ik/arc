@@ -108,9 +108,7 @@ export default function ProfilePage() {
   const handleHarvestAll = () => {
     console.log('handleHarvest', userProfile.walletAddress, harvestableTokens);
     claimAllAccumulatedTokens.mutate(
-      {
-        address: userProfile.walletAddress,
-      },
+      { address: userProfile.walletAddress },
       {
         onSuccess: async response => {
           console.log(response);

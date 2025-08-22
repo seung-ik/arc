@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { formatDate, formatRelativeTime } from '@/utils';
+import { ReplyData } from '@/types/comment';
 
 import styled from 'styled-components';
 
@@ -70,19 +71,8 @@ const ReplyAuthor = styled.span`
   }
 `;
 
-interface Reply {
-  id: number;
-  authorId: string;
-  authorName: string;
-  content: string;
-  date: string;
-  parentId?: number;
-  likeCount: number;
-  isLiked: boolean;
-}
-
 interface ReplyListProps {
-  replies: Reply[];
+  replies: ReplyData[];
   onDeleteReply?: (replyId: number) => void;
 }
 
@@ -98,8 +88,8 @@ export default function ReplyList({ replies, onDeleteReply }: ReplyListProps) {
     }
   };
 
-  const isMyReply = (reply: Reply) => {
-    return reply.authorId === userProfile.id.toString();
+  const isMyReply = (reply: ReplyData) => {
+    return reply.user.id.toString() === userProfile.id.toString();
   };
 
   const handleAuthorClick = (authorId: string) => {
@@ -109,17 +99,23 @@ export default function ReplyList({ replies, onDeleteReply }: ReplyListProps) {
   return (
     <RepliesContainer>
       {replies
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )
         .map(reply => (
           <ReplyItem key={reply.id}>
             <ReplyItemFooter>
               <ReplyMeta>
                 <ReplyDate>
-                  {formatDate(reply.date)} ({formatRelativeTime(reply.date)})
+                  {formatDate(reply.createdAt)} (
+                  {formatRelativeTime(reply.createdAt)})
                 </ReplyDate>
                 <span>/</span>
-                <ReplyAuthor onClick={() => handleAuthorClick(reply.authorId)}>
-                  {reply.authorName}
+                <ReplyAuthor
+                  onClick={() => handleAuthorClick(reply.user.id.toString())}
+                >
+                  {reply.user.nickname || '익명'}
                 </ReplyAuthor>
               </ReplyMeta>
             </ReplyItemFooter>

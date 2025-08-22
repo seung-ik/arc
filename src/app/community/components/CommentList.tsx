@@ -3,21 +3,10 @@
 import { useState, useEffect } from 'react';
 import { CommentList as CommentListContainer } from '@/styles/PostDetailStyles';
 import CommentItem from './CommentItem';
-
-interface Comment {
-  id: number;
-  authorId: string;
-  authorName: string;
-  content: string;
-  date: string;
-  parentId?: number;
-  replies?: Comment[];
-  likeCount: number;
-  isLiked: boolean;
-}
+import { CommentData } from '@/types/comment';
 
 interface CommentListProps {
-  comments: Comment[];
+  comments: CommentData[];
   onReplySubmit?: (commentId: number, content: string) => void;
   onDeleteComment?: (commentId: number) => void;
 }
@@ -27,7 +16,7 @@ export default function CommentList({
   onReplySubmit,
   onDeleteComment,
 }: CommentListProps) {
-  const [localComments, setLocalComments] = useState<Comment[]>(comments);
+  const [localComments, setLocalComments] = useState<CommentData[]>(comments);
 
   // Update local comments when props change
   useEffect(() => {

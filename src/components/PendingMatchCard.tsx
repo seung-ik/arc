@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import React from 'react';
-import { MatchResult } from '@/api/useMatch';
+import { MatchResult } from '@/types/match';
 import { useTimer } from '@/hooks/useTimer';
 
 // 시계형 원형 프로그레스 바 컴포넌트

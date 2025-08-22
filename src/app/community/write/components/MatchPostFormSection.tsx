@@ -1,17 +1,10 @@
 'use client';
 
+import { PostFormData } from '@/types/post';
 import styled from 'styled-components';
 
 interface MatchPostFormSectionProps {
-  formData: {
-    matchLocation: string;
-    myElo: string;
-    preferredElo: string;
-    validityPeriod: string;
-    participantCount: string; // 참가 인원 필드 추가
-    customParticipantCount?: string; // 직접 입력 필드 추가
-    matchDate?: string; // 매치 날짜 필드 추가
-  };
+  formData: PostFormData;
   onInputChange: (field: string, value: string) => void;
 }
 

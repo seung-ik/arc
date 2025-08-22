@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { useLikeCommentMutation } from '@/api/useCommunity';
+import { useLikeCommentMutation } from '@/api/useReaction';
 import ReplyForm from './ReplyForm';
 import ReplyList from './ReplyList';
 import { formatDate, formatRelativeTime } from '@/utils';
 import styled from 'styled-components';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { CommentData } from '@/types/comment';
 
 const CommentItemContainer = styled.div`
   padding: ${props => props.theme.spacing.md};
@@ -121,20 +122,8 @@ const DeleteButtonWrapper = styled.div`
   margin-top: 8px;
 `;
 
-interface Comment {
-  id: number;
-  authorId: string;
-  authorName: string;
-  content: string;
-  date: string;
-  parentId?: number;
-  replies?: Comment[];
-  likeCount: number;
-  isLiked: boolean;
-}
-
 interface CommentItemProps {
-  comment: Comment;
+  comment: CommentData;
   onReplySubmit?: (commentId: number, content: string) => void;
   onDeleteComment?: (commentId: number) => void;
 }
@@ -153,8 +142,7 @@ export default function CommentItem({
     comment.likeCount
   );
 
-  const [localIsLiked, setLocalIsLiked] = useState<boolean>(comment.isLiked);
-  console.log(localIsLiked, comment);
+  const [localIsLiked, setLocalIsLiked] = useState<boolean>(false); // 서버에서 제공하지 않으므로 기본값
   const handleCommentLike = () => {
     likeCommentMutation.mutate(comment.id, {
       onSuccess: data => {
@@ -175,7 +163,7 @@ export default function CommentItem({
 
   // 헬퍼 함수들
   const hasReplies = !!(comment.replies && comment.replies.length > 0);
-  const isMyComment = comment.authorId === userProfile.id.toString();
+  const isMyComment = comment.user.id.toString() === userProfile.id.toString();
 
   const getReplyButtonText = (): string => {
     if (!hasReplies) return '답글';
@@ -204,12 +192,15 @@ export default function CommentItem({
     <CommentItemContainer>
       <CommentHeader>
         <CommentMeta>
-          <CommentAuthor onClick={() => handleAuthorClick(comment.authorId)}>
-            {comment.authorName}
+          <CommentAuthor
+            onClick={() => handleAuthorClick(comment.user.id.toString())}
+          >
+            {comment.user.nickname || '익명'}
           </CommentAuthor>
           <span>/</span>
           <CommentDate>
-            {formatDate(comment.date)} ({formatRelativeTime(comment.date)})
+            {formatDate(comment.createdAt)} (
+            {formatRelativeTime(comment.createdAt)})
           </CommentDate>
         </CommentMeta>
         <CommentActions>

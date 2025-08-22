@@ -4,11 +4,11 @@ import PostHeader from '@/components/PostHeader';
 import PostActions from '@/components/PostActions';
 import Comments from '@/app/community/components/Comments';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-import { GeneralPost } from '@/types/post';
+import { GeneralPostData } from '@/types/post';
 import HtmlContent from './HtmlContent';
 
 interface GeneralPostDetailProps {
-  post: GeneralPost;
+  post: GeneralPostData;
 }
 
 export default function GeneralPostDetail({ post }: GeneralPostDetailProps) {

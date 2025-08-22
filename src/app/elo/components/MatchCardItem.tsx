@@ -7,7 +7,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 
-import type { MatchHistoryResult } from '@/api/useMatch';
+import type { MatchHistoryResult } from '@/types/match';
 
 interface MatchCardItemProps {
   match: MatchHistoryResult;

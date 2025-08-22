@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { MatchResult, useHandleMatchRequestMutation } from '@/api/useMatch';
+import { useHandleMatchRequestMutation } from '@/api/useMatch';
+import { MatchResult } from '@/types/match';
 import { useTimer } from '@/hooks/useTimer';
 import TwoButtonModal from './modals/TwoButtonModal';
 

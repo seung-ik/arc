@@ -5,7 +5,7 @@ import { useState } from 'react';
 import PostHeader from '@/components/PostHeader';
 import MentorApplicationList from '@/components/MentorApplicationList';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-import { MentorPost } from '@/types/post';
+import { MentorPostData } from '@/types/post';
 import HtmlContent from './HtmlContent';
 import PostInfoSection from './PostInfoSection';
 
@@ -20,7 +20,7 @@ interface MentorApplication {
 }
 
 interface MentorMyPostDetailProps {
-  post: MentorPost;
+  post: MentorPostData;
 }
 
 const ManagementSection = styled.div`

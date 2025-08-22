@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { MatchPostItem } from '@/api/useMatch';
+import { MatchPostItem } from '@/types/match';
 import Image from 'next/image';
 import { BUSINESS_IMAGES } from '@/assets';
 

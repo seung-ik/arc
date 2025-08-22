@@ -3,20 +3,23 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { calculateValidityPeriod } from '../utils/matchUtils';
-import { MatchPostType } from '@/api/useCommunity';
+import { calculateValidityPeriod } from '@/utils';
+import { MatchPostData } from '@/types/post';
 
 interface MatchPostCardProps {
-  post: MatchPostType;
+  post: MatchPostData;
   onClick?: (postId: number) => void;
 }
 
 // 기존 커뮤니티 페이지용 세로형 레이아웃
 const MatchContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: ${props => props.theme.spacing.md} 0;
   border-bottom: 1px solid ${props => props.theme.colors.borderLight};
   cursor: pointer;
   transition: background-color 0.2s;
+  gap: ${props => props.theme.spacing.sm};
 
   &:hover {
     background-color: ${props => props.theme.colors.backgroundGray};
@@ -92,7 +95,6 @@ const StatusText = styled.span`
 
 export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
   const router = useRouter();
-  console.log(post, '?????????');
   const handleClick = () => {
     if (onClick) {
       onClick(post.id);
@@ -125,15 +127,16 @@ export default function MatchPostCard({ post, onClick }: MatchPostCardProps) {
           <MatchTag>매치</MatchTag>
           <MatchTitle>{post.title}</MatchTitle>
         </TitleSection>
-        {post.matchInfo.matchLocation && (
-          <LocationText>{post.matchInfo.matchLocation}</LocationText>
+        {post.matchInfo.myElo && (
+          <EloBadge>ELO {post.matchInfo.myElo}</EloBadge>
         )}
       </MatchHeader>
 
       <MatchInfo>
-        {post.matchInfo.myElo && (
-          <EloBadge>ELO {post.matchInfo.myElo}</EloBadge>
+        {post.matchInfo.matchLocation && (
+          <LocationText>장소: {post.matchInfo.matchLocation}</LocationText>
         )}
+
         <StatusText>{status}</StatusText>
       </MatchInfo>
     </MatchContainer>

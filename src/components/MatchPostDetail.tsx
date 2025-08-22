@@ -9,11 +9,11 @@ import { useModal } from '@/hooks/useModal';
 import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import HtmlContent from './HtmlContent';
-import { MatchPostType } from '@/api/useCommunity';
 import { useApplyToMatchPostMutation } from '@/api/useMatch';
+import { MatchPostData } from '@/types/post';
 
 interface MatchPostDetailProps {
-  post: MatchPostType;
+  post: MatchPostData;
 }
 
 const JoinButton = styled.button`

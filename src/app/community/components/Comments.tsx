@@ -1,22 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import { CommentData, ReplyData } from '@/types/comment';
 import {
   useCreateCommentMutation,
   useCreateReplyMutation,
   useCommentsApi,
   useDeleteCommentMutation,
-} from '@/api/useCommunity';
+} from '@/api/useComment';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
-import { Comment, normalizeApiComments } from '@/utils/commentUtils';
 import {
   CommentsSection,
   CommentsHeader,
   CommentsDivider,
 } from '@/styles/PostDetailStyles';
 import React from 'react';
-import { useAuthStore } from '@/stores/authStore';
 
 interface CommentsProps {
   postId: number;
@@ -28,19 +28,24 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
   const createReplyMutation = useCreateReplyMutation();
   const deleteCommentMutation = useDeleteCommentMutation();
   const { data: commentsData } = useCommentsApi(postId);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentData[]>([]);
   const { userProfile } = useAuthStore();
 
   // Handle successful comment creation
   const handleCommentSuccess = (data: any) => {
-    const newCommentItem: Comment = {
+    const newCommentItem: CommentData = {
       id: data.data.id,
-      authorId: userProfile.id.toString(),
-      authorName: userProfile.nickname || '사용자',
       content: data.data.content,
-      date: data.data.createdAt,
+      createdAt: data.data.createdAt,
+      updatedAt: data.data.createdAt, // createdAt과 동일하게 설정
+      user: {
+        id: userProfile.id,
+        nickname: userProfile.nickname,
+        profileImageUrl: userProfile.profileImageUrl,
+      },
+      postId: postId, // postId prop 사용
+      replies: [],
       likeCount: data.data.likeCount,
-      isLiked: false,
     };
 
     setComments(prev => [newCommentItem, ...prev]);
@@ -82,15 +87,16 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
         onSuccess: data => {
           console.log(data);
           // Add the new reply to the state immediately
-          const newReply: Comment = {
+          const newReply: ReplyData = {
             id: data.data.id,
-            authorId: data.data.user.id.toString(),
-            authorName: data.data.user.nickname,
             content: data.data.content,
-            date: data.data.createdAt,
-            parentId: parentCommentId,
-            likeCount: 0, // API 응답에 likeCount가 없으므로 기본값 사용
-            isLiked: false,
+            createdAt: data.data.createdAt,
+            updatedAt: data.data.createdAt,
+            user: {
+              id: data.data.user.id,
+              nickname: data.data.user.nickname,
+              profileImageUrl: data.data.user.profileImageUrl,
+            },
           };
 
           setComments(prev =>
@@ -110,8 +116,8 @@ export default function Comments({ postId, commentCount }: CommentsProps) {
 
   useEffect(() => {
     if (commentsData?.data) {
-      const normalizedComments = normalizeApiComments(commentsData.data);
-      setComments(normalizedComments);
+      const comments = commentsData.data;
+      setComments(comments);
     }
   }, [commentsData]);
 

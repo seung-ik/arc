@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 import { useCommunityStore } from '@/stores/communityStore';
-import { generateCategories } from '@/lib/utils/categoryUtils';
+import { generateCategories } from '@/utils/categoryUtils';
 
 const HeaderContainer = styled.div`
   background-color: ${props => props.theme.colors.background};

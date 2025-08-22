@@ -5,12 +5,12 @@ import { useState } from 'react';
 import PostHeader from '@/components/PostHeader';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import HtmlContent from './HtmlContent';
-import { MentorPost } from '@/types/post';
+import { MentorPostData } from '@/types/post';
 import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import PostInfoSection from './PostInfoSection';
 
 interface MentorPostDetailProps {
-  post: MentorPost;
+  post: MentorPostData;
 }
 
 interface MentorApplication {

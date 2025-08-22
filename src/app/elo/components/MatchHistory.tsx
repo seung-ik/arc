@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import NoData from '@/components/NoData';
 import MatchCardItem from './MatchCardItem';
 import LoadMoreButton from '@/components/LoadMoreButton';
-import { MatchHistoryResult } from '@/api/useMatch';
+import { MatchHistoryResult } from '@/types/match';
 
 interface MatchHistoryProps {
   matches: MatchHistoryResult[];

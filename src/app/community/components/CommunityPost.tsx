@@ -3,12 +3,12 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { GeneralPost } from '@/types/post';
+import { GeneralPostData } from '@/types/post';
 import HtmlContent from '@/components/HtmlContent';
 import { formatDate, formatRelativeTime } from '@/utils';
 
 interface CommunityPostProps {
-  post: GeneralPost;
+  post: GeneralPostData;
   onClick?: (postId: number) => void;
 }
 
@@ -136,7 +136,7 @@ export default function CommunityPost({ post, onClick }: CommunityPostProps) {
   return (
     <PostContainer onClick={handleClick}>
       <PostHeader>
-        <CategoryTag $type={post.type}>{post.type}</CategoryTag>
+        <CategoryTag $type={post.type}>일반</CategoryTag>
         <PostTitle>{titleWithComments}</PostTitle>
       </PostHeader>
 

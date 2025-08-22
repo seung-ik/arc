@@ -7,10 +7,9 @@ import CommunityPost from './CommunityPost';
 import MatchPostCard from './MatchPostCard';
 import BusinessBanner from './BusinessBanner';
 import CommunityLayout from './CommunityLayout';
-import { GeneralPost } from '@/types/post';
 import PopularPosts from './PopularPosts';
 import LoadMoreButton from '@/components/LoadMoreButton';
-import type { HotPostItem, MatchPostType } from '@/api/useCommunity';
+import { GeneralPostData, HotPostItem, MatchPostData } from '@/types/post';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -75,7 +74,7 @@ export default function CommunityPageWrapper({
                   return (
                     <MatchPostCard
                       key={post.id}
-                      post={post as unknown as MatchPostType}
+                      post={post as unknown as MatchPostData}
                     />
                   );
                 }
@@ -83,12 +82,12 @@ export default function CommunityPageWrapper({
                   return (
                     <CommunityPost
                       key={post.id}
-                      post={post as unknown as GeneralPost}
+                      post={post as unknown as GeneralPostData}
                     />
                   );
                 }
                 return (
-                  <CommunityPost key={post.id} post={post as GeneralPost} />
+                  <CommunityPost key={post.id} post={post as GeneralPostData} />
                 );
               })
             ) : (

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { HotPostItem } from '@/api/useCommunity';
 import HtmlContent from '@/components/HtmlContent';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { HotPostItem } from '@/types/post';
 
 interface PopularPostsProps {
   posts: HotPostItem[];

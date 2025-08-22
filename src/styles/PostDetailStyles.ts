@@ -528,6 +528,9 @@ export const ManagementSection = styled.div`
   border-radius: ${props => props.theme.borderRadius.lg};
   padding: ${props => props.theme.spacing.md};
   margin-top: ${props => props.theme.spacing.sm};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export const ManagementTitle = styled.h3`

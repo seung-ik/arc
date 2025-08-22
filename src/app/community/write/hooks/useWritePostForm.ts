@@ -3,9 +3,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCreatePostMutation } from '@/api/useCommunity';
 import { useCommunityStore } from '@/stores/communityStore';
-import { getCategoryPath } from '@/lib/utils/categoryPath';
+import { getCategoryPath } from '@/utils/categoryPath';
 
-interface FormData {
+interface WritePostFormData {
   title: string;
   content: string;
   postType: string;
@@ -68,7 +68,7 @@ export function useWritePostForm() {
     }
   }, [categoryParam, categories, mappedCategory]);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<WritePostFormData>({
     title: '',
     content: '',
     postType: '일반',

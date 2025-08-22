@@ -12,7 +12,8 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 import MatchRequestTabs from '@/components/MatchRequestTabs';
-import { useRecommendedMatchPostsApi, MatchPostItem } from '@/api/useMatch';
+import { useRecommendedMatchPostsApi } from '@/api/useMatch';
+import { MatchPostItem } from '@/types/match';
 
 const Container = styled.div`
   min-height: 100vh;
