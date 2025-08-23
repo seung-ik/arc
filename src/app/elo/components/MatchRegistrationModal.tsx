@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import TwoButtonModal from './modals/TwoButtonModal';
+import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useCreateMatchResultMutation } from '@/api/useMatch';
 import { useCheckNickname } from '@/api/useUser';

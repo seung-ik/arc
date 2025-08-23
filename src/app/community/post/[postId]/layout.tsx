@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import BottomNavigation from '@/components/BottomNavigation';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 
 const LayoutContainer = styled.div`
   min-height: 100vh;

@@ -3,13 +3,11 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
 import ProfileHeader from '@/app/profile/components/ProfileHeader';
-import TokenDisplay from '@/components/TokenDisplay';
+import TokenDisplay from '@/components/views/TokenDisplay';
 import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
 import { ROUTES } from '@/constants/routes';
-import FullPageLoading from '@/components/FullPageLoading';
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
@@ -18,6 +16,7 @@ import Image from 'next/image';
 import { ICONS } from '@/assets';
 import { useClaimAllAccumulatedTokens } from '@/api/usePrevContract';
 import { useWepin } from '@/contexts/WepinContext';
+import FullPageLoading from '@/components/layout/FullPageLoading';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -173,9 +172,7 @@ export default function ProfilePage() {
     }
   }, [profileData, setProfile, setUserElos]);
 
-  if (isLoading) {
-    return <FullPageLoading />;
-  }
+  if (isLoading) return <FullPageLoading />;
 
   return (
     <Container>

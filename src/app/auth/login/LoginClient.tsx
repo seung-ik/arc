@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { useWepin } from '@/contexts/WepinContext';
 import { ROUTES } from '@/constants/routes';
-import FullPageLoading from '@/components/FullPageLoading';
 import { useLoginApi } from '@/api/useAuth';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogoutAll } from '@/hooks/useLogoutAll';
 import { IMAGES } from '@/assets';
 import Image from 'next/image';
+import FullPageLoading from '@/components/layout/FullPageLoading';
 
 const LoginContainer = styled.div`
   min-height: 100vh;

@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import BottomNavigation from '@/components/BottomNavigation';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import ProfileHeader from '@/app/profile/components/ProfileHeader';
 import GameStatsGrid from '@/app/profile/components/GameStatsGrid';
 import ProfilePostList from '@/app/profile/components/ProfilePostList';

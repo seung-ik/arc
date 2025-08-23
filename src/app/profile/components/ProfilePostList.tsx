@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { MyPost } from '@/api/useUser';
-import HtmlContent from '../../../components/HtmlContent';
-import NoData from '@/components/NoData';
+import HtmlContent from '../../../components/inputs/HtmlContent';
+import NoData from '@/components/views/NoData';
 
 interface ProfilePostListProps {
   posts: MyPost[];

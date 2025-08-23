@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import PostHeader from '@/components/PostHeader';
+import PostHeader from '@/app/community/components/PostHeader';
 import {
   Container,
   Content,
@@ -14,8 +14,8 @@ import {
 import { GeneralPostData } from '@/types/post';
 import Comments from '@/app/community/components/Comments';
 import { useDeletePostMutation } from '@/api/useCommunity';
-import HtmlContent from './HtmlContent';
-import PostActions from './PostActions';
+import HtmlContent from '@/components/inputs/HtmlContent';
+import PostActions from '@/app/community/components/PostActions';
 
 interface GeneralMyPostDetailProps {
   post: GeneralPostData;

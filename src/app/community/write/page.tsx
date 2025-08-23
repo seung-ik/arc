@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useState, Suspense, useMemo, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import BottomNavigation from '@/components/BottomNavigation';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import { getCategoryPath } from '@/utils/categoryPath';
 import {
   useCreatePostMutation,
@@ -19,7 +19,7 @@ import CancelConfirmModal from '@/components/modals/CancelConfirmModal';
 import { useImageUploadMutation } from '@/api/useCommunity';
 import { PostFormData } from '@/types/post';
 
-const ToastEditor = dynamic(() => import('@/components/ToastEditor'), {
+const ToastEditor = dynamic(() => import('@/components/inputs/ToastEditor'), {
   ssr: false,
 });
 

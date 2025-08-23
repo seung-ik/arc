@@ -5,7 +5,7 @@ import { useState, useCallback } from 'react';
 import { debounce } from 'lodash';
 import MatchHistory from '../components/MatchHistory';
 import EloTabCards from '../components/EloTabCards';
-import AdBanner from '@/components/AdBanner';
+import AdBanner from '@/components/banners/AdBanner';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
 import { createMatchHistoryFetcher } from '@/api/useMatch';

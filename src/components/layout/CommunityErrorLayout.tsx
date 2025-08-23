@@ -4,8 +4,8 @@ import React from 'react';
 import styled from 'styled-components';
 import CategoryTabs from '@/app/community/components/CategoryTabs';
 import CommunityLayout from '@/app/community/components/CommunityLayout';
-import BottomNavigation from '@/components/BottomNavigation';
-import ErrorPage from '@/components/ErrorPage';
+import BottomNavigation from '@/components/layout/BottomNavigation';
+import ErrorPage from '@/components/layout/ErrorPage';
 
 const Container = styled.div`
   min-height: 100vh;

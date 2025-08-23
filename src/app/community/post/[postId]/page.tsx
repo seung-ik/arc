@@ -2,19 +2,20 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
-import BottomNavigation from '@/components/BottomNavigation';
-import PostDetailHeader from '@/components/PostDetailHeader';
-import FullPageLoading from '@/components/FullPageLoading';
-import GeneralPostDetail from '@/components/GeneralPostDetail';
-import GeneralMyPostDetail from '@/components/GeneralMyPostDetail';
-import MatchPostDetail from '@/components/MatchPostDetail';
-import MatchMyPostDetail from '@/components/MatchMyPostDetail';
-import MentorPostDetail from '@/components/MentorPostDetail';
-import MentorMyPostDetail from '@/components/MentorMyPostDetail';
+import BottomNavigation from '@/components/layout/BottomNavigation';
+import PostDetailHeader from '@/app/community/components/PostDetailHeader';
+
 import { GeneralPostData, MatchPostData, MentorPostData } from '@/types/post';
 import { usePostDetailApi, useMatchPostDetailApi } from '@/api/useCommunity';
 import { useAuthStore } from '@/stores/authStore';
 import CommunityLayout from '../../components/CommunityLayout';
+import GeneralMyPostDetail from '../../components/GeneralMyPostDetail';
+import GeneralPostDetail from '../../components/GeneralPostDetail';
+import FullPageLoading from '@/components/layout/FullPageLoading';
+import MatchMyPostDetail from '../../components/MatchMyPostDetail';
+import MentorMyPostDetail from '../../components/MentorMyPostDetail';
+import MatchPostDetail from '../../components/MatchPostDetail';
+import MentorPostDetail from '../../components/MentorPostDetail';
 
 const Container = styled.div`
   min-height: 100vh;

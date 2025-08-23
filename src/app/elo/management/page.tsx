@@ -3,17 +3,17 @@
 import styled from 'styled-components';
 
 import { useModal } from '@/hooks/useModal';
-import MatchRegistrationModal from '@/components/MatchRegistrationModal';
 import ProjectIntroModal from '@/components/modals/ProjectIntroModal';
 import EloTabCards from '../components/EloTabCards';
-import AdBanner from '@/components/AdBanner';
+import AdBanner from '@/components/banners/AdBanner';
 import MatchCard from '../components/MatchCard';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
-import MatchRequestTabs from '@/components/MatchRequestTabs';
 import { useRecommendedMatchPostsApi } from '@/api/useMatch';
 import { MatchPostItem } from '@/types/match';
+import MatchRequestTabs from '../components/MatchRequestTabs';
+import MatchRegistrationModal from '../components/MatchRegistrationModal';
 
 const Container = styled.div`
   min-height: 100vh;

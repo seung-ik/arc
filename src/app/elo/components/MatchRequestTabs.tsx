@@ -2,12 +2,13 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import PendingMatchCard from './PendingMatchCard';
-import MatchManagement from './MatchManagement';
+
 import {
   useSentMatchResultsApi,
   useReceivedMatchResultsApi,
 } from '@/api/useMatch';
+import PendingMatchCard from './PendingMatchCard';
+import MatchManagement from './MatchManagement';
 
 const MatchRequestSection = styled.div`
   margin: ${props => props.theme.spacing.md} 0;

@@ -8,7 +8,7 @@ import MatchPostCard from './MatchPostCard';
 import BusinessBanner from './BusinessBanner';
 import CommunityLayout from './CommunityLayout';
 import PopularPosts from './PopularPosts';
-import LoadMoreButton from '@/components/LoadMoreButton';
+import LoadMoreButton from '@/components/buttons/LoadMoreButton';
 import { GeneralPostData, HotPostItem, MatchPostData } from '@/types/post';
 
 const Container = styled.div`

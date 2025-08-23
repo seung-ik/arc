@@ -1,11 +1,11 @@
 'use client';
 
-import PostHeader from '@/components/PostHeader';
-import PostActions from '@/components/PostActions';
+import PostHeader from '@/app/community/components/PostHeader';
+import PostActions from '@/app/community/components/PostActions';
 import Comments from '@/app/community/components/Comments';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import { GeneralPostData } from '@/types/post';
-import HtmlContent from './HtmlContent';
+import HtmlContent from '@/components/inputs/HtmlContent';
 
 interface GeneralPostDetailProps {
   post: GeneralPostData;

@@ -2,13 +2,13 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import PostHeader from '@/components/PostHeader';
-import MatchInfo from '@/components/MatchInfo';
-import MatchApplicationStatus from '@/components/MatchApplicationStatus';
+import PostHeader from './PostHeader';
+import MatchInfo from './MatchInfo';
+import MatchApplicationStatus from './MatchApplicationStatus';
 import { useModal } from '@/hooks/useModal';
 import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-import HtmlContent from './HtmlContent';
+import HtmlContent from '@/components/inputs/HtmlContent';
 import { useApplyToMatchPostMutation } from '@/api/useMatch';
 import { MatchPostData } from '@/types/post';
 

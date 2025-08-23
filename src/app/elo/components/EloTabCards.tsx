@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ROUTES } from '@/constants/routes';
 
-import ProfileChip from '@/components/ProfileChip';
+import ProfileChip from '@/components/views/ProfileChip';
 
 const TabContainer = styled.div`
   display: flex;

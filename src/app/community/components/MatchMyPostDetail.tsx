@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import MatchApplicationStatus from '@/components/MatchApplicationStatus';
-import MatchInfo from '@/components/MatchInfo';
-import PostHeader from '@/components/PostHeader';
+import MatchApplicationStatus from '@/app/community/components/MatchApplicationStatus';
+import MatchInfo from './MatchInfo';
+import PostHeader from './PostHeader';
 import {
   Container,
   Content,
@@ -14,10 +14,10 @@ import {
   ManagementButtons,
   ManagementButton,
 } from '@/styles/PostDetailStyles';
-import HtmlContent from './HtmlContent';
+import HtmlContent from '@/components/inputs/HtmlContent';
 import { MatchPostData } from '@/types/post';
 import { useDeletePostMutation } from '@/api/useCommunity';
-import TwoButtonModal from './modals/TwoButtonModal';
+import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { ROUTES } from '@/constants/routes';
 
 interface MatchMyPostDetailProps {

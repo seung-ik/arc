@@ -2,12 +2,12 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import PostHeader from '@/components/PostHeader';
-import MentorApplicationList from '@/components/MentorApplicationList';
+import PostHeader from '@/app/community/components/PostHeader';
+import MentorApplicationList from '@/app/community/components/MentorApplicationList';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import { MentorPostData } from '@/types/post';
-import HtmlContent from './HtmlContent';
-import PostInfoSection from './PostInfoSection';
+import PostInfoSection from '@/app/community/components/PostInfoSection';
+import HtmlContent from '@/components/inputs/HtmlContent';
 
 interface MentorApplication {
   id: number;

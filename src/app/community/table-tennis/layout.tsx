@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import BottomNavigation from '@/components/BottomNavigation';
+import BottomNavigation from '@/components/layout/BottomNavigation';
 import WriteButton from '@/components/buttons/WriteButton';
 import { ROUTES } from '@/constants/routes';
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import LoadingIndicator from './LoadingIndicator';
+import LoadingIndicator from '../views/LoadingIndicator';
 
 const Container = styled.div`
   min-height: 100vh;

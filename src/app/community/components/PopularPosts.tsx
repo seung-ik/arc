@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import HtmlContent from '@/components/HtmlContent';
+import HtmlContent from '@/components/inputs/HtmlContent';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { HotPostItem } from '@/types/post';

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { GeneralPostData } from '@/types/post';
-import HtmlContent from '@/components/HtmlContent';
+import HtmlContent from '@/components/inputs/HtmlContent';
 import { formatDate, formatRelativeTime } from '@/utils';
 
 interface CommunityPostProps {

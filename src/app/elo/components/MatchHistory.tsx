@@ -1,9 +1,9 @@
 'use client';
 
 import styled from 'styled-components';
-import NoData from '@/components/NoData';
+import NoData from '@/components/views/NoData';
 import MatchCardItem from './MatchCardItem';
-import LoadMoreButton from '@/components/LoadMoreButton';
+import LoadMoreButton from '@/components/buttons/LoadMoreButton';
 import { MatchHistoryResult } from '@/types/match';
 
 interface MatchHistoryProps {

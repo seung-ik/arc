@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useHandleMatchRequestMutation } from '@/api/useMatch';
 import { MatchResult } from '@/types/match';
 import { useTimer } from '@/hooks/useTimer';
-import TwoButtonModal from './modals/TwoButtonModal';
+import TwoButtonModal from '../../../components/modals/TwoButtonModal';
 
 // 스타일 컴포넌트들
 const RowItem = styled.div`

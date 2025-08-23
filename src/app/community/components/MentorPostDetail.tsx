@@ -2,12 +2,12 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
-import PostHeader from '@/components/PostHeader';
+import PostHeader from '@/app/community/components/PostHeader';
 import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
-import HtmlContent from './HtmlContent';
 import { MentorPostData } from '@/types/post';
 import TwoButtonModal from '@/components/modals/TwoButtonModal';
-import PostInfoSection from './PostInfoSection';
+import PostInfoSection from '@/app/community/components/PostInfoSection';
+import HtmlContent from '@/components/inputs/HtmlContent';
 
 interface MentorPostDetailProps {
   post: MentorPostData;

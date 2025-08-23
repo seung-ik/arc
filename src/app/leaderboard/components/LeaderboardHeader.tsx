@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
-import ProfileChip from '@/components/ProfileChip';
+import ProfileChip from '@/components/views/ProfileChip';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 
