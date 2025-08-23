@@ -19,7 +19,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import GameStatsGrid from '../components/GameStatsGrid';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
-import { useClaimAllAccumulatedTokens } from '@/api/usePrevContract';
+import {
+  useClaimAllAccumulatedTokens,
+  useClaimByLikeSignature,
+} from '@/api/usePrevContract';
 import { useWepin } from '@/contexts/WepinContext';
 import FullPageLoading from '@/components/layout/FullPageLoading';
 
@@ -76,6 +79,7 @@ export default function ProfilePage() {
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
   const claimAllAccumulatedTokens = useClaimAllAccumulatedTokens();
+  const claimByLikeSignature = useClaimByLikeSignature();
 
   const { data: profileData, isLoading } = useProfileApi();
   const {
@@ -110,14 +114,76 @@ export default function ProfilePage() {
   }, [userTokens]);
 
   const handleHarvest = (postId: number) => {
-    setPosts(prevPosts =>
-      prevPosts.map(post => (post.id === postId ? { ...post } : post))
+    console.log('handleHarvest called with postId:', postId);
+
+    // useClaimByLikeSignature API 호출
+    claimByLikeSignature.mutate(
+      {
+        postId: postId,
+        userAddress: userProfile.walletAddress,
+      },
+      {
+        onSuccess: async response => {
+          console.log('Claim by like signature response:', response);
+
+          // 옵티미스틱 업데이트: 즉시 토큰 증가
+          if (userProfile.tokenAmount) {
+            const currentAmount = parseFloat(userProfile.tokenAmount);
+            const claimAmount = parseFloat(response.data.amount);
+            const newAmount = (currentAmount + claimAmount).toFixed(8);
+            setTokenAmount(newAmount);
+            console.log('Optimistic update for individual harvest:', {
+              currentAmount,
+              claimAmount,
+              newAmount,
+            });
+          }
+
+          try {
+            const { parseUnits } = await import('ethers');
+            const amount = parseUnits(response.data.amount, 18);
+            const tx = await executeContract(
+              'evmpolygon-amoy',
+              response.data.contractAddress,
+              response.data.contractABI,
+              'claimWithSignature',
+              [
+                response.data.postId,
+                response.data.to,
+                amount.toString(),
+                response.data.deadline,
+                response.data.nonce,
+                response.data.signature,
+              ]
+            );
+            console.log('Individual harvest contract success:', tx);
+
+            // 10초 후 실제 값으로 교체
+            setTimeout(async () => {
+              if (userProfile?.id) {
+                try {
+                  const result = await refetchUserTokens();
+
+                  if (result.data?.data?.totalTokens) {
+                    const actualAmount = result.data.data.totalTokens;
+                    const availableAmount = result.data.data.availableTokens;
+                    setTokenAmount(actualAmount);
+                    setAvailableToken(availableAmount);
+                  }
+                } catch (err) {
+                  console.log(err);
+                }
+              }
+            }, 10000);
+          } catch (error) {
+            console.error('Claim by like signature contract error:', error);
+          }
+        },
+        onError: error => {
+          console.error('Claim by like signature error:', error);
+        },
+      }
     );
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-      const likeCount = post.commentCount ?? 0; // 좋아요개수로 바꿔야됨
-      setHarvestableTokens(prev => prev + likeCount);
-    }
   };
 
   const handleHarvestAll = () => {
@@ -135,7 +201,7 @@ export default function ProfilePage() {
             response.data.contractABI,
             'claimWithSignature',
             [
-              userProfile.walletAddress,
+              response.data.to,
               amount,
               response.data.deadline,
               response.data.nonce,

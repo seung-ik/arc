@@ -82,13 +82,13 @@ export default function PostActions({ post }: PostActionsProps) {
           try {
             // 1 토큰을 wei 단위로 변환
             const { parseUnits } = await import('ethers');
-            const oneToken = parseUnits('1', 18);
+            const amount = parseUnits('1', 18);
             const tx = await executeContract(
               'evmpolygon-amoy',
               response.data.contractAddress,
               response.data.contractABI,
               'transferAndCall(address,uint256,bytes)',
-              [response.data.to, oneToken.toString(), response.data.encodedData]
+              [response.data.to, amount.toString(), response.data.encodedData]
             );
             console.log(tx, 'txResponse');
           } catch (error) {

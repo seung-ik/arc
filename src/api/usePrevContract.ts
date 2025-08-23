@@ -32,6 +32,8 @@ interface TokenClaimSignatureResponse {
     nonce: string; // 중복 방지를 위한 고유값
     signature: string; // 백엔드에서 생성한 서명
     contractAddress: string; // 스마트 컨트랙트 주소
+    contractABI: any[]; // 스마트 컨트랙트 ABI
+    postId: number; // 포스트 ID
   };
   message: string;
 }
@@ -49,6 +51,7 @@ interface ClaimAllAccumulatedResponse {
     amount: string; // 수확할 총 토큰 양
     contractAddress: string; // 스마트 컨트랙트 주소
     contractABI: any[]; // 스마트 컨트랙트 ABI
+    to: string; // 수신자 주소
   };
   message: string;
 }

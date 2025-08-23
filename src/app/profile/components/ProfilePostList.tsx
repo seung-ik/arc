@@ -237,7 +237,7 @@ const LikeButton = styled.button`
 export default function ProfilePostList({
   posts,
   isMyProfile,
-  // onHarvest,
+  onHarvest,
 }: ProfilePostListProps) {
   const router = useRouter();
 
@@ -335,7 +335,7 @@ export default function ProfilePostList({
               <LikeButton
                 onClick={e => {
                   e.stopPropagation();
-                  // TODO: 좋아요 기능 구현
+                  onHarvest?.(post.id);
                 }}
               >
                 ❤️ {post.likeCount}
