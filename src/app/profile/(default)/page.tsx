@@ -7,6 +7,7 @@ import ProfileHeader from '@/app/profile/components/ProfileHeader';
 import TokenDisplay from '@/components/views/TokenDisplay';
 import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
+import FirstPostGuideModal from '@/components/modals/FirstPostGuideModal';
 import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
 import {
@@ -17,14 +18,13 @@ import {
 } from '@/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
 import GameStatsGrid from '../components/GameStatsGrid';
-import Image from 'next/image';
-import { ICONS } from '@/assets';
 import {
   useClaimAllAccumulatedTokens,
   useClaimByLikeSignature,
 } from '@/api/usePrevContract';
 import { useWepin } from '@/contexts/WepinContext';
 import FullPageLoading from '@/components/layout/FullPageLoading';
+import { useModal } from '@/hooks/useModal';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -77,6 +77,7 @@ export default function ProfilePage() {
   const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
+  const firstPostGuideModal = useModal();
 
   const claimAllAccumulatedTokens = useClaimAllAccumulatedTokens();
   const claimByLikeSignature = useClaimByLikeSignature();
@@ -97,21 +98,6 @@ export default function ProfilePage() {
   );
   console.log('userTokens', userTokens);
   const { executeContract } = useWepin();
-
-  // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
-  useEffect(() => {
-    if (myPostsData) {
-      console.log('내가 쓴 글 목록:', myPostsData);
-      setPosts(myPostsData.data);
-    }
-  }, [myPostsData]);
-
-  // 현재 토큰 데이터 콘솔 출력
-  useEffect(() => {
-    if (userTokens) {
-      console.log('Current user tokens:', userTokens);
-    }
-  }, [userTokens]);
 
   const handleHarvest = (postId: number) => {
     console.log('handleHarvest called with postId:', postId);
@@ -273,6 +259,21 @@ export default function ProfilePage() {
     router.push(ROUTES.profile.tokenHistory);
   };
 
+  // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
+  useEffect(() => {
+    if (myPostsData) {
+      console.log('내가 쓴 글 목록:', myPostsData);
+      setPosts(myPostsData.data);
+    }
+  }, [myPostsData]);
+
+  // 현재 토큰 데이터 콘솔 출력
+  useEffect(() => {
+    if (userTokens) {
+      console.log('Current user tokens:', userTokens);
+    }
+  }, [userTokens]);
+
   useEffect(() => {
     if (profileData) {
       setProfile(profileData.user); // 유저 프로필 정보 저장
@@ -280,29 +281,23 @@ export default function ProfilePage() {
     }
   }, [profileData, setProfile, setUserElos]);
 
+  // 첫 글 작성 가이드 모달 표시 여부 확인
+  useEffect(() => {
+    if (myPostsData?.data?.length === 0 && !isLoading) {
+      const today = new Date().toDateString();
+      const hiddenDate = localStorage.getItem('firstPostGuideHidden');
+
+      if (hiddenDate !== today) {
+        firstPostGuideModal.openModal();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myPostsData, isLoading]);
+
   if (isLoading) return <FullPageLoading />;
 
   return (
     <Container>
-      <Image
-        src={ICONS.SETTING}
-        alt="setting"
-        width={24}
-        height={24}
-        style={{
-          position: 'absolute',
-          top: '16px',
-          left: '20px',
-          transition: 'transform 0.3s ease',
-          cursor: 'pointer',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.transform = 'rotate(200deg)';
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.transform = 'rotate(0deg)';
-        }}
-      />
       <Content>
         <ProfileTopWrapper>
           <ProfileLeftCol>
@@ -340,6 +335,33 @@ export default function ProfilePage() {
         currentNickname={userProfile.nickname || ''}
         userTokens={Number(userProfile.tokenAmount) ?? 0}
       />
+
+      <FirstPostGuideModal
+        isOpen={firstPostGuideModal.isOpen}
+        onClose={firstPostGuideModal.closeModal}
+      />
     </Container>
   );
+}
+
+{
+  /* <Image
+        src={ICONS.SETTING}
+        alt="setting"
+        width={24}
+        height={24}
+        style={{
+          position: 'absolute',
+          top: '16px',
+          left: '20px',
+          transition: 'transform 0.3s ease',
+          cursor: 'pointer',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.transform = 'rotate(200deg)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.transform = 'rotate(0deg)';
+        }}
+      /> */
 }

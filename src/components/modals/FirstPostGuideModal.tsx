@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 
-interface FirstMatchGuideModalProps {
+interface FirstPostGuideModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
@@ -46,7 +46,7 @@ const Description = styled.p`
   margin-bottom: ${props => props.theme.spacing.lg};
 `;
 
-const TokenInfo = styled.div`
+const ExpInfo = styled.div`
   background: ${props => props.theme.colors.backgroundGray};
   border-radius: ${props => props.theme.borderRadius.md};
   padding: ${props => props.theme.spacing.md};
@@ -54,7 +54,7 @@ const TokenInfo = styled.div`
   border-left: 4px solid ${props => props.theme.colors.primary};
 `;
 
-const TokenText = styled.p`
+const ExpText = styled.p`
   font-size: ${props => props.theme.typography.fontSizes.sm};
   color: ${props => props.theme.colors.primary};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
@@ -102,17 +102,17 @@ const Button = styled.button`
   }
 `;
 
-export default function FirstMatchGuideModal({
+export default function FirstPostGuideModal({
   isOpen,
   onClose,
-}: FirstMatchGuideModalProps) {
+}: FirstPostGuideModalProps) {
   const [dontShowToday, setDontShowToday] = useState(false);
 
   const handleConfirm = () => {
     if (dontShowToday) {
       // 오늘 하루 동안 보지 않기 설정
       const today = new Date().toDateString();
-      localStorage.setItem('firstMatchGuideHidden', today);
+      localStorage.setItem('firstPostGuideHidden', today);
     }
     onClose();
   };
@@ -120,14 +120,16 @@ export default function FirstMatchGuideModal({
   return (
     <Overlay isOpen={isOpen}>
       <ModalContent>
-        <Title>🎯 첫 매치 결과를 등록해보세요!</Title>
-        <Description>매치 결과를 등록하면 토큰을 받을 수 있어요.</Description>
+        <Title>✍️ 첫 글을 작성해보세요!</Title>
+        <Description>
+          커뮤니티에 글을 작성하면 EXP를 받을 수 있어요.
+        </Description>
 
-        <TokenInfo>
-          <TokenText>
-            💰 첫 등록 시 <strong>5 EXP</strong> 보상 지급
-          </TokenText>
-        </TokenInfo>
+        <ExpInfo>
+          <ExpText>
+            💰 첫 글 작성 시 <strong>3 EXP</strong> 보상 지급
+          </ExpText>
+        </ExpInfo>
 
         <CheckboxContainer>
           <Checkbox

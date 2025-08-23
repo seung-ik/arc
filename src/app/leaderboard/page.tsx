@@ -12,6 +12,27 @@ const PageContent = styled.div`
   padding: ${props => props.theme.spacing.md};
 `;
 
+const RotatingBanner = styled.div`
+  background: #000;
+  color: white;
+  padding: ${props => props.theme.spacing.sm} 0;
+  text-align: center;
+  font-weight: 300;
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25vw;
+  width: 100%;
+`;
+
+const BannerText = styled.span`
+  flex-shrink: 0;
+`;
+
 // Top 섹션 스타일
 const Section = styled.section`
   margin-top: ${props => props.theme.spacing.lg};
@@ -42,12 +63,6 @@ const PromoBanner = styled.div`
     gap: ${props => props.theme.spacing.sm};
     padding: ${props => props.theme.spacing.md};
   }
-`;
-
-const BannerText = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 `;
 
 const BannerTitle = styled.h3`
@@ -142,10 +157,11 @@ const HIGH_RANKERS = [
 ];
 
 export default function LeaderboardPage() {
-  // 섹션 3: 리스트는 RankListSection 컴포넌트 내부에서 상태/데이터 처리
-
   return (
     <div>
+      <RotatingBanner>
+        <BannerText>준비 중인 페이지입니다 🚧</BannerText>
+      </RotatingBanner>
       <Suspense fallback={null}>
         <LeaderboardHeader />
       </Suspense>
