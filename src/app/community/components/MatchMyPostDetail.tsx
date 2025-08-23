@@ -48,8 +48,6 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
     setShowDeleteModal(false);
   };
 
-  console.log(post, 'myDetail');
-
   return (
     <Container>
       <Content>

@@ -137,7 +137,7 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
         >
           {isJoined
             ? '참가 신청 완료'
-            : isExpired(post.matchInfo.deadline)
+            : isExpired(post.matchInfo.matchDate)
               ? '마감된 매치'
               : '매치 참가하기'}
         </JoinButton>

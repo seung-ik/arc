@@ -19,7 +19,7 @@ const EmptyState = styled.div`
 export default function NoData({ message }: { message: string }) {
   return (
     <EmptyState>
-      <Image src={ICONS.NO_DATA} alt="no data" width={80} />
+      <Image src={ICONS.NO_DATA} alt="no data" width={72} />
       <p>{message}</p>
     </EmptyState>
   );

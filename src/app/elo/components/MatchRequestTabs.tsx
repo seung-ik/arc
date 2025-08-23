@@ -9,6 +9,10 @@ import {
 } from '@/api/useMatch';
 import PendingMatchCard from './PendingMatchCard';
 import MatchManagement from './MatchManagement';
+import ProjectIntroModal from '@/components/modals/ProjectIntroModal';
+import { useModal } from '@/hooks/useModal';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 const MatchRequestSection = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -78,6 +82,37 @@ const EmptyText = styled.div`
   margin-bottom: ${props => props.theme.spacing.xs};
   color: ${props => props.theme.colors.error};
   text-align: center;
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.xs};
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  .arrow {
+    width: 16px;
+    height: 16px;
+    margin-left: ${props => props.theme.spacing.xs};
+    animation: moveArrow 2s ease-in-out infinite;
+    display: inline-block;
+    transform: rotate(180deg);
+    filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%)
+      hue-rotate(346deg) brightness(104%) contrast(97%);
+  }
+
+  @keyframes moveArrow {
+    0%,
+    100% {
+      transform: rotate(180deg) translateX(0);
+    }
+    50% {
+      transform: rotate(180deg) translateX(4px);
+    }
+  }
 `;
 
 const EmptySubText = styled.div`
@@ -88,6 +123,7 @@ const EmptySubText = styled.div`
 
 export default function MatchRequestTabs() {
   const [activeTab, setActiveTab] = useState<'sent' | 'received'>('sent');
+  const projectIntroModal = useModal();
 
   // API 데이터 가져오기
   const { data: sentMatchesData } = useSentMatchResultsApi();
@@ -129,7 +165,14 @@ export default function MatchRequestTabs() {
               <EmptyState>
                 <EmptyIcon>📤</EmptyIcon>
                 <div style={{ flex: 1 }}>
-                  <EmptyText>보낸 요청이 없습니다</EmptyText>
+                  <EmptyText onClick={() => projectIntroModal.openModal()}>
+                    보낸 요청이 없습니다
+                    <Image
+                      src={ICONS.ARROW_LEFT}
+                      alt="arrow"
+                      className="arrow"
+                    />
+                  </EmptyText>
                   <EmptySubText>
                     내가 활동한 매치 결과를 입력해보세요
                   </EmptySubText>
@@ -149,7 +192,14 @@ export default function MatchRequestTabs() {
               <EmptyState>
                 <EmptyIcon>📥</EmptyIcon>
                 <div style={{ flex: 1 }}>
-                  <EmptyText>받은 요청이 없습니다</EmptyText>
+                  <EmptyText onClick={() => projectIntroModal.openModal()}>
+                    받은 요청이 없습니다
+                    <Image
+                      src={ICONS.ARROW_LEFT}
+                      alt="arrow"
+                      className="arrow"
+                    />
+                  </EmptyText>
                   <EmptySubText>다른 사용자의 요청을 기다려보세요</EmptySubText>
                 </div>
               </EmptyState>
@@ -157,6 +207,12 @@ export default function MatchRequestTabs() {
           </>
         )}
       </TabContent>
+
+      <ProjectIntroModal
+        isOpen={projectIntroModal.isOpen}
+        onClose={projectIntroModal.closeModal}
+        initialType="elo"
+      />
     </MatchRequestSection>
   );
 }

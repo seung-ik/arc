@@ -28,7 +28,7 @@ export default function MatchInfo({ matchInfo }: MatchInfoProps) {
   // deadline과 현재 시간을 비교하여 유효기간 계산
   const getValidityText = () => {
     const now = new Date();
-    const deadline = new Date(matchInfo.deadline);
+    const deadline = new Date(matchInfo.matchDate);
     const diffTime = deadline.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

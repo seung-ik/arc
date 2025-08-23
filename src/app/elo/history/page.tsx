@@ -1,7 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { debounce } from 'lodash';
 import MatchHistory from '../components/MatchHistory';
 import EloTabCards from '../components/EloTabCards';
@@ -13,6 +13,8 @@ import React from 'react';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 import { MatchHistoryResult } from '@/types/match';
+import FirstMatchGuideModal from '@/components/modals/FirstMatchGuideModal';
+import { useModal } from '@/hooks/useModal';
 
 const FilterContainer = styled.div`
   display: flex;
@@ -151,6 +153,7 @@ export default function HistoryPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
   const { sportOptions } = useCommunityStore();
+  const firstMatchGuideModal = useModal();
 
   // 디바운스된 검색 함수 생성 (800ms 지연)
   const debouncedSetSearchTerm = useCallback(
@@ -194,6 +197,19 @@ export default function HistoryPage() {
     // API 요청만 디바운스 (300ms 후 실행)
     debouncedSetSearchTerm()(value);
   };
+
+  // 첫 매치 가이드 모달 표시 여부 확인
+  useEffect(() => {
+    if (matches.length === 0 && !isLoading && selectedSport === null) {
+      const today = new Date().toDateString();
+      const hiddenDate = localStorage.getItem('firstMatchGuideHidden');
+
+      if (hiddenDate !== today) {
+        firstMatchGuideModal.openModal();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matches.length, isLoading, selectedSport]);
 
   return (
     <Container>
@@ -248,6 +264,11 @@ export default function HistoryPage() {
           isLoading={isLoading}
         />
       </ContentContainer>
+
+      <FirstMatchGuideModal
+        isOpen={firstMatchGuideModal.isOpen}
+        onClose={firstMatchGuideModal.closeModal}
+      />
     </Container>
   );
 }
