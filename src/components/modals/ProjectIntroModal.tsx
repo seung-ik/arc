@@ -369,51 +369,48 @@ export default function ProjectIntroModal({
                 보상형 커뮤니티
               </SectionTitle>
               <SectionContent>
-                <Highlight>보상형 커뮤니티</Highlight>는 사용자들의 참여와
-                기여를 토큰으로 보상하는 혁신적인 시스템이에요.
+                Trivus 커뮤니티는 사용자들의 참여와 기여를 토큰으로 보상하는
+                커뮤니티예요.
               </SectionContent>
             </Section>
 
             <MainSection>
               <MainSectionTitle $currentType={currentType}>
-                사용 가이드
+                보상 원칙
               </MainSectionTitle>
               <FeatureList>
                 <FeatureItem>
-                  <Highlight>1. 콘텐츠 작성</Highlight>: 매치 후기, 팁 공유,
-                  질문 등을 작성해요
+                  <Highlight>좋아요</Highlight>: 좋아요를 누르면 1토큰을 걸어서
+                  글 작성자에게 보상해요
                 </FeatureItem>
                 <FeatureItem>
-                  <Highlight>2. 상호작용</Highlight>: 좋아요, 댓글 등으로 다른
-                  사용자와 소통해요
-                </FeatureItem>
-                <FeatureItem>
-                  <Highlight>3. 보상 획득</Highlight>: 참여도에 따라 토큰을
-                  자동으로 받아요
-                </FeatureItem>
-                <FeatureItem>
-                  <Highlight>4. 커뮤니티 성장</Highlight>: 모두가 함께
-                  만들어가는 활발한 공간이에요
+                  <Highlight>인기글 보상</Highlight>: 내가 좋아요를 누른 글이
+                  인기글에 선정되면 더 많은 토큰을 보상받아요
                 </FeatureItem>
               </FeatureList>
             </MainSection>
 
             <MainSection>
               <MainSectionTitle $currentType={currentType}>
-                보상형 커뮤니티의 특징
+                토큰 사용처
               </MainSectionTitle>
               <FeatureList>
                 <FeatureItem>
-                  <Highlight>콘텐츠 보상</Highlight>: 유용한 글 작성 시 토큰을
-                  자동으로 지급해요
+                  <Highlight>멘토링·거래</Highlight>: 유저들 간의 실력 격차를
+                  활용한 멘토링과 장비·용품 거래를 할 수 있어요
                 </FeatureItem>
                 <FeatureItem>
-                  <Highlight>참여 보상</Highlight>: 좋아요, 댓글 등 적극적 참여
-                  시 즉시 보상을 받을 수 있어요
+                  <Highlight>프로필 NFT</Highlight>: 내 ELO 점수로 특별한 프로필
+                  NFT를 만들 수 있어요
                 </FeatureItem>
                 <FeatureItem>
-                  <Highlight>공정한 분배</Highlight>: 투명한 알고리즘으로 보상을
-                  공정하게 분배해요
+                  <Highlight>제휴 구장 서비스</Highlight>: 파트너 구장에서
+                  특별한 서비스를 이용할 수 있어요
+                </FeatureItem>
+
+                <FeatureItem>
+                  <Highlight>서비스내 유료 기능</Highlight>: 토큰으로 프리미엄
+                  기능을 이용할 수 있어요
                 </FeatureItem>
               </FeatureList>
             </MainSection>
