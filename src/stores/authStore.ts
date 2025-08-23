@@ -15,6 +15,9 @@ interface AuthActions {
   setIsLoading: (isLoading: boolean) => void;
   setNickname: (nickname: string | null) => void;
   setTokenAmount: (tokenAmount: string | ((prev: string) => string)) => void;
+  setAvailableToken: (
+    availableToken: string | ((prev: string) => string)
+  ) => void;
   reset: () => void;
 }
 
@@ -72,6 +75,17 @@ export const useAuthStore = create<AuthStore>(set => ({
           typeof tokenAmount === 'function'
             ? tokenAmount(state.userProfile.tokenAmount)
             : tokenAmount,
+      },
+    })),
+  setAvailableToken: (availableToken: string | ((prev: string) => string)) =>
+    set(state => ({
+      ...state,
+      userProfile: {
+        ...state.userProfile,
+        availableToken:
+          typeof availableToken === 'function'
+            ? availableToken(state.userProfile.availableToken)
+            : availableToken,
       },
     })),
   reset: () =>

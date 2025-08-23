@@ -9,7 +9,12 @@ import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
 import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
-import { useProfileApi, useMyPostsApi, MyPost } from '@/api/useUser';
+import {
+  useProfileApi,
+  useMyPostsApi,
+  MyPost,
+  useUserTokensApi,
+} from '@/api/useUser';
 import { useQueryClient } from '@tanstack/react-query';
 import GameStatsGrid from '../components/GameStatsGrid';
 import Image from 'next/image';
@@ -77,12 +82,16 @@ export default function ProfilePage() {
     setProfile,
     setUserElos,
     setTokenAmount,
+    setAvailableToken,
     setNickname,
     userProfile,
     userElos,
   } = useAuthStore();
   const { data: myPostsData } = useMyPostsApi();
-
+  const { data: userTokens, refetch: refetchUserTokens } = useUserTokensApi(
+    userProfile?.id || 0
+  );
+  console.log('userTokens', userTokens);
   const { executeContract } = useWepin();
 
   // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
@@ -92,6 +101,13 @@ export default function ProfilePage() {
       setPosts(myPostsData.data);
     }
   }, [myPostsData]);
+
+  // 현재 토큰 데이터 콘솔 출력
+  useEffect(() => {
+    if (userTokens) {
+      console.log('Current user tokens:', userTokens);
+    }
+  }, [userTokens]);
 
   const handleHarvest = (postId: number) => {
     setPosts(prevPosts =>
@@ -105,7 +121,6 @@ export default function ProfilePage() {
   };
 
   const handleHarvestAll = () => {
-    console.log('handleHarvest', userProfile.walletAddress, harvestableTokens);
     claimAllAccumulatedTokens.mutate(
       { address: userProfile.walletAddress },
       {
@@ -114,7 +129,7 @@ export default function ProfilePage() {
           const { parseUnits } = await import('ethers');
           const amount = parseUnits(response.data.amount, 18);
 
-          await executeContract(
+          const tx = await executeContract(
             'evmpolygon-amoy',
             response.data.contractAddress,
             response.data.contractABI,
@@ -127,7 +142,42 @@ export default function ProfilePage() {
               response.data.signature,
             ]
           );
-          console.log('claimAllAccumulatedTokens success');
+          console.log('claimAllAccumulatedTokens success', tx);
+
+          // 옵티미스틱 업데이트: 즉시 토큰 증가
+          if (userProfile.tokenAmount) {
+            const currentAmount = parseFloat(userProfile.tokenAmount);
+            const newAmount =
+              currentAmount + (Number(profileData?.user.availableToken) || 0);
+
+            setTokenAmount(String(newAmount));
+            setAvailableToken('0'); // availableToken을 0으로 리셋
+            setHarvestableTokens(0); // 수확 가능한 토큰 리셋
+            console.log('Optimistic update:', {
+              currentAmount,
+              harvestableTokens,
+              newAmount,
+            });
+          }
+
+          // 10초 후 실제 값으로 교체
+          setTimeout(async () => {
+            if (userProfile?.id) {
+              try {
+                const result = await refetchUserTokens();
+                console.log('Updated user tokens after delay:', result.data);
+                if (result.data?.data?.totalTokens) {
+                  const actualAmount = result.data.data.totalTokens;
+                  const availableAmount = result.data.data.availableTokens;
+                  setTokenAmount(actualAmount);
+                  setAvailableToken(availableAmount);
+                  console.log('Replaced with actual value:', actualAmount);
+                }
+              } catch (error) {
+                console.error('Failed to fetch actual tokens:', error);
+              }
+            }
+          }, 10000);
 
           // 수확 완료 후 프로필 데이터 리패치하여 밸런스 업데이트
           queryClient.refetchQueries({ queryKey: ['user-profile'] });
@@ -137,14 +187,6 @@ export default function ProfilePage() {
         },
       }
     );
-    // 실제로는 Web3 트랜잭션 처리
-    // if (harvestableTokens > 0 && userProfile.tokenAmount) {
-    //   setTokenAmount((prev: string) => {
-    //     const currentAmount = parseFloat(prev || '0');
-    //     return (currentAmount + harvestableTokens).toFixed(8);
-    //   });
-    //   setHarvestableTokens(0);
-    // }
   };
 
   const handleNicknameChange = () => {
