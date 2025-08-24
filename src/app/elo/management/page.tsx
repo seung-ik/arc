@@ -92,7 +92,7 @@ export default function ManagementPage() {
     data: recommendedPostsData,
     isLoading,
     error,
-  } = useRecommendedMatchPostsApi(5);
+  } = useRecommendedMatchPostsApi(5, 0);
 
   const handleChallenge = (matchId: number) => {
     router.push(`/community/post/${matchId}?type=match`);

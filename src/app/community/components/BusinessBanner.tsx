@@ -146,15 +146,15 @@ const mockBusinesses: Business[] = [
   {
     id: 2,
     name: '송파 탁구클럽',
-    image: BUSINESS_IMAGES.EX_2,
+    image: BUSINESS_IMAGES.EX_3,
     category: '탁구',
     location: '서울 송파구',
     description: '전문 코치가 있는 탁구장',
   },
   {
     id: 3,
-    name: '종로 바둑방',
-    image: BUSINESS_IMAGES.EX_3,
+    name: '종로 기원',
+    image: BUSINESS_IMAGES.EX_5,
     category: '바둑',
     location: '서울 종로구',
     description: '전통적인 바둑 문화 공간',
@@ -162,7 +162,7 @@ const mockBusinesses: Business[] = [
   {
     id: 4,
     name: '홍대 체스카페',
-    image: BUSINESS_IMAGES.EX_4,
+    image: BUSINESS_IMAGES.EX_6,
     category: '체스',
     location: '서울 마포구',
     description: '체스와 커피를 함께 즐기는 공간',
@@ -178,7 +178,7 @@ const mockBusinesses: Business[] = [
   {
     id: 6,
     name: '대구 테니스클럽',
-    image: BUSINESS_IMAGES.EX_6,
+    image: BUSINESS_IMAGES.EX_1,
     category: '테니스',
     location: '대구 수성구',
     description: '야외 테니스 코트 운영',
@@ -186,7 +186,7 @@ const mockBusinesses: Business[] = [
   {
     id: 7,
     name: '인천 탁구센터',
-    image: BUSINESS_IMAGES.EX_7,
+    image: BUSINESS_IMAGES.EX_3,
     category: '탁구',
     location: '인천 연수구',
     description: '대회 개최 가능한 대형 탁구장',
@@ -194,7 +194,7 @@ const mockBusinesses: Business[] = [
   {
     id: 8,
     name: '광주 바둑학원',
-    image: BUSINESS_IMAGES.EX_8,
+    image: BUSINESS_IMAGES.EX_6,
     category: '바둑',
     location: '광주 서구',
     description: '초급부터 고급까지 체계적 교육',

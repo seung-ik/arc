@@ -112,20 +112,53 @@ export default function MatchCard({ post, onClick }: MatchCardProps) {
     }
   };
 
+  console.log(post);
+
   // 참가자 수 계산
   const currentParticipants = 1; // API에서 제공되지 않는 필드
   const maxParticipants = post.participantCount || 2;
 
+  const getCategoryImg = (category: string) => {
+    switch (category) {
+      case 'tennis':
+      case '테니스':
+        return BUSINESS_IMAGES.EX_1;
+      case 'badminton':
+      case '배드민턴':
+        return BUSINESS_IMAGES.EX_2;
+      case 'table_tennis':
+      case '탁구':
+        return BUSINESS_IMAGES.EX_3;
+      case 'billiards':
+      case '당구':
+        return BUSINESS_IMAGES.EX_4;
+      case 'go':
+      case '바둑':
+        return BUSINESS_IMAGES.EX_5;
+      case 'chess':
+      case '체스':
+        return BUSINESS_IMAGES.EX_6;
+      case 'general':
+      case '자유글':
+        return BUSINESS_IMAGES.EX_8;
+    }
+    return BUSINESS_IMAGES.EX_8;
+  };
+
   return (
     <MatchCardContainer onClick={handleClick}>
       <ImageSection>
-        <Image src={BUSINESS_IMAGES.EX_1} alt="ad" width={100} />
+        <Image
+          src={getCategoryImg(post.sportCategory.name)}
+          alt="ad"
+          width={100}
+        />
         <ImagePlaceholder>테니스장</ImagePlaceholder>
       </ImageSection>
 
       <ContentSection>
         <TopRow>
-          <LocationInfo>{post.matchLocation || '서울 도봉구'}</LocationInfo>
+          <LocationInfo>{post.matchLocation}</LocationInfo>
           <div style={{ display: 'flex', gap: '6px' }}>
             <EloBadge>ELO {post.myElo || 'N/A'}</EloBadge>
             <ParticipantBadge>
@@ -134,19 +167,17 @@ export default function MatchCard({ post, onClick }: MatchCardProps) {
           </div>
         </TopRow>
 
-        <VenueName style={{ marginTop: '-12px' }}>
-          {post.title || '다락원 체육공원 테니스장'}
-        </VenueName>
+        <VenueName style={{ marginTop: '-12px' }}>{post.title}</VenueName>
 
         <DateTimeInfo>
           {post.createdAt
-            ? new Date(post.createdAt).toLocaleDateString('ko-KR', {
+            ? new Date(post.matchDate).toLocaleDateString('ko-KR', {
+                year: 'numeric',
                 month: 'numeric',
                 day: 'numeric',
                 weekday: 'short',
               })
-            : '7. 30.(수)'}{' '}
-          08:00~10:00
+            : '날짜 협의'}{' '}
         </DateTimeInfo>
       </ContentSection>
     </MatchCardContainer>

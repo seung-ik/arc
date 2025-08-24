@@ -277,7 +277,7 @@ export interface MatchPostItem {
   participantCount: number;
   matchStatus: string;
   deadline: string;
-  matchDate: string | null;
+  matchDate: string;
 }
 
 // 추천 매치 포스트 응답

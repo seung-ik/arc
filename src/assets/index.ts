@@ -41,16 +41,15 @@ import PEOPLE_04 from '@/assets/images/peoples/people_04.jpg';
 import PEOPLE_05 from '@/assets/images/peoples/people_05.jpg';
 import PEOPLE_06 from '@/assets/images/peoples/people_06.jpg';
 import PEOPLE_07 from '@/assets/images/peoples/people_07.jpg';
-
 export const BUSINESS_IMAGES = {
   EX_1: SHOP_TENNIS,
-  EX_2: SHOP_TABLE_TENNIS,
-  EX_3: SHOP_BADUK,
-  EX_4: SHOP_CHESS,
-  EX_5: SHOP_BILLIARDS,
-  EX_6: SHOP_SPORTS,
+  EX_2: SHOP_BADMINTON,
+  EX_3: SHOP_TABLE_TENNIS,
+  EX_4: SHOP_BILLIARDS,
+  EX_5: SHOP_BADUK,
+  EX_6: SHOP_CHESS,
   EX_7: SHOP_UNDER,
-  EX_8: SHOP_BADMINTON,
+  EX_8: SHOP_SPORTS,
   PEOPLE_01,
   PEOPLE_02,
   PEOPLE_03,
