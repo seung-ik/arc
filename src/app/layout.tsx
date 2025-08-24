@@ -18,8 +18,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Elo 기반 커뮤니티 플랫폼',
-  description: '실력 기반 매칭과 토큰 보상 시스템을 제공하는 스포츠 커뮤니티',
+  title: 'Trivus',
+  description: '종목별 ELO 보드와 토큰 보상 시스템을 제공하는 스포츠 커뮤니티',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'Trivus',
+    description:
+      '종목별 ELO 보드와 토큰 보상 시스템을 제공하는 스포츠 커뮤니티',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Trivus - 스포츠 커뮤니티',
+      },
+    ],
+    type: 'website',
+    locale: 'ko_KR',
+  },
 };
 
 export default function RootLayout({

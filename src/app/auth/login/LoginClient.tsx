@@ -42,6 +42,7 @@ const BrandTitle = styled.h1`
   font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: ${props => props.theme.colors.textBlack};
   margin: 0;
+  margin-top: ${props => props.theme.spacing.lg};
 `;
 
 const Slogan = styled.p`
@@ -91,7 +92,7 @@ export default function LoginClient() {
   const { isInitialized, loginByWepin } = useWepin();
   const { mutate: login } = useLoginApi();
   const { setProfile, setIsLoggedIn } = useAuthStore();
-  const logoutAll = useLogoutAll();
+  const { handleLogout } = useLogoutAll();
 
   const handleGoogleLogin = async () => {
     if (!isInitialized) {
@@ -139,7 +140,7 @@ export default function LoginClient() {
         });
       }
     } catch (error) {
-      logoutAll();
+      handleLogout();
       console.error('Wepin login failed:', error);
     }
   };
@@ -154,7 +155,7 @@ export default function LoginClient() {
         <Image
           src={IMAGES.LOGO_TRIVUS}
           alt="Trivus logo"
-          width={200}
+          width={100}
           style={{ marginTop: '4vh' }}
         />
         <BrandTitle>Trivus</BrandTitle>

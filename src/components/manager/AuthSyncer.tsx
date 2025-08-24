@@ -18,7 +18,7 @@ export default function AuthSyncer() {
   const router = useRouter();
 
   const pathname = usePathname();
-  const logoutAll = useLogoutAll();
+  const { handleLogout } = useLogoutAll();
   const { isLoggedIn, userProfile } = useAuthStore();
 
   useEffect(() => {
@@ -29,14 +29,14 @@ export default function AuthSyncer() {
         refetchProfile()
           .then(({ data }) => {
             if (data?.user?.email !== wepinUserInfo?.email) {
-              logoutAll();
+              handleLogout();
             } else {
               console.log('위핀, 토큰 정보 일치합니다.');
             }
           })
           .catch(error => {
             console.error(error);
-            logoutAll();
+            handleLogout();
           });
       }
     };
@@ -47,7 +47,7 @@ export default function AuthSyncer() {
   useEffect(() => {
     const token = localStorage.getItem('ACCESS_TOKEN');
     if (!token && !pathname.includes('auth')) {
-      logoutAll();
+      handleLogout();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);

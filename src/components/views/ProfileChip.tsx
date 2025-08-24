@@ -81,7 +81,7 @@ const Wrapper = styled.div`
 
 export default function ProfileChip() {
   const { userProfile } = useAuthStore();
-  const logoutAll = useLogoutAll();
+  const { handleLogout } = useLogoutAll();
   const { isInitialized, wepinSDK, isLoggedIn, loginByWepin } = useWepin();
   const displayName = userProfile?.nickname || '프로필';
   const imageUrl = userProfile?.profileImageUrl || undefined;
@@ -112,7 +112,7 @@ export default function ProfileChip() {
 
   const doLogout = async () => {
     setOpen(false);
-    await logoutAll();
+    await handleLogout();
   };
 
   useEffect(() => {

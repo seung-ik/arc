@@ -9,7 +9,8 @@ export function useLogoutAll() {
   const { logout: wepinLogout } = useWepin();
   // const { mutateAsync: logoutApi } = useLogoutApi();
   const router = useRouter();
-  return async () => {
+
+  const handleLogout = async () => {
     try {
       alert('logout');
       // await logoutApi(); // 서버 로그아웃 API 호출
@@ -21,4 +22,6 @@ export function useLogoutAll() {
     await wepinLogout();
     router.push(ROUTES.auth.login);
   };
+
+  return { handleLogout };
 }

@@ -132,7 +132,7 @@ export default function NicknamePage() {
   const { mutate: initNickname, isPending } = useInitNicknameApi();
   const [nickname, setNickname] = useState<string>(userProfile.nickname ?? '');
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
-  const logoutAll = useLogoutAll();
+  const { handleLogout } = useLogoutAll();
 
   const isValid = useMemo(
     () => nickname.trim().length > 0 && nickname.trim().length <= 10,
@@ -178,7 +178,7 @@ export default function NicknamePage() {
   return (
     <Wrapper>
       <TopBar>
-        <LogoutChip onClick={logoutAll}>로그아웃</LogoutChip>
+        <LogoutChip onClick={handleLogout}>로그아웃</LogoutChip>
       </TopBar>
       <Header>
         <Title>닉네임 설정</Title>

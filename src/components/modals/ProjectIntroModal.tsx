@@ -245,8 +245,8 @@ export default function ProjectIntroModal({
                 <Image
                   src={IMAGES.LOGO_TRIVUS}
                   alt="Trivus Logo"
-                  width={40}
-                  height={40}
+                  width={24}
+                  height={24}
                   style={{ marginRight: '2px' }}
                 />
                 Trivus
@@ -295,8 +295,8 @@ export default function ProjectIntroModal({
                 <Image
                   src={IMAGES.LOGO_TRIVUS}
                   alt="Trivus 로고"
-                  width={40}
-                  height={40}
+                  width={24}
+                  height={24}
                   style={{ marginRight: '2px' }}
                 />
                 ELO 보드
@@ -362,8 +362,8 @@ export default function ProjectIntroModal({
                 <Image
                   src={IMAGES.LOGO_TRIVUS}
                   alt="Trivus 로고"
-                  width={40}
-                  height={40}
+                  width={24}
+                  height={24}
                   style={{ marginRight: '2px' }}
                 />
                 보상형 커뮤니티
