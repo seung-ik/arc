@@ -1,4 +1,5 @@
 import { ROUTES } from '@/constants/routes';
+import { BUSINESS_IMAGES } from '@/assets';
 
 interface Category {
   id: string;
@@ -79,4 +80,36 @@ export const generateCategories = (
   }
 
   return categories;
+};
+
+/**
+ * 카테고리명에 따른 비즈니스 이미지 반환
+ * @param category 카테고리명 (영문 또는 한글)
+ * @returns 해당 카테고리의 비즈니스 이미지
+ */
+export const getCategoryImg = (category: string) => {
+  switch (category) {
+    case 'tennis':
+    case '테니스':
+      return BUSINESS_IMAGES.EX_1;
+    case 'badminton':
+    case '배드민턴':
+      return BUSINESS_IMAGES.EX_2;
+    case 'table_tennis':
+    case '탁구':
+      return BUSINESS_IMAGES.EX_3;
+    case 'billiards':
+    case '당구':
+      return BUSINESS_IMAGES.EX_4;
+    case 'go':
+    case '바둑':
+      return BUSINESS_IMAGES.EX_5;
+    case 'chess':
+    case '체스':
+      return BUSINESS_IMAGES.EX_6;
+    case 'general':
+    case '자유글':
+      return BUSINESS_IMAGES.EX_8;
+  }
+  return BUSINESS_IMAGES.EX_8;
 };

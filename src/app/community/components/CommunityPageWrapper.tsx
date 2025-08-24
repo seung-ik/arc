@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 
 import CategoryTabs from './CategoryTabs';
-import CommunityPost from './CommunityPost';
+import CommunityPostCard from './CommunityPost';
 import MatchPostCard from './MatchPostCard';
 import BusinessBanner from './BusinessBanner';
 import CommunityLayout from './CommunityLayout';
@@ -78,16 +78,19 @@ export default function CommunityPageWrapper({
                     />
                   );
                 }
-                if (post.type === '일반') {
+                if (post.type === '일반' || post.type === 'general') {
                   return (
-                    <CommunityPost
+                    <CommunityPostCard
                       key={post.id}
                       post={post as unknown as GeneralPostData}
                     />
                   );
                 }
                 return (
-                  <CommunityPost key={post.id} post={post as GeneralPostData} />
+                  <CommunityPostCard
+                    key={post.id}
+                    post={post as GeneralPostData}
+                  />
                 );
               })
             ) : (

@@ -176,10 +176,9 @@ export const useDeletePostMutation = () => {
         queryClient.invalidateQueries({ queryKey: ['comments', postId] });
       }
       // 포스트 목록 무효화
+      queryClient.invalidateQueries({ queryKey: ['my-posts'] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      // 인기글 목록 무효화 (삭제된 글이 인기글이었을 수 있음)
       queryClient.invalidateQueries({ queryKey: ['hot-posts'] });
-      // 매치글 관련 쿼리들 무효화
       queryClient.invalidateQueries({ queryKey: ['match-posts'] });
       queryClient.invalidateQueries({ queryKey: ['recommended-match-posts'] });
     },

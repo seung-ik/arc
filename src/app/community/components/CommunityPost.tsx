@@ -114,7 +114,10 @@ const ViewCount = styled.span`
   color: ${props => props.theme.colors.textLightGray};
 `;
 
-export default function CommunityPost({ post, onClick }: CommunityPostProps) {
+export default function CommunityPostCard({
+  post,
+  onClick,
+}: CommunityPostProps) {
   const router = useRouter();
 
   const handleClick = () => {

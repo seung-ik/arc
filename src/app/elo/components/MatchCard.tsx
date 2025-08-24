@@ -1,11 +1,12 @@
 'use client';
 
+import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { MatchPostItem } from '@/types/match';
 import Image from 'next/image';
-import { BUSINESS_IMAGES } from '@/assets';
+import { getCategoryImg } from '@/utils';
 
 interface MatchCardProps {
   post: MatchPostItem;
@@ -117,33 +118,6 @@ export default function MatchCard({ post, onClick }: MatchCardProps) {
   // 참가자 수 계산
   const currentParticipants = 1; // API에서 제공되지 않는 필드
   const maxParticipants = post.participantCount || 2;
-
-  const getCategoryImg = (category: string) => {
-    switch (category) {
-      case 'tennis':
-      case '테니스':
-        return BUSINESS_IMAGES.EX_1;
-      case 'badminton':
-      case '배드민턴':
-        return BUSINESS_IMAGES.EX_2;
-      case 'table_tennis':
-      case '탁구':
-        return BUSINESS_IMAGES.EX_3;
-      case 'billiards':
-      case '당구':
-        return BUSINESS_IMAGES.EX_4;
-      case 'go':
-      case '바둑':
-        return BUSINESS_IMAGES.EX_5;
-      case 'chess':
-      case '체스':
-        return BUSINESS_IMAGES.EX_6;
-      case 'general':
-      case '자유글':
-        return BUSINESS_IMAGES.EX_8;
-    }
-    return BUSINESS_IMAGES.EX_8;
-  };
 
   return (
     <MatchCardContainer onClick={handleClick}>
