@@ -3,7 +3,7 @@
 import { useCommunityStore } from '@/stores/communityStore';
 import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 import CommunityPageWrapper from '../components/CommunityPageWrapper';
-import { usePostsApi, useHotPostsApi } from '@/api/useCommunity';
+import { usePostsApi, useStoredHotPostsApi } from '@/api/useCommunity';
 import { useMemo } from 'react';
 
 export default function BilliardsPage() {
@@ -14,7 +14,7 @@ export default function BilliardsPage() {
 
   // usePostsApi를 사용하여 fetchPosts 함수 가져오기
   const { fetchPosts } = usePostsApi(categoryId, 1, 10);
-  const { data: hotPosts } = useHotPostsApi();
+  const { data: hotPosts } = useStoredHotPostsApi();
 
   // useInfinitePagination 훅 사용
   const {
@@ -38,11 +38,12 @@ export default function BilliardsPage() {
 
   const hotPostsForCurrentTab = useMemo(() => {
     const groups = hotPosts?.data ?? [];
-    const byId = groups.find(group => group.categoryId === categoryId);
-    if (byId) return byId.posts;
-    const byName = groups.find(group => group.categoryName === currentTab);
-    return byName?.posts ?? [];
-  }, [hotPosts, categoryId, currentTab]);
+    // const byId = groups.find(group => group.categoryId === categoryId);
+    // if (byId) return byId.posts;
+    // const byName = groups.find(group => group.categoryName === currentTab);
+    // return byName?.posts ?? [];
+    return groups;
+  }, [hotPosts]);
 
   return (
     <CommunityPageWrapper

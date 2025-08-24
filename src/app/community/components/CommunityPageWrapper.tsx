@@ -9,7 +9,7 @@ import BusinessBanner from './BusinessBanner';
 import CommunityLayout from './CommunityLayout';
 import PopularPosts from './PopularPosts';
 import LoadMoreButton from '@/components/buttons/LoadMoreButton';
-import { GeneralPostData, HotPostItem, MatchPostData } from '@/types/post';
+import { GeneralPostData, MatchPostData, StoredHotPost } from '@/types/post';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -39,7 +39,7 @@ const NoResults = styled.div`
 
 interface CommunityPageWrapperProps {
   currentTab: string;
-  popularPosts: HotPostItem[];
+  popularPosts: StoredHotPost[];
   posts: any[];
   isLoading?: boolean;
   hasNext?: boolean;

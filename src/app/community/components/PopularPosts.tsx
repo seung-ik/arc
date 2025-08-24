@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import HtmlContent from '@/components/inputs/HtmlContent';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { HotPostItem } from '@/types/post';
+import { StoredHotPost } from '@/types/post';
 
 interface PopularPostsProps {
-  posts: HotPostItem[];
+  posts: StoredHotPost[];
 }
 
 const PopularPostsWrapper = styled.div`
@@ -51,7 +51,7 @@ const PostTitle = styled.h3`
   line-height: 1.4;
 `;
 
-const ContentText = styled.p`
+const ContentText = styled.div`
   color: ${props => props.theme.colors.textGray};
   font-size: ${props => props.theme.typography.fontSizes.sm};
   margin: 0 0 ${props => props.theme.spacing.sm} 0;
@@ -87,7 +87,7 @@ const ViewCount = styled.span`
 
 const PopularPosts: React.FC<PopularPostsProps> = ({ posts }) => {
   const router = useRouter();
-  const handleClick = (post: HotPostItem) => {
+  const handleClick = (post: StoredHotPost) => {
     const type = '일반';
     router.push(`${ROUTES.community.post(String(post.id))}?type=${type}`);
   };

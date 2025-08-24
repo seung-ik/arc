@@ -11,6 +11,7 @@ import {
   PostDetailResponse,
   PostsResponse,
   SportCategoriesResponse,
+  StoredHotPostsResponse,
 } from '@/types/post';
 import { ImageUploadRequest, ImageUploadResponse } from '@/types/upload';
 
@@ -201,6 +202,40 @@ export const useHotPostsApi = (enabled: boolean = true) => {
     queryKey: ['hot-posts'],
     queryFn: async (): Promise<HotPostsResponse> => {
       const response = await api.get('/posts/hot');
+      return response.data;
+    },
+    enabled,
+  });
+};
+
+/**
+ * 실시간 인기글 목록 조회
+ * - 실시간으로 업데이트되는 인기글들을 조회
+ * - 스포츠 카테고리별로 그룹화되어 반환
+ * - 실시간 순위나 트렌딩 콘텐츠에 사용
+ */
+export const useRealtimeHotPostsApi = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['realtime-hot-posts'],
+    queryFn: async (): Promise<StoredHotPostsResponse> => {
+      const response = await api.get('/posts/hot/realtime');
+      return response.data;
+    },
+    enabled,
+  });
+};
+
+/**
+ * 보상용 인기글 목록 조회
+ * - 보상 지급 대상이 되는 인기글들을 조회
+ * - 스포츠 카테고리별로 그룹화되어 반환
+ * - 토큰 보상 시스템이나 리더보드에 사용
+ */
+export const useStoredHotPostsApi = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['stored-hot-posts'],
+    queryFn: async (): Promise<StoredHotPostsResponse> => {
+      const response = await api.get('/posts/hot/stored');
       return response.data;
     },
     enabled,

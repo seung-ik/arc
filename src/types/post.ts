@@ -193,6 +193,32 @@ export interface HotPostsResponse {
   message: string;
 }
 
+export interface StoredHotPostsResponse {
+  success: boolean;
+  data: StoredHotPost[];
+  message: string;
+}
+
+export interface StoredHotPost {
+  id: number;
+  title: string;
+  content: string;
+  author: {
+    id: number;
+    nickname: string;
+  };
+  sportCategory: {
+    id: number;
+    name: string;
+  };
+  popularityScore: string;
+  createdAt: string;
+  viewCount: number;
+  rank: number;
+  selectionDate: string;
+  isRewarded: boolean;
+}
+
 // ===== 포스트 작성 관련 타입 =====
 
 /**

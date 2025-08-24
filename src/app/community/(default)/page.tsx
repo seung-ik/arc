@@ -3,7 +3,7 @@
 import { useCommunityStore } from '@/stores/communityStore';
 import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 import CommunityPageWrapper from '../components/CommunityPageWrapper';
-import { usePostsApi, useHotPostsApi } from '@/api/useCommunity';
+import { usePostsApi, useStoredHotPostsApi } from '@/api/useCommunity';
 import { useMemo } from 'react';
 
 export default function CommunityPage() {
@@ -11,9 +11,8 @@ export default function CommunityPage() {
 
   const { communityTabs } = useCommunityStore();
   const categoryId = communityTabs?.[currentTab]?.id || 1;
-  console.log('categoryId', categoryId);
   const { fetchPosts } = usePostsApi(categoryId, 1, 10);
-  const { data: hotPosts } = useHotPostsApi();
+  const { data: hotPosts } = useStoredHotPostsApi();
 
   const {
     items: posts,
@@ -36,12 +35,13 @@ export default function CommunityPage() {
   const hotPostsForCurrentTab = useMemo(() => {
     const groups = hotPosts?.data ?? [];
     // 1) categoryId 우선 매칭
-    const byId = groups.find(group => group.categoryId === categoryId);
-    if (byId) return byId.posts;
+    // const byId = groups.find(group => group.categoryId === categoryId);
+    // if (byId) return byId.posts;
     // 2) fallback: 탭 이름과 categoryName 매칭
-    const byName = groups.find(group => group.categoryName === currentTab);
-    return byName?.posts ?? [];
-  }, [hotPosts, categoryId, currentTab]);
+    // const byName = groups.find(group => group.categoryName === currentTab);
+    // return byName?.posts ?? [];
+    return groups;
+  }, [hotPosts]);
 
   return (
     <CommunityPageWrapper
