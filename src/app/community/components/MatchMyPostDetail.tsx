@@ -19,10 +19,43 @@ import { MatchPostData } from '@/types/post';
 import { useDeletePostMutation } from '@/api/useCommunity';
 import TwoButtonModal from '@/components/modals/TwoButtonModal';
 import { ROUTES } from '@/constants/routes';
+import styled from 'styled-components';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 interface MatchMyPostDetailProps {
   post: MatchPostData;
 }
+
+const CreateChatButton = styled.button`
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(90deg, #ff6d75 50%, #9c86ff 100%) border-box;
+  color: #ff6d75;
+  border: 2px solid transparent;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 109, 117, 0.3);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
 
 export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -31,6 +64,10 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
 
   const handleDelete = () => {
     setShowDeleteModal(true);
+  };
+
+  const handleCreateChat = () => {
+    alert('준비중인 기능입니다.');
   };
 
   const confirmDelete = async () => {
@@ -74,6 +111,15 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
         <ManagementSection>
           <ManagementTitle>게시글 관리</ManagementTitle>
           <ManagementButtons>
+            <CreateChatButton onClick={handleCreateChat}>
+              <Image
+                src={ICONS.VERYCHAT}
+                alt="verychat"
+                width={24}
+                height={24}
+              />
+              그룹 채팅방 생성
+            </CreateChatButton>
             <ManagementButton onClick={handleDelete} $variant="delete">
               삭제
             </ManagementButton>

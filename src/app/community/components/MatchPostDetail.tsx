@@ -11,13 +11,22 @@ import { Container, Content, PostContent } from '@/styles/PostDetailStyles';
 import HtmlContent from '@/components/inputs/HtmlContent';
 import { useApplyToMatchPostMutation } from '@/api/useMatch';
 import { MatchPostData } from '@/types/post';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 interface MatchPostDetailProps {
   post: MatchPostData;
 }
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  width: 100%;
+`;
+
 const JoinButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4a7c8a 0%, #23424a 50%, #1a3137 100%);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -26,12 +35,42 @@ const JoinButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 20px;
-  width: 100%;
+  flex: 1;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(35, 66, 74, 0.3);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
+const ChatButton = styled.button`
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(90deg, #ff6d75 50%, #9c86ff 100%) border-box;
+  color: #ff6d75;
+  border: 2px solid transparent;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 109, 117, 0.3);
   }
 
   &:disabled {
@@ -64,7 +103,6 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
   const [comment, setComment] = useState('');
   const applicationModal = useModal();
   const applyToMatchPost = useApplyToMatchPostMutation();
-  console.log(post);
 
   const handleJoin = () => {
     applicationModal.openModal();
@@ -131,16 +169,26 @@ export default function MatchPostDetail({ post }: MatchPostDetailProps) {
           <HtmlContent content={post.content} />
         </PostContent>
 
-        <JoinButton
-          onClick={handleJoin}
-          disabled={isJoined || isExpired(post.matchInfo.deadline)}
-        >
-          {isJoined
-            ? '참가 신청 완료'
-            : isExpired(post.matchInfo.matchDate)
-              ? '마감된 매치'
-              : '매치 참가하기'}
-        </JoinButton>
+        <ButtonContainer>
+          <JoinButton
+            onClick={handleJoin}
+            disabled={isJoined || isExpired(post.matchInfo.deadline)}
+          >
+            {isJoined
+              ? '참가 신청 완료'
+              : isExpired(post.matchInfo.matchDate)
+                ? '마감된 매치'
+                : '매치 참가하기'}
+          </JoinButton>
+
+          <ChatButton
+            onClick={() => alert('준비중인 기능입니다.')}
+            disabled={isExpired(post.matchInfo.matchDate)}
+          >
+            <Image src={ICONS.VERYCHAT} alt="verychat" width={20} height={20} />
+            채팅방 참여하기
+          </ChatButton>
+        </ButtonContainer>
 
         <MatchApplicationStatus
           postId={post.id}
