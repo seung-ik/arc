@@ -8,6 +8,7 @@ import { useLikeSignatureData } from '@/api/usePrevContract';
 import { GeneralPostData } from '@/types/post';
 import Image from 'next/image';
 import { ICONS } from '@/assets';
+import { DEFAULT_NETWORK } from '@/constants/networks';
 
 const PostActionsContainer = styled.div`
   margin: ${props => props.theme.spacing.md} 0;
@@ -78,13 +79,17 @@ export default function PostActions({ post }: PostActionsProps) {
       {
         onSuccess: async response => {
           console.log('컨트랙트 콜을 위한 데이터:', response);
+          if (!response.success) {
+            alert(response.error?.message || '오류가 발생했습니다.');
+            return;
+          }
 
           try {
             // 1 토큰을 wei 단위로 변환
             const { parseUnits } = await import('ethers');
             const amount = parseUnits('1', 18);
             const tx = await executeContract(
-              'evmpolygon-amoy',
+              DEFAULT_NETWORK,
               response.data.contractAddress,
               response.data.contractABI,
               'transferAndCall(address,uint256,bytes)',

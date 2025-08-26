@@ -9,6 +9,9 @@ import api from '@/lib/axios';
  */
 interface LikeSignatureResponse {
   success: boolean;
+  error?: {
+    message: string;
+  };
   data: {
     contractABI: any[]; // 스마트 컨트랙트 ABI
     postId: number; // 포스트 ID

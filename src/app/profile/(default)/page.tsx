@@ -9,6 +9,7 @@ import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
 import FirstPostGuideModal from '@/components/modals/FirstPostGuideModal';
 import { ROUTES } from '@/constants/routes';
+import { DEFAULT_NETWORK } from '@/constants/networks';
 import { useAuthStore } from '@/stores/authStore';
 import {
   useProfileApi,
@@ -129,7 +130,7 @@ export default function ProfilePage() {
             const { parseUnits } = await import('ethers');
             const amount = parseUnits(response.data.amount, 18);
             const tx = await executeContract(
-              'evmpolygon-amoy',
+              DEFAULT_NETWORK,
               response.data.contractAddress,
               response.data.contractABI,
               'claimWithSignature',
@@ -182,7 +183,7 @@ export default function ProfilePage() {
           const amount = parseUnits(response.data.amount, 18);
 
           const tx = await executeContract(
-            'evmpolygon-amoy',
+            DEFAULT_NETWORK,
             response.data.contractAddress,
             response.data.contractABI,
             'claimWithSignature',
