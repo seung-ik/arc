@@ -1,6 +1,7 @@
 'use client';
 
 import styled from 'styled-components';
+import { useEffect } from 'react';
 
 import CategoryTabs from './CategoryTabs';
 import CommunityPostCard from './CommunityPost';
@@ -59,6 +60,13 @@ export default function CommunityPageWrapper({
   const handleAdClick = (business: any) => {
     console.log('업장 배너 클릭됨:', business.name);
   };
+
+  // 현재 커뮤니티 종목을 로컬스토리지에 저장
+  useEffect(() => {
+    if (currentTab) {
+      localStorage.setItem('lastCommunityCategory', currentTab);
+    }
+  }, [currentTab]);
 
   return (
     <Container>

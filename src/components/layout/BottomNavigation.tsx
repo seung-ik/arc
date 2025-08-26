@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { TAB_ICONS } from '@/assets';
 
@@ -68,6 +68,47 @@ const TabLabel = styled.span`
 
 export default function BottomNavigation() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleCommunityClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    // 로컬스토리지에서 마지막 커뮤니티 종목 가져오기
+    const lastCategory =
+      localStorage.getItem('lastCommunityCategory') || '자유글';
+
+    // 종목별 경로 매핑 (ROUTES 상수 사용)
+    const categoryRoutes: Record<string, string> = {
+      자유글: ROUTES.community.root,
+      테니스: ROUTES.community.tennis,
+      배드민턴: ROUTES.community.badminton,
+      탁구: ROUTES.community.tableTennis,
+      당구: ROUTES.community.billiards,
+      바둑: ROUTES.community.go,
+      체스: ROUTES.community.chess,
+      공지사항: ROUTES.community.notice,
+    };
+
+    const targetRoute = categoryRoutes[lastCategory] || ROUTES.community.root;
+    router.push(targetRoute);
+  };
+
+  // 탭 활성화 상태 확인 함수
+  const isTabActive = (tabPath: string, pathname: string): boolean => {
+    const pathMappings: Record<string, string[]> = {
+      [ROUTES.community.root]: ['/community'],
+      [ROUTES.elo.management]: ['/elo'],
+      [ROUTES.profile.root]: ['/profile'],
+      [ROUTES.leaderboard.root]: ['/leaderboard'],
+    };
+
+    const pathsToCheck = pathMappings[tabPath];
+    if (pathsToCheck) {
+      return pathsToCheck.some(path => pathname.startsWith(path));
+    }
+
+    return pathname === tabPath;
+  };
 
   const tabs = [
     { path: ROUTES.elo.management, label: '매치', icon: TAB_ICONS.SCORE },
@@ -75,6 +116,7 @@ export default function BottomNavigation() {
       path: ROUTES.community.root,
       label: '커뮤니티',
       icon: TAB_ICONS.COMMUNITY,
+      onClick: handleCommunityClick,
     },
     {
       path: ROUTES.leaderboard.root,
@@ -88,21 +130,12 @@ export default function BottomNavigation() {
     <NavigationContainer>
       <TabList>
         {tabs.map(tab => {
-          const isActive =
-            tab.path === '/community'
-              ? pathname.startsWith('/community')
-              : tab.path === '/elo/management'
-                ? pathname.startsWith('/elo')
-                : tab.path === '/profile'
-                  ? pathname.startsWith('/profile')
-                  : tab.path === '/leaderboard'
-                    ? pathname.startsWith('/leaderboard')
-                    : pathname === tab.path;
+          const isActive = isTabActive(tab.path, pathname);
 
           return (
             <TabItem key={tab.label}>
-              <Link href={tab.path}>
-                <TabLink $isActive={isActive}>
+              {tab.onClick ? (
+                <TabLink $isActive={isActive} onClick={tab.onClick}>
                   <TabIcon>
                     <div
                       style={{
@@ -120,7 +153,28 @@ export default function BottomNavigation() {
                   </TabIcon>
                   <TabLabel>{tab.label}</TabLabel>
                 </TabLink>
-              </Link>
+              ) : (
+                <Link href={tab.path}>
+                  <TabLink $isActive={isActive}>
+                    <TabIcon>
+                      <div
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: isActive ? '#000000' : '#999999',
+                          WebkitMaskImage: `url(${tab.icon.src})`,
+                          WebkitMaskRepeat: 'no-repeat',
+                          WebkitMaskSize: 'contain',
+                          maskImage: `url(${tab.icon.src})`,
+                          maskRepeat: 'no-repeat',
+                          maskSize: 'contain',
+                        }}
+                      />
+                    </TabIcon>
+                    <TabLabel>{tab.label}</TabLabel>
+                  </TabLink>
+                </Link>
+              )}
             </TabItem>
           );
         })}

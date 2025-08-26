@@ -34,12 +34,6 @@ export default function CommunityPage() {
 
   const hotPostsForCurrentTab = useMemo(() => {
     const groups = hotPosts?.data ?? [];
-    // 1) categoryId 우선 매칭
-    // const byId = groups.find(group => group.categoryId === categoryId);
-    // if (byId) return byId.posts;
-    // 2) fallback: 탭 이름과 categoryName 매칭
-    // const byName = groups.find(group => group.categoryName === currentTab);
-    // return byName?.posts ?? [];
     return groups;
   }, [hotPosts]);
 
