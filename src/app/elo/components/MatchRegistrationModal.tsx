@@ -34,6 +34,23 @@ const Select = styled.select`
   color: ${props => props.theme.colors.textBlack};
   cursor: pointer;
 
+  /* 사파리 브라우저 호환성을 위한 스타일 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* 사파리에서 화살표 아이콘 제거 */
+  &::-ms-expand {
+    display: none;
+  }
+
+  /* 커스텀 화살표 아이콘 추가 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary};
