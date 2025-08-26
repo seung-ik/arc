@@ -45,7 +45,7 @@ export default function ChessPage() {
     // const byName = groups.find(group => group.categoryName === currentTab);
     // return byName?.posts ?? [];
     return groups;
-  }, [hotPosts, categoryId, currentTab]);
+  }, [hotPosts]);
 
   return (
     <CommunityPageWrapper
