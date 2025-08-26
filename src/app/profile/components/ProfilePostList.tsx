@@ -184,13 +184,10 @@ export default function ProfilePostList({
   }, [posts]);
 
   const handlePostClick = (post: MyPost) => {
-    // postType을 영어로 변환
-    const typeParam =
-      post.type === '매치'
-        ? 'match'
-        : post.type === '멘토'
-          ? 'mentor'
-          : 'general';
+    console.log(post.type, 'post.type');
+
+    // post.type이 이미 영어로 오므로 그대로 사용
+    const typeParam = post.type;
 
     router.push(`/community/post/${post.id}?from=profile&type=${typeParam}`);
   };
@@ -227,16 +224,20 @@ export default function ProfilePostList({
               <PostTitle>{post.title}</PostTitle>
             </PostTitleSection>
 
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <LikeButton
-                onClick={e => {
-                  e.stopPropagation();
-                  onHarvest?.(post.id);
-                }}
+            {post.type === 'general' && (
+              <div
+                style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
               >
-                ❤️ {post.likeCount}
-              </LikeButton>
-            </div>
+                <LikeButton
+                  onClick={e => {
+                    e.stopPropagation();
+                    onHarvest?.(post.id);
+                  }}
+                >
+                  ❤️ {post.likeCount}
+                </LikeButton>
+              </div>
+            )}
           </PostHeader>
 
           <PostContent>

@@ -159,6 +159,8 @@ const TopFormGroup = styled.div`
 const POST_TYPES = [
   { value: '일반', label: '일반' },
   { value: '매치', label: '매치' },
+  { value: '일반', label: '멘토(준비중)' },
+  { value: '일반', label: '판매(준비중)' },
 ];
 
 function WritePostForm() {
@@ -435,7 +437,10 @@ function WritePostForm() {
               >
                 <option value="">글타입을 선택하세요</option>
                 {POST_TYPES.map(type => (
-                  <option key={type.value} value={type.value}>
+                  <option
+                    key={`${type.value}-${type.label}`}
+                    value={type.value}
+                  >
                     {type.label}
                   </option>
                 ))}
