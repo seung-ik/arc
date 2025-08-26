@@ -169,7 +169,7 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, onOpponentClick }) => {
           </UserName>
           <UserInfo>
             스포츠: {match.sportCategoryName} / 결과:{' '}
-            {match.senderResult === 'win' ? '승' : '패'}
+            {match.senderResult === 'win' ? '패' : '승'}
           </UserInfo>
         </ContentSection>
         <CircularProgress $progress={progress} $color={color}>
