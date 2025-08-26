@@ -14,17 +14,17 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  padding: ${props => props.theme.spacing.md};
 `;
 
 const ModalContainer = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  max-width: 320px;
-  width: 100%;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
   max-height: 80vh;
-  overflow: hidden;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: modalSlideIn 0.3s ease-out;
 
   @keyframes modalSlideIn {
@@ -40,29 +40,49 @@ const ModalContainer = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  padding: ${props => props.theme.spacing.md};
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 `;
 
 const ModalTitle = styled.h2`
   margin: 0;
-  color: ${props => props.theme.colors.textBlack};
-  font-size: ${props => props.theme.typography.fontSizes.xl};
-  font-weight: ${props => props.theme.typography.fontWeights.semibold};
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #666;
+  }
 `;
 
 const ModalContent = styled.div`
-  padding: ${props => props.theme.spacing.md};
-  color: ${props => props.theme.colors.textGray};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  line-height: 1.6;
+  margin-bottom: 24px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+  text-align: left;
 `;
 
 const ModalFooter = styled.div`
-  padding: ${props => props.theme.spacing.md};
-  border-top: 1px solid ${props => props.theme.colors.border};
   display: flex;
-  gap: ${props => props.theme.spacing.md};
+  gap: 12px;
   justify-content: flex-end;
 `;
 
@@ -72,6 +92,7 @@ interface ModalProps {
   title: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  showCloseButton?: boolean;
 }
 
 export default function Modal({
@@ -80,6 +101,7 @@ export default function Modal({
   title,
   children,
   footer,
+  showCloseButton = false,
 }: ModalProps) {
   useEffect(() => {
     if (isOpen) {
@@ -100,6 +122,9 @@ export default function Modal({
       <ModalContainer onClick={e => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>
+          {showCloseButton && (
+            <CloseButton onClick={onClose}>&times;</CloseButton>
+          )}
         </ModalHeader>
         <ModalContent>{children}</ModalContent>
         {footer && <ModalFooter>{footer}</ModalFooter>}

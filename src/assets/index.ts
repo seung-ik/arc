@@ -20,6 +20,7 @@ import HATE from '@/assets/images/icons/hate.svg';
 import SETTING from '@/assets/images/icons/setting.svg';
 import NO_DATA from '@/assets/images/icons/no_data.svg';
 import INFO from '@/assets/images/icons/info.svg';
+import VERYCHAT from '@/assets/images/icons/verychat.svg';
 
 // 탭 아이콘들
 import TAB_COMMUNITY from '@/assets/images/icons/tab_community.svg';
@@ -73,6 +74,7 @@ export const ICONS = {
   SETTING,
   NO_DATA,
   INFO,
+  VERYCHAT,
 } as const;
 
 // 탭 아이콘들

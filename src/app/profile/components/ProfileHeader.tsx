@@ -1,7 +1,11 @@
 'use client';
 
+import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
+import { ICONS } from '@/assets';
+import { useModal } from '@/hooks/useModal';
+import BasicModal from '@/components/modals/BasicModal';
 
 interface ProfileHeaderProps {
   name: string;
@@ -74,12 +78,36 @@ const NicknameChangeButton = styled.button`
   }
 `;
 
+const ActionButton = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
+  }
+`;
+
+const ActionButtonText = styled.span`
+  font-size: ${props => props.theme.typography.fontSizes.sm};
+  color: ${props => props.theme.colors.textGray};
+`;
+
 export default function ProfileHeader({
   name,
   profileImage,
   isMyProfile = false,
   onNicknameChange,
 }: ProfileHeaderProps) {
+  const veryChatModal = useModal();
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -88,6 +116,13 @@ export default function ProfileHeader({
       .toUpperCase()
       .slice(0, 2);
   };
+
+  const handleVeryChatConnect = () => {
+    alert('준비중인 기능입니다.');
+  };
+
+  const handleVeryChatLearnMore = () =>
+    window.open('https://www.verychat.io/', '_blank');
 
   return (
     <HeaderContainer>
@@ -117,7 +152,33 @@ export default function ProfileHeader({
           </NicknameChangeButton>
         )}
       </NameContainer>
-      <ProfileLabel>{isMyProfile ? '내 프로필' : '사용자 프로필'}</ProfileLabel>
+      <ProfileLabel>
+        {isMyProfile ? (
+          <ActionButton onClick={veryChatModal.openModal}>
+            <ActionButtonText>Connect</ActionButtonText>
+            <Image src={ICONS.VERYCHAT} alt="verychat" width={24} height={24} />
+          </ActionButton>
+        ) : (
+          <ActionButton onClick={() => alert('준비중인 기능입니다.')}>
+            <ActionButtonText>친구추가</ActionButtonText>
+            <Image src={ICONS.VERYCHAT} alt="verychat" width={24} height={24} />
+          </ActionButton>
+        )}
+
+        {/* VeryChat 연결 모달 */}
+        <BasicModal
+          isOpen={veryChatModal.isOpen}
+          onClose={veryChatModal.closeModal}
+          title="VeryChat 연동"
+          content={`연결 시 매치글 작성과 같은 서비스 이용시\n채팅 기능을 사용할 수 있습니다.`}
+          leftButtonText="VeryChat 알아보기"
+          rightButtonText="Connect"
+          onLeftButtonClick={handleVeryChatLearnMore}
+          onRightButtonClick={handleVeryChatConnect}
+          leftButtonVariant="secondary"
+          rightButtonVariant="primary"
+        />
+      </ProfileLabel>
     </HeaderContainer>
   );
 }
