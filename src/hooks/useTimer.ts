@@ -33,7 +33,12 @@ export const useTimer = (
       // 진행률 계산: createdAt과 expiredTime의 차이를 기준으로 계산
       const totalDuration = Math.floor((expiredTimeMs - createdAtMs) / 1000); // 총 지속시간(초)
       const elapsedSeconds = totalDuration - totalSeconds;
-      const newProgress = Math.min((elapsedSeconds / totalDuration) * 360, 360);
+
+      // 처음에 10% 정도 찬 상태에서 시작하도록 조정
+      const baseProgress = 36; // 360도의 10% = 36도
+      const calculatedProgress =
+        (elapsedSeconds / totalDuration) * (360 - baseProgress);
+      const newProgress = Math.min(baseProgress + calculatedProgress, 360);
 
       // 색상 계산: total duration 기준으로 25%, 50%, 75% 구간별 변경
       let newColor = '#28a745'; // 초록색 (75% 이상 남음)

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { MatchResult } from '@/types/match';
 import { useTimer } from '@/hooks/useTimer';
+import { formatTimeRemaining } from '@/utils';
 
 // 시계형 원형 프로그레스 바 컴포넌트
 const CircularProgress = styled.div<{ $progress: number; $color: string }>`
@@ -96,8 +97,6 @@ const getSportEmoji = (sport: string) => {
   }
 };
 
-// calculateTimeRemaining 함수 제거 - useTimer 훅으로 대체
-
 interface PendingMatchCardProps {
   match: MatchResult;
 }
@@ -120,7 +119,7 @@ const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => {
         </UserInfo>
       </ContentSection>
       <CircularProgress $progress={progress} $color={color}>
-        <TimerText>{`${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`}</TimerText>
+        <TimerText>{formatTimeRemaining(seconds)}</TimerText>
       </CircularProgress>
       <StatusBadge>
         {match.status === 'pending'

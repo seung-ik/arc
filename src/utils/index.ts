@@ -19,6 +19,27 @@ export const formatDate = (dateString: string): string => {
 };
 
 /**
+ * 시간 단위에 따라 적절한 포맷을 보여주는 함수
+ * @param totalSeconds - 총 초 단위 시간
+ * @returns 포맷된 시간 문자열 (1시간 이내: 분:초, 1시간 이상: 시:분)
+ */
+export const formatTimeRemaining = (totalSeconds: number): string => {
+  if (totalSeconds <= 0) return '0:00';
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  // 1시간 이내면 분:초 형식
+  if (hours === 0) {
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  // 1시간 이상이면 시:분 형식
+  return `${hours}:${minutes.toString().padStart(2, '0')}`;
+};
+
+/**
  * 날짜를 상대적 시간으로 변환하는 함수 (24시간 이내만)
  * @param dateString - ISO 8601 형식의 날짜 문자열
  * @returns 상대적 시간 문자열 (24시간 이내만, 없으면 빈 문자열)
