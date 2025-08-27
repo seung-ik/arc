@@ -5,31 +5,7 @@ import React from 'react';
 import { MatchResult } from '@/types/match';
 import { useTimer } from '@/hooks/useTimer';
 import { formatTimeRemaining } from '@/utils';
-
-// 시계형 원형 프로그레스 바 컴포넌트
-const CircularProgress = styled.div<{ $progress: number; $color: string }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: conic-gradient(
-    ${props => props.$color} 0deg ${props => props.$progress}deg,
-    ${props => props.theme.colors.backgroundGray} ${props => props.$progress}deg
-      360deg
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: ${props => props.theme.colors.background};
-  }
-`;
+import ProgressIndicator from '@/components/ProgressIndicator';
 
 const TimerText = styled.div`
   position: absolute;
@@ -69,7 +45,7 @@ const UserInfo = styled.div`
 `;
 
 const StatusBadge = styled.div`
-  margin-left: ${props => props.theme.spacing.sm};
+  margin-left: ${props => props.theme.spacing.lg};
   padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
   background: ${props => props.theme.colors.primaryLight};
   border-radius: ${props => props.theme.borderRadius.md};
@@ -118,9 +94,9 @@ const PendingMatchCard: React.FC<PendingMatchCardProps> = ({ match }) => {
           {new Date(match.createdAt).toLocaleDateString()}
         </UserInfo>
       </ContentSection>
-      <CircularProgress $progress={progress} $color={color}>
+      <ProgressIndicator progress={progress} color={color}>
         <TimerText>{formatTimeRemaining(seconds)}</TimerText>
-      </CircularProgress>
+      </ProgressIndicator>
       <StatusBadge>
         {match.status === 'pending'
           ? '대기중'

@@ -4,6 +4,8 @@ import { useHandleMatchRequestMutation } from '@/api/useMatch';
 import { MatchResult } from '@/types/match';
 import { useTimer } from '@/hooks/useTimer';
 import TwoButtonModal from '../../../components/modals/TwoButtonModal';
+import { formatTimeRemaining } from '@/utils';
+import ProgressIndicator from '@/components/ProgressIndicator';
 
 // 스타일 컴포넌트들
 const RowItem = styled.div`
@@ -46,30 +48,6 @@ const UserInfo = styled.div`
   color: ${props => props.theme.colors.textGray};
 `;
 
-const CircularProgress = styled.div<{ $progress: number; $color: string }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: conic-gradient(
-    ${props => props.$color} 0deg ${props => props.$progress}deg,
-    ${props => props.theme.colors.backgroundGray} ${props => props.$progress}deg
-      360deg
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: ${props => props.theme.colors.background};
-  }
-`;
-
 const TimerText = styled.div`
   position: absolute;
   font-size: ${props => props.theme.typography.fontSizes.xs};
@@ -78,7 +56,7 @@ const TimerText = styled.div`
 `;
 
 const ActionButtons = styled.div`
-  margin-left: ${props => props.theme.spacing.sm};
+  margin-left: ${props => props.theme.spacing.lg};
   display: flex;
   gap: ${props => props.theme.spacing.sm};
   z-index: 1;
@@ -172,9 +150,9 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, onOpponentClick }) => {
             {match.senderResult === 'win' ? '패' : '승'}
           </UserInfo>
         </ContentSection>
-        <CircularProgress $progress={progress} $color={color}>
-          <TimerText>{`${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`}</TimerText>
-        </CircularProgress>
+        <ProgressIndicator progress={progress} color={color}>
+          <TimerText>{formatTimeRemaining(seconds)}</TimerText>
+        </ProgressIndicator>
 
         <ActionButtons>
           <ActionButton
