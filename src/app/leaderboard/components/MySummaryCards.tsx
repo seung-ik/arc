@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuthStore } from '@/stores/authStore';
+import { useLeaderboardStore } from '@/stores/leaderboardStore';
 import styled from 'styled-components';
 
 const CardsRow = styled.div`
@@ -69,6 +71,19 @@ const SubText = styled.div`
 `;
 
 export default function MySummaryCards() {
+  const { userElos } = useAuthStore();
+  const { currentSport } = useLeaderboardStore();
+
+  // Ensure currentSport is not null before accessing its id
+  const currentTabElo = userElos.find(
+    el => el.sportCategory.id === currentSport.id
+  );
+
+  console.log(currentTabElo);
+
+  // Optionally, remove or comment out the debug log if not needed
+  // console.log(userElos, currentSport);
+
   return (
     <CardsRow>
       <InfoCard>
@@ -76,7 +91,7 @@ export default function MySummaryCards() {
           <DotIcon $color="#23424A" />
           <CardLabel>현재 ELO</CardLabel>
         </CardHeader>
-        <CardValue>1,234</CardValue>
+        <CardValue>{currentTabElo?.eloPoint}</CardValue>
         <SubText>최근 +12 · 40경기</SubText>
       </InfoCard>
 
@@ -85,8 +100,8 @@ export default function MySummaryCards() {
           <DotIcon $color="#23424A" />
           <CardLabel>내 순위</CardLabel>
         </CardHeader>
-        <CardValue>#123</CardValue>
-        <SubText>상위 12%</SubText>
+        <CardValue>{currentTabElo?.tier}</CardValue>
+        <SubText>상위 {currentTabElo?.percentile}%</SubText>
       </InfoCard>
 
       <InfoCardButton>

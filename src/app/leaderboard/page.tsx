@@ -41,8 +41,6 @@ const Section = styled.section`
   }
 `;
 
-// 섹션 3 스타일은 components/RankListSection.tsx로 이동
-
 // 배너 스타일
 const PromoBanner = styled.div`
   position: relative;

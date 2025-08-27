@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ICONS } from '@/assets';
 import ProfileChip from '@/components/views/ProfileChip';
 import { useCommunityStore } from '@/stores/communityStore';
+import { useLeaderboardStore } from '@/stores/leaderboardStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const HeaderContainer = styled.div`
@@ -99,6 +100,8 @@ export default function LeaderboardHeader() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sportOptions } = useCommunityStore();
+  const { currentSport, setCurrentSport } = useLeaderboardStore();
+
   const sortedCategories = useMemo(
     () =>
       [...sportOptions].sort(
@@ -108,6 +111,63 @@ export default function LeaderboardHeader() {
   );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // URL 파라미터나 store에서 현재 선택된 카테고리 결정
+  const selectedLabel = useMemo(() => {
+    const urlSport = searchParams?.get('sport');
+
+    // URL 파라미터가 있으면 해당 스포츠 찾기
+    if (urlSport) {
+      const found = sortedCategories.find(
+        opt => String(opt.value) === urlSport
+      );
+      if (found) {
+        return found.label;
+      }
+    }
+
+    // store에 저장된 값이 있으면 사용
+    if (currentSport) {
+      return currentSport.label;
+    }
+
+    // 기본값으로 첫 번째 종목 표시
+    if (sortedCategories.length > 0) {
+      return sortedCategories[0].label;
+    }
+
+    return '종목 선택';
+  }, [searchParams, sortedCategories, currentSport]);
+
+  // URL 파라미터나 기본값에 따른 스포츠 설정을 별도로 처리
+  useEffect(() => {
+    const urlSport = searchParams?.get('sport');
+
+    if (urlSport) {
+      const found = sortedCategories.find(
+        opt => String(opt.value) === urlSport
+      );
+      if (found) {
+        setCurrentSport({
+          id: found.value,
+          label: found.label,
+          icon: found.icon,
+        });
+        return;
+      }
+    }
+
+    // store에 값이 없고 기본값도 설정되지 않은 경우에만 기본값 설정
+    if (!currentSport && sortedCategories.length > 0) {
+      const defaultSport = sortedCategories[0];
+      setCurrentSport({
+        id: defaultSport.value,
+        label: defaultSport.label,
+        icon: defaultSport.icon,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, sortedCategories, setCurrentSport]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -131,27 +191,20 @@ export default function LeaderboardHeader() {
     };
   }, []);
 
-  const selectedLabel = useMemo(() => {
-    const urlSport = searchParams?.get('sport');
-    const last =
-      typeof window !== 'undefined'
-        ? localStorage.getItem('leaderboard:lastSportId')
-        : null;
-    const current =
-      urlSport ??
-      last ??
-      (sortedCategories[0]?.value ? String(sortedCategories[0].value) : '');
-    const found = sortedCategories.find(
-      opt => String(opt.value) === String(current)
-    );
-    return found?.label ?? '종목 선택';
-  }, [searchParams, sortedCategories]);
-
   const handleSelect = (id: number) => {
-    localStorage.setItem('leaderboard:lastSportId', String(id));
-    const params = new URLSearchParams(window.location.search);
-    params.set('sport', String(id));
-    router.push(`/leaderboard?${params.toString()}`);
+    const found = sortedCategories.find(
+      opt => String(opt.value) === String(id)
+    );
+    if (found) {
+      setCurrentSport({
+        id: found.value,
+        label: found.label,
+        icon: found.icon,
+      });
+      const params = new URLSearchParams(window.location.search);
+      params.set('sport', String(id));
+      router.push(`/leaderboard?${params.toString()}`);
+    }
     setIsDropdownOpen(false);
   };
   return (
