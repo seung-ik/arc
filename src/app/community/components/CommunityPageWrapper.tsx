@@ -46,6 +46,7 @@ interface CommunityPageWrapperProps {
   hasNext?: boolean;
   onLoadMore?: () => void;
   showLoadMore?: boolean;
+  showBusinessBanner?: boolean;
 }
 
 export default function CommunityPageWrapper({
@@ -56,6 +57,7 @@ export default function CommunityPageWrapper({
   hasNext = false,
   onLoadMore,
   showLoadMore = true,
+  showBusinessBanner = true,
 }: CommunityPageWrapperProps) {
   const handleAdClick = (business: any) => {
     console.log('업장 배너 클릭됨:', business.name);
@@ -73,8 +75,8 @@ export default function CommunityPageWrapper({
       <CategoryTabs currentLabel={currentTab} />
       <CommunityLayout>
         <Content>
-          <PopularPosts posts={popularPosts} />
-          <BusinessBanner onClick={handleAdClick} />
+          {popularPosts.length > 0 && <PopularPosts posts={popularPosts} />}
+          {showBusinessBanner && <BusinessBanner onClick={handleAdClick} />}
           <PostList>
             {posts && posts.length > 0 ? (
               posts.map((post: any) => {

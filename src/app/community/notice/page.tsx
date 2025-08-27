@@ -42,6 +42,7 @@ export default function NoticePage() {
       isLoading={isLoading}
       hasNext={hasNext}
       onLoadMore={loadMore}
+      showBusinessBanner={false}
     />
   );
 }
