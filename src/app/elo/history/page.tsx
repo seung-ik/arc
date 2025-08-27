@@ -13,7 +13,7 @@ import React from 'react';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 import { MatchHistoryResult } from '@/types/match';
-import FirstMatchGuideModal from '@/components/modals/FirstMatchGuideModal';
+import FirstMatchGuideModal from '@/components/modals/GuideModal';
 import { useModal } from '@/hooks/useModal';
 
 const FilterContainer = styled.div`
@@ -268,6 +268,11 @@ export default function HistoryPage() {
       <FirstMatchGuideModal
         isOpen={firstMatchGuideModal.isOpen}
         onClose={firstMatchGuideModal.closeModal}
+        title="첫 매치 결과를 등록해보세요!"
+        description="매치 결과를 등록하면 토큰을 받을 수 있어요."
+        rewardText="첫 등록 시"
+        rewardAmount="5 EXP"
+        localStorageKey="firstMatchGuideModal"
       />
     </Container>
   );

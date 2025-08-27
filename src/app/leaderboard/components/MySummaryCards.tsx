@@ -102,7 +102,7 @@ export default function MySummaryCards() {
       <InfoCard>
         <CardHeader>
           <DotIcon $color="#23424A" />
-          <CardLabel>내 순위</CardLabel>
+          <CardLabel>내 티어</CardLabel>
         </CardHeader>
         <CardValue>{currentTabElo?.tier}</CardValue>
         <SubText>상위 {currentTabElo?.percentile}%</SubText>

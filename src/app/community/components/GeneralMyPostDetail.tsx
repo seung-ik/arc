@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import PostHeader from '@/app/community/components/PostHeader';
 import {
   Container,
@@ -16,6 +17,7 @@ import Comments from '@/app/community/components/Comments';
 import { useDeletePostMutation } from '@/api/useCommunity';
 import HtmlContent from '@/components/inputs/HtmlContent';
 import PostActions from '@/app/community/components/PostActions';
+import TwoButtonModal from '@/components/modals/TwoButtonModal';
 
 interface GeneralMyPostDetailProps {
   post: GeneralPostData;
@@ -26,20 +28,23 @@ export default function GeneralMyPostDetail({
 }: GeneralMyPostDetailProps) {
   const router = useRouter();
   const deletePostMutation = useDeletePostMutation();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleDelete = () => {
-    if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
-      deletePostMutation.mutate(post.id, {
-        onSuccess: () => {
-          console.log('글 삭제 성공');
-          router.back(); // 이전 페이지로 돌아가기
-        },
-        onError: error => {
-          console.error('글 삭제 실패:', error);
-          alert('글 삭제에 실패했습니다.');
-        },
-      });
-    }
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deletePostMutation.mutate(post.id, {
+      onSuccess: () => {
+        console.log('글 삭제 성공');
+        router.back(); // 이전 페이지로 돌아가기
+      },
+      onError: error => {
+        console.error('글 삭제 실패:', error);
+        alert('글 삭제에 실패했습니다.');
+      },
+    });
   };
 
   return (
@@ -70,6 +75,17 @@ export default function GeneralMyPostDetail({
           </ManagementButtons>
         </ManagementSection>
       </Content>
+
+      <TwoButtonModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="게시글 삭제"
+        content="정말로 이 글을 삭제하시겠습니까?"
+        cancelText="취소"
+        confirmText="삭제"
+        onSubmit={handleConfirmDelete}
+        isLoading={deletePostMutation.isPending}
+      />
     </Container>
   );
 }

@@ -7,7 +7,7 @@ import ProfileHeader from '@/app/profile/components/ProfileHeader';
 import TokenDisplay from '@/components/views/TokenDisplay';
 import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
-import FirstPostGuideModal from '@/components/modals/FirstPostGuideModal';
+import FirstPostGuideModal from '@/components/modals/GuideModal';
 import { ROUTES } from '@/constants/routes';
 import { DEFAULT_NETWORK } from '@/constants/networks';
 import { useAuthStore } from '@/stores/authStore';
@@ -340,6 +340,11 @@ export default function ProfilePage() {
       <FirstPostGuideModal
         isOpen={firstPostGuideModal.isOpen}
         onClose={firstPostGuideModal.closeModal}
+        title="첫 글을 작성해보세요!"
+        description="커뮤니티에 글을 작성하면 EXP를 받을 수 있어요."
+        rewardText="첫 글 작성 시"
+        rewardAmount="3 EXP"
+        localStorageKey="firstPostGuideModal"
       />
     </Container>
   );

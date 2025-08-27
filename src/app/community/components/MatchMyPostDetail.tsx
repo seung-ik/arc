@@ -133,7 +133,7 @@ export default function MatchMyPostDetail({ post }: MatchMyPostDetailProps) {
           isOpen={showDeleteModal}
           onClose={cancelDelete}
           title="매치글 삭제"
-          content="정말로 이 매치글을 삭제하시겠습니까? 삭제된 글은 복구할 수 없습니다."
+          content={`정말로 이 매치글을 삭제하시겠습니까? \n삭제된 글은 복구할 수 없습니다.`}
           confirmText="삭제"
           cancelText="취소"
           onSubmit={confirmDelete}

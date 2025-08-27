@@ -2,57 +2,11 @@
 
 import styled from 'styled-components';
 import Modal from './Modal';
+import { ModalButton } from './style';
 
 const ButtonGroup = styled.div`
   display: flex;
   gap: ${props => props.theme.spacing.md};
-`;
-
-const CancelButton = styled.button`
-  background-color: ${props => props.theme.colors.error};
-  color: ${props => props.theme.colors.textWhite};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.border};
-    color: ${props => props.theme.colors.textBlack};
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-`;
-
-const ConfirmButton = styled.button`
-  background-color: ${props => props.theme.colors.info};
-  color: ${props => props.theme.colors.textWhite};
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.md};
-  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.primaryHover};
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  &:disabled {
-    background-color: ${props => props.theme.colors.textLightGray};
-    cursor: not-allowed;
-    transform: none;
-  }
 `;
 
 interface TwoButtonModalProps {
@@ -82,12 +36,16 @@ export default function TwoButtonModal({
 
   const footer = (
     <ButtonGroup>
-      <CancelButton onClick={onClose} disabled={isLoading}>
+      <ModalButton variant="secondary" onClick={onClose} disabled={isLoading}>
         {cancelText}
-      </CancelButton>
-      <ConfirmButton onClick={handleConfirm} disabled={isLoading}>
+      </ModalButton>
+      <ModalButton
+        variant="primary"
+        onClick={handleConfirm}
+        disabled={isLoading}
+      >
         {isLoading ? '처리중...' : confirmText}
-      </ConfirmButton>
+      </ModalButton>
     </ButtonGroup>
   );
 

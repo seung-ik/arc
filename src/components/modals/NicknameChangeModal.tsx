@@ -2,6 +2,7 @@
 
 import styled from 'styled-components';
 import { useState } from 'react';
+import { ModalOverlay, ModalContent, ModalButton } from './style';
 
 interface NicknameChangeModalProps {
   isOpen: boolean;
@@ -10,28 +11,6 @@ interface NicknameChangeModalProps {
   currentNickname: string;
   userTokens: number;
 }
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-`;
-
-const ModalContent = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  padding: ${props => props.theme.spacing.xl};
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-`;
 
 const ModalTitle = styled.h2`
   font-size: ${props => props.theme.typography.fontSizes.lg};
@@ -110,38 +89,6 @@ const ButtonGroup = styled.div`
   gap: ${props => props.theme.spacing.sm};
 `;
 
-const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  flex: 1;
-  padding: ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-size: ${props => props.theme.typography.fontSizes.base};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  border: 1px solid ${props => props.theme.colors.border};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  ${props =>
-    props.$variant === 'primary'
-      ? `
-    background-color: ${props.theme.colors.primary};
-    color: ${props.theme.colors.textWhite};
-    &:hover {
-      background-color: ${props.theme.colors.primaryHover};
-    }
-    &:disabled {
-      background-color: ${props.theme.colors.textGray};
-      cursor: not-allowed;
-    }
-  `
-      : `
-    background-color: transparent;
-    color: ${props.theme.colors.textBlack};
-    &:hover {
-      background-color: ${props.theme.colors.background};
-    }
-  `}
-`;
-
 export default function NicknameChangeModal({
   isOpen,
   onClose,
@@ -216,14 +163,16 @@ export default function NicknameChangeModal({
         </FormGroup>
 
         <ButtonGroup>
-          <Button onClick={handleClose}>취소</Button>
-          <Button
-            $variant="primary"
+          <ModalButton variant="secondary" onClick={handleClose}>
+            취소
+          </ModalButton>
+          <ModalButton
+            variant="primary"
             onClick={handleSubmit}
             disabled={userTokens < 1}
           >
             변경하기
-          </Button>
+          </ModalButton>
         </ButtonGroup>
       </ModalContent>
     </ModalOverlay>
