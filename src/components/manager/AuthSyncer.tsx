@@ -46,7 +46,9 @@ export default function AuthSyncer() {
 
   useEffect(() => {
     const token = localStorage.getItem('ACCESS_TOKEN');
-    if (!token && !pathname.includes('auth')) {
+
+    // 토큰없이 들어갈수있는 페이지가 아니면 로그아웃
+    if (!token && !(pathname.includes('auth') || pathname === '/')) {
       handleLogout();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
