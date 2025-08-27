@@ -22,16 +22,16 @@ const slideUp = keyframes`
   }
 `;
 
-const slideDown = keyframes`
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-`;
+// const slideDown = keyframes`
+//   from {
+//     transform: translateY(0);
+//     opacity: 1;
+//   }
+//   to {
+//     transform: translateY(100%);
+//     opacity: 0;
+//   }
+// `;
 
 const Overlay = styled.div<{ isOpen: boolean }>`
   position: fixed;
@@ -59,7 +59,7 @@ const ModalContent = styled.div<{
   border-radius: 52px 52px 0 0;
   padding: 42px 28px 24px;
   overflow-y: auto;
-  animation: ${props => (props.isClosing ? slideDown : slideUp)} 0.3s ease-out;
+  animation: ${props => (props.isClosing ? 'none' : slideUp)} 0.3s ease-out;
   position: relative;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
   z-index: 99999;

@@ -6,6 +6,8 @@ import LeaderboardHeader from './components/LeaderboardHeader';
 import HighRankerSection from './components/HighRankerSection';
 import MySummaryCards from './components/MySummaryCards';
 import RankListSection from './components/RankListSection';
+import ProjectIntroModal from '@/components/modals/ProjectIntroModal';
+import { useModal } from '@/hooks/useModal';
 
 const PageContent = styled.div`
   padding: ${props => props.theme.spacing.md};
@@ -43,23 +45,18 @@ const Section = styled.section`
 // 배너 스타일
 const PromoBanner = styled.div`
   position: relative;
-  width: 100%;
+  width: 90%;
   background: linear-gradient(135deg, #6c5ce7, #74b9ff);
   border-radius: ${props => props.theme.borderRadius.xl};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  padding: ${props => props.theme.spacing.lg};
   color: ${props => props.theme.colors.textWhite};
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: ${props => props.theme.spacing.md};
 
-  @media (max-width: 520px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: ${props => props.theme.spacing.sm};
-    padding: ${props => props.theme.spacing.md};
-  }
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${props => props.theme.spacing.sm};
+  padding: ${props => props.theme.spacing.md};
 `;
 
 const BannerTitle = styled.h3`
@@ -70,25 +67,33 @@ const BannerTitle = styled.h3`
 `;
 
 const BannerSubtitle = styled.p`
-  margin: 0;
+  margin-top: ${props => props.theme.spacing.sm};
   font-size: clamp(0.75rem, 3.5vw, 0.875rem);
   line-height: 1.4;
   opacity: 0.9;
 `;
 
-const BannerCTA = styled.div`
+const BannerCTA = styled.button`
   background: rgba(255, 255, 255, 0.2);
   color: ${props => props.theme.colors.textWhite};
   border-radius: 9999px;
-  padding: 8px 14px;
   font-size: ${props => props.theme.typography.fontSizes.sm};
   font-weight: ${props => props.theme.typography.fontWeights.semibold};
+  border: none;
+  cursor: pointer;
+  align-self: stretch;
+  text-align: center;
+  width: 100%;
+  padding: 10px 16px;
+  transition: all 0.2s ease;
 
-  @media (max-width: 520px) {
-    align-self: stretch;
-    text-align: center;
-    width: 100%;
-    padding: 10px 16px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -154,6 +159,8 @@ const HIGH_RANKERS = [
 ];
 
 export default function LeaderboardPage() {
+  const projectIntroModal = useModal();
+
   return (
     <div>
       <RotatingBanner>
@@ -173,7 +180,7 @@ export default function LeaderboardPage() {
           <RankListSection />
         </Section>
 
-        <Section>
+        <Section style={{ display: 'flex', justifyContent: 'center' }}>
           <PromoBanner>
             <BannerText>
               <BannerTitle>커뮤니티에서 활동하고 보상을 받으세요</BannerTitle>
@@ -181,10 +188,18 @@ export default function LeaderboardPage() {
                 인기글에 참여하고 토큰 리워드를 확보하세요
               </BannerSubtitle>
             </BannerText>
-            <BannerCTA>지금 참여하기</BannerCTA>
+            <BannerCTA onClick={() => projectIntroModal.openModal()}>
+              지금 참여하기
+            </BannerCTA>
           </PromoBanner>
         </Section>
       </PageContent>
+
+      <ProjectIntroModal
+        isOpen={projectIntroModal.isOpen}
+        onClose={projectIntroModal.closeModal}
+        initialType="community"
+      />
     </div>
   );
 }

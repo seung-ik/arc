@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useLeaderboardStore } from '@/stores/leaderboardStore';
 import styled from 'styled-components';
+import { theme } from '@/styles/theme';
 
 const CardsRow = styled.div`
   display: grid;
@@ -17,26 +18,20 @@ const CardsRow = styled.div`
 `;
 
 const InfoCard = styled.div`
-  background: ${props => props.theme.colors.secondary};
-
+  background: white;
+  border: 1px solid ${props => props.theme.colors.border || '#e5e7eb'};
   border-radius: ${props => props.theme.borderRadius.xl};
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: ${props => props.theme.spacing.sm};
   min-height: 72px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
+  transition: all 0.2s ease;
 
-const InfoCardButton = styled(InfoCard)`
-  cursor: pointer;
-  transition:
-    transform 0.1s ease,
-    box-shadow 0.1s ease;
-
-  &:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
 `;
 
@@ -71,6 +66,28 @@ const SubText = styled.div`
   color: ${props => props.theme.colors.primary};
 `;
 
+const InfoCardButton = styled(InfoCard)`
+  cursor: pointer;
+  background: ${props => props.theme.colors.primary};
+  color: white;
+  border-color: ${props => props.theme.colors.primary};
+
+  &:hover {
+    background: ${props =>
+      props.theme.colors.primaryDark || props.theme.colors.primary};
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  ${CardLabel}, ${CardValue}, ${SubText} {
+    color: white;
+  }
+`;
+
 export default function MySummaryCards() {
   const { userElos } = useAuthStore();
   const { currentSport } = useLeaderboardStore();
@@ -92,7 +109,7 @@ export default function MySummaryCards() {
     <CardsRow>
       <InfoCard>
         <CardHeader>
-          <DotIcon $color="#23424A" />
+          <DotIcon $color={theme.colors.error} />
           <CardLabel>현재 ELO</CardLabel>
         </CardHeader>
         <CardValue>{currentTabElo?.eloPoint}</CardValue>
@@ -101,21 +118,21 @@ export default function MySummaryCards() {
 
       <InfoCard>
         <CardHeader>
-          <DotIcon $color="#23424A" />
+          <DotIcon $color={theme.colors.secondary} />
           <CardLabel>내 티어</CardLabel>
         </CardHeader>
         <CardValue>{currentTabElo?.tier}</CardValue>
         <SubText>상위 {currentTabElo?.percentile}%</SubText>
       </InfoCard>
 
-      <InfoCardButton>
+      <InfoCard>
         <CardHeader>
-          <DotIcon $color="#23424A" />
+          <DotIcon $color={theme.colors.info} />
           <CardLabel>내 활동</CardLabel>
         </CardHeader>
         <CardValue>전적/NFT</CardValue>
         <SubText>탭하여 상세 보기</SubText>
-      </InfoCardButton>
+      </InfoCard>
     </CardsRow>
   );
 }

@@ -14,6 +14,7 @@ import { useCommunityStore } from '@/stores/communityStore';
 import { useInfinitePagination } from '@/hooks/useInfinitePagination';
 import { MatchHistoryResult } from '@/types/match';
 import FirstMatchGuideModal from '@/components/modals/GuideModal';
+import ProjectIntroModal from '@/components/modals/ProjectIntroModal';
 import { useModal } from '@/hooks/useModal';
 
 const FilterContainer = styled.div`
@@ -139,7 +140,7 @@ const ContentContainer = styled.div`
   flex: 1;
   width: 100%;
   // padding-top: ${props => props.theme.spacing.lg};
-  margin-top: ${props => props.theme.spacing.sm};
+  margin-top: ${props => props.theme.spacing.lg};
   display: flex;
   flex-direction: column;
 `;
@@ -147,13 +148,14 @@ const ContentContainer = styled.div`
 export default function HistoryPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedSport, setSelectedSport] = useState<{
-    value: number;
+    value: string | number;
     label: string;
-  } | null>(null);
+  }>({ value: '', label: '전체' });
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
   const { sportOptions } = useCommunityStore();
   const firstMatchGuideModal = useModal();
+  const projectIntroModal = useModal();
 
   // 디바운스된 검색 함수 생성 (800ms 지연)
   const debouncedSetSearchTerm = useCallback(
@@ -172,8 +174,8 @@ export default function HistoryPage() {
     loadMore,
   } = useInfinitePagination<MatchHistoryResult>({
     fetchFunction: createMatchHistoryFetcher(
-      selectedSport ? selectedSport.value.toString() : undefined,
-      searchTerm || undefined
+      selectedSport ? selectedSport.value.toString() : '',
+      searchTerm || ''
     ),
     pageSize: 10,
     dependencies: [selectedSport?.value, searchTerm], // 검색어 변경 시에도 초기화
@@ -183,9 +185,7 @@ export default function HistoryPage() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleSportSelect = (
-    sport: { value: number; label: string } | null
-  ) => {
+  const handleSportSelect = (sport: { value: number; label: string }) => {
     setSelectedSport(sport);
     setIsDropdownOpen(false);
   };
@@ -200,7 +200,7 @@ export default function HistoryPage() {
 
   // 첫 매치 가이드 모달 표시 여부 확인
   useEffect(() => {
-    if (matches.length === 0 && !isLoading && selectedSport === null) {
+    if (matches.length === 0 && !isLoading) {
       const today = new Date().toDateString();
       const hiddenDate = localStorage.getItem('firstMatchGuideHidden');
 
@@ -218,7 +218,7 @@ export default function HistoryPage() {
         title="기록은 온라인에, 경험은 오프라인에."
         description={`기록은 당신의 이야기를 남기고,\n보상은 더 넓은 경험으로 이어집니다.`}
         badge="할인"
-        onClick={() => alert('구장 예약 클릭')}
+        onClick={() => projectIntroModal.openModal()}
       />
       <ContentContainer>
         <FilterContainer>
@@ -233,7 +233,10 @@ export default function HistoryPage() {
               />
             </FilterButton>
             <DropdownMenu $isOpen={isDropdownOpen}>
-              <DropdownItem key="전체" onClick={() => handleSportSelect(null)}>
+              <DropdownItem
+                key="전체"
+                onClick={() => handleSportSelect({ value: 0, label: '전체' })}
+              >
                 전체
               </DropdownItem>
               {sportOptions.map(option => (
@@ -273,6 +276,12 @@ export default function HistoryPage() {
         rewardText="첫 등록 시"
         rewardAmount="5 EXP"
         localStorageKey="firstMatchGuideModal"
+      />
+
+      <ProjectIntroModal
+        isOpen={projectIntroModal.isOpen}
+        onClose={projectIntroModal.closeModal}
+        initialType="trivus"
       />
     </Container>
   );

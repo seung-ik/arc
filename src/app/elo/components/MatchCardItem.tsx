@@ -237,7 +237,6 @@ export default function MatchCardItem({ match }: MatchCardItemProps) {
 
   const headToHeadWins = match.my_wins;
   const headToHeadLosses = match.my_losses;
-  console.log(match);
 
   return (
     <MatchCard $isWin={isWin}>

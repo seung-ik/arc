@@ -25,7 +25,7 @@ export function useInfinitePagination<T>({
   dependencies = [],
 }: UseInfinitePaginationProps<T>): UseInfinitePaginationReturn<T> {
   const [items, setItems] = useState<T[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasNext, setHasNext] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
