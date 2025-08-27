@@ -66,27 +66,27 @@ const SubText = styled.div`
   color: ${props => props.theme.colors.primary};
 `;
 
-const InfoCardButton = styled(InfoCard)`
-  cursor: pointer;
-  background: ${props => props.theme.colors.primary};
-  color: white;
-  border-color: ${props => props.theme.colors.primary};
+// const InfoCardButton = styled(InfoCard)`
+//   cursor: pointer;
+//   background: ${props => props.theme.colors.primary};
+//   color: white;
+//   border-color: ${props => props.theme.colors.primary};
 
-  &:hover {
-    background: ${props =>
-      props.theme.colors.primaryDark || props.theme.colors.primary};
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  }
+//   &:hover {
+//     background: ${props =>
+//       props.theme.colors.primaryDark || props.theme.colors.primary};
+//     transform: translateY(-2px);
+//     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+//   }
 
-  &:active {
-    transform: translateY(0);
-  }
+//   &:active {
+//     transform: translateY(0);
+//   }
 
-  ${CardLabel}, ${CardValue}, ${SubText} {
-    color: white;
-  }
-`;
+//   ${CardLabel}, ${CardValue}, ${SubText} {
+//     color: white;
+//   }
+// `;
 
 export default function MySummaryCards() {
   const { userElos } = useAuthStore();
