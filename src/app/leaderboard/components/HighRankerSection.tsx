@@ -94,6 +94,21 @@ const Meta = styled.div`
   align-items: center;
   margin-top: clamp(2px, 1vw, 6px);
 `;
+
+const NameText = styled.span`
+  font-size: ${props => props.theme.typography.fontSizes.base};
+  font-weight: ${props => props.theme.typography.fontWeights.bold};
+  color: ${props => props.theme.colors.primary};
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 const EloText = styled.div`
   font-size: ${props => props.theme.typography.fontSizes.sm};
   font-weight: ${props => props.theme.typography.fontWeights.semibold};
@@ -146,7 +161,7 @@ export default function HighRankerSection({
               <RankBadge $rank={r.rank}>{r.rank}</RankBadge>
             </AvatarWrapper>
             <Meta>
-              <span>{r.name}</span>
+              <NameText>{r.name}</NameText>
               <EloText>
                 {r.elo} <GameCount>({r.games}경기)</GameCount>
               </EloText>
@@ -174,7 +189,7 @@ export default function HighRankerSection({
               <RankBadge $rank={r.rank}>{r.rank}</RankBadge>
             </AvatarWrapper>
             <Meta>
-              <span>{r.name}</span>
+              <NameText>{r.name}</NameText>
               <EloText>
                 {r.elo} <GameCount>({r.games}경기)</GameCount>
               </EloText>

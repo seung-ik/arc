@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useLeaderboardStore } from '@/stores/leaderboardStore';
 import styled from 'styled-components';
@@ -74,12 +75,15 @@ export default function MySummaryCards() {
   const { userElos } = useAuthStore();
   const { currentSport } = useLeaderboardStore();
 
-  // Ensure currentSport is not null before accessing its id
-  const currentTabElo = userElos.find(
-    el => el.sportCategory.id === currentSport.id
-  );
+  // useMemo로 최적화하고 의존성 명확하게 설정
+  const currentTabElo = useMemo(() => {
+    if (!currentSport || !userElos || userElos.length === 0) {
+      return { eloPoint: '-', tier: '-', percentile: '-' };
+    }
+    return userElos.find(el => el.sportCategory.id === currentSport.id);
+  }, [currentSport, userElos]);
 
-  console.log(currentTabElo);
+  console.log(currentTabElo, currentSport);
 
   // Optionally, remove or comment out the debug log if not needed
   // console.log(userElos, currentSport);

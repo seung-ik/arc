@@ -7,10 +7,8 @@ import { ICONS } from '@/assets';
 import ProfileChip from '@/components/views/ProfileChip';
 import { useCommunityStore } from '@/stores/communityStore';
 import { useLeaderboardStore } from '@/stores/leaderboardStore';
-import { useRouter, useSearchParams } from 'next/navigation';
 
 const HeaderContainer = styled.div`
-  // background-color: ${props => props.theme.colors.background};
   padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
   border-bottom: 5px solid ${props => props.theme.colors.borderLight};
 `;
@@ -45,16 +43,11 @@ const CategoryButton = styled.div<{ $isOpen: boolean }>`
   align-items: center;
   gap: ${props => props.theme.spacing.xs};
   padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  // background-color: ${props => props.theme.colors.background};
   font-size: ${props => props.theme.typography.fontSizes.xl};
   font-weight: ${props => props.theme.typography.fontWeights.bold};
   color: ${props => props.theme.colors.textBlack};
   transition: all 0.2s;
   cursor: pointer;
-
-  // &:hover {
-  //   background-color: ${props => props.theme.colors.backgroundGray};
-  // }
 `;
 
 const DropdownArrow = styled.span<{ $isOpen: boolean }>`
@@ -97,8 +90,6 @@ const DropdownItem = styled.div`
 `;
 
 export default function LeaderboardHeader() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const { sportOptions } = useCommunityStore();
   const { currentSport, setCurrentSport } = useLeaderboardStore();
 
@@ -112,52 +103,8 @@ export default function LeaderboardHeader() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // URL 파라미터나 store에서 현재 선택된 카테고리 결정
-  const selectedLabel = useMemo(() => {
-    const urlSport = searchParams?.get('sport');
-
-    // URL 파라미터가 있으면 해당 스포츠 찾기
-    if (urlSport) {
-      const found = sortedCategories.find(
-        opt => String(opt.value) === urlSport
-      );
-      if (found) {
-        return found.label;
-      }
-    }
-
-    // store에 저장된 값이 있으면 사용
-    if (currentSport) {
-      return currentSport.label;
-    }
-
-    // 기본값으로 첫 번째 종목 표시
-    if (sortedCategories.length > 0) {
-      return sortedCategories[0].label;
-    }
-
-    return '종목 선택';
-  }, [searchParams, sortedCategories, currentSport]);
-
-  // URL 파라미터나 기본값에 따른 스포츠 설정을 별도로 처리
+  // 기본값 설정
   useEffect(() => {
-    const urlSport = searchParams?.get('sport');
-
-    if (urlSport) {
-      const found = sortedCategories.find(
-        opt => String(opt.value) === urlSport
-      );
-      if (found) {
-        setCurrentSport({
-          id: found.value,
-          label: found.label,
-          icon: found.icon,
-        });
-        return;
-      }
-    }
-
-    // store에 값이 없고 기본값도 설정되지 않은 경우에만 기본값 설정
     if (!currentSport && sortedCategories.length > 0) {
       const defaultSport = sortedCategories[0];
       setCurrentSport({
@@ -166,8 +113,23 @@ export default function LeaderboardHeader() {
         icon: defaultSport.icon,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, sortedCategories, setCurrentSport]);
+  }, [currentSport, sortedCategories, setCurrentSport]);
+
+  // currentSport가 있지만 sortedCategories에 없는 경우 처리
+  useEffect(() => {
+    if (currentSport && sortedCategories.length > 0) {
+      const found = sortedCategories.find(opt => opt.value === currentSport.id);
+      if (!found) {
+        // 저장된 종목이 더 이상 유효하지 않으면 첫 번째 종목으로 설정
+        const defaultSport = sortedCategories[0];
+        setCurrentSport({
+          id: defaultSport.value,
+          label: defaultSport.label,
+          icon: defaultSport.icon,
+        });
+      }
+    }
+  }, [currentSport, sortedCategories, setCurrentSport]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -201,12 +163,10 @@ export default function LeaderboardHeader() {
         label: found.label,
         icon: found.icon,
       });
-      const params = new URLSearchParams(window.location.search);
-      params.set('sport', String(id));
-      router.push(`/leaderboard?${params.toString()}`);
     }
     setIsDropdownOpen(false);
   };
+
   return (
     <HeaderContainer>
       <HeaderContent>
@@ -216,7 +176,7 @@ export default function LeaderboardHeader() {
               $isOpen={isDropdownOpen}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <span>{selectedLabel}</span>
+              <span>{currentSport?.label || '종목 선택'}</span>
               <DropdownArrow $isOpen={isDropdownOpen}>
                 <Image
                   src={ICONS.ARROW_DOWN}

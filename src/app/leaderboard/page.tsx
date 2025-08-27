@@ -1,7 +1,6 @@
 'use client';
 
 import styled from 'styled-components';
-import { Suspense } from 'react';
 import { BUSINESS_IMAGES } from '@/assets';
 import LeaderboardHeader from './components/LeaderboardHeader';
 import HighRankerSection from './components/HighRankerSection';
@@ -99,7 +98,7 @@ const HIGH_RANKERS = [
   {
     id: 1,
     rank: 1,
-    name: '닉네임1',
+    name: '김솔밤',
     elo: '1.1K',
     games: 10,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_01.src,
@@ -107,7 +106,7 @@ const HIGH_RANKERS = [
   {
     id: 2,
     rank: 2,
-    name: '닉네임2',
+    name: '쏘는예지니',
     elo: '1.2K',
     games: 20,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_02.src,
@@ -115,7 +114,7 @@ const HIGH_RANKERS = [
   {
     id: 3,
     rank: 3,
-    name: '닉네임3',
+    name: '혜넹',
     elo: '1.3K',
     games: 30,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_03.src,
@@ -123,7 +122,7 @@ const HIGH_RANKERS = [
   {
     id: 4,
     rank: 4,
-    name: '닉네임4',
+    name: '카사',
     elo: '970',
     games: 20,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_04.src,
@@ -131,7 +130,7 @@ const HIGH_RANKERS = [
   {
     id: 5,
     rank: 5,
-    name: '닉네임5',
+    name: '아델',
     elo: '960',
     games: 25,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_05.src,
@@ -139,7 +138,7 @@ const HIGH_RANKERS = [
   {
     id: 6,
     rank: 6,
-    name: '닉네임6',
+    name: '록리',
     elo: '950',
     games: 30,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_06.src,
@@ -147,7 +146,7 @@ const HIGH_RANKERS = [
   {
     id: 7,
     rank: 7,
-    name: '닉네임7',
+    name: 'raro',
     elo: '940',
     games: 35,
     avatarUrl: BUSINESS_IMAGES.PEOPLE_07.src,
@@ -160,9 +159,7 @@ export default function LeaderboardPage() {
       <RotatingBanner>
         <BannerText>준비 중인 페이지입니다 🚧</BannerText>
       </RotatingBanner>
-      <Suspense fallback={null}>
-        <LeaderboardHeader />
-      </Suspense>
+      <LeaderboardHeader />
       <PageContent>
         <Section>
           <HighRankerSection rankers={HIGH_RANKERS} />

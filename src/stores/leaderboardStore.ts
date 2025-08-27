@@ -48,7 +48,10 @@ export const useLeaderboardStore = create<
     }),
     {
       name: 'leaderboard-storage',
-      partialize: state => ({ currentSportId: state.currentSportId }),
+      partialize: state => ({
+        currentSportId: state.currentSportId,
+        currentSport: state.currentSport,
+      }),
     }
   )
 );
