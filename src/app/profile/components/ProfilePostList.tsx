@@ -174,7 +174,6 @@ export default function ProfilePostList({
   onHarvest,
 }: ProfilePostListProps) {
   const router = useRouter();
-  console.log(posts, 'posts');
 
   // 정렬된 게시글 목록: 수확 가능한 것들을 위로, 그 다음 시간순
   const sortedPosts = useMemo(() => {
@@ -184,8 +183,6 @@ export default function ProfilePostList({
   }, [posts]);
 
   const handlePostClick = (post: MyPost) => {
-    console.log(post.type, 'post.type');
-
     // post.type이 이미 영어로 오므로 그대로 사용
     const typeParam = post.type;
 

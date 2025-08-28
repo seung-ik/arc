@@ -17,7 +17,6 @@ import {
   MyPost,
   useUserTokensApi,
 } from '@/api/useUser';
-import { useQueryClient } from '@tanstack/react-query';
 import GameStatsGrid from '../components/GameStatsGrid';
 import {
   useClaimAllAccumulatedTokens,
@@ -73,7 +72,6 @@ const ProfileRightCol = styled.div`
 
 export default function ProfilePage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
@@ -94,10 +92,7 @@ export default function ProfilePage() {
     userElos,
   } = useAuthStore();
   const { data: myPostsData } = useMyPostsApi();
-  const { data: userTokens, refetch: refetchUserTokens } = useUserTokensApi(
-    userProfile?.id || 0
-  );
-  console.log('userTokens', userTokens);
+  const { refetch: refetchUserTokens } = useUserTokensApi(userProfile?.id || 0);
   const { executeContract } = useWepin();
 
   const handleHarvest = (postId: number) => {
@@ -181,36 +176,41 @@ export default function ProfilePage() {
           console.log(response);
           const { parseUnits } = await import('ethers');
           const amount = parseUnits(response.data.amount, 18);
+          try {
+            const tx = await executeContract(
+              DEFAULT_NETWORK,
+              response.data.contractAddress,
+              response.data.contractABI,
+              'claimWithSignature',
+              [
+                response.data.to,
+                amount,
+                response.data.deadline,
+                response.data.nonce,
+                response.data.signature,
+              ]
+            );
+            console.log('claimAllAccumulatedTokens success', tx);
 
-          const tx = await executeContract(
-            DEFAULT_NETWORK,
-            response.data.contractAddress,
-            response.data.contractABI,
-            'claimWithSignature',
-            [
-              response.data.to,
-              amount,
-              response.data.deadline,
-              response.data.nonce,
-              response.data.signature,
-            ]
-          );
-          console.log('claimAllAccumulatedTokens success', tx);
+            // 옵티미스틱 업데이트: 즉시 토큰 증가
+            if (userProfile.tokenAmount) {
+              const currentAmount = parseFloat(userProfile.tokenAmount);
+              const newAmount =
+                currentAmount + (Number(profileData?.user.availableToken) || 0);
 
-          // 옵티미스틱 업데이트: 즉시 토큰 증가
-          if (userProfile.tokenAmount) {
-            const currentAmount = parseFloat(userProfile.tokenAmount);
-            const newAmount =
-              currentAmount + (Number(profileData?.user.availableToken) || 0);
-
-            setTokenAmount(String(newAmount));
-            setAvailableToken('0'); // availableToken을 0으로 리셋
-            setHarvestableTokens(0); // 수확 가능한 토큰 리셋
-            console.log('Optimistic update:', {
-              currentAmount,
-              harvestableTokens,
-              newAmount,
-            });
+              setTokenAmount(String(newAmount));
+              setAvailableToken('0'); // availableToken을 0으로 리셋
+              setHarvestableTokens(0); // 수확 가능한 토큰 리셋
+              console.log('Optimistic update:', {
+                currentAmount,
+                harvestableTokens,
+                newAmount,
+              });
+            }
+          } catch (error: any) {
+            console.dir(error);
+            alert(error.shortMessage);
+            return;
           }
 
           // 10초 후 실제 값으로 교체
@@ -218,7 +218,6 @@ export default function ProfilePage() {
             if (userProfile?.id) {
               try {
                 const result = await refetchUserTokens();
-                console.log('Updated user tokens after delay:', result.data);
                 if (result.data?.data?.totalTokens) {
                   const actualAmount = result.data.data.totalTokens;
                   const availableAmount = result.data.data.availableTokens;
@@ -231,12 +230,6 @@ export default function ProfilePage() {
               }
             }
           }, 10000);
-
-          // 수확 완료 후 프로필 데이터 리패치하여 밸런스 업데이트
-          queryClient.refetchQueries({ queryKey: ['user-profile'] });
-        },
-        onError: () => {
-          console.log('claimAllAccumulatedTokens error');
         },
       }
     );
@@ -263,17 +256,9 @@ export default function ProfilePage() {
   // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
   useEffect(() => {
     if (myPostsData) {
-      console.log('내가 쓴 글 목록:', myPostsData);
       setPosts(myPostsData.data);
     }
   }, [myPostsData]);
-
-  // 현재 토큰 데이터 콘솔 출력
-  useEffect(() => {
-    if (userTokens) {
-      console.log('Current user tokens:', userTokens);
-    }
-  }, [userTokens]);
 
   useEffect(() => {
     if (profileData) {
