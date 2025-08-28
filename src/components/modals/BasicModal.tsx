@@ -55,7 +55,7 @@ const BasicModal: React.FC<TwoButtonModalProps> = ({
 
         <ButtonGroup>
           <ModalButton variant={leftButtonVariant} onClick={handleLeftClick}>
-            {leftButtonText}ㅁㅁ
+            {leftButtonText}
           </ModalButton>
           <ModalButton variant={rightButtonVariant} onClick={handleRightClick}>
             {rightButtonText}

@@ -36,7 +36,6 @@ export default function AuthSyncer() {
           })
           .catch(error => {
             console.error(error);
-            handleLogout();
           });
       }
     };
