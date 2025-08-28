@@ -7,6 +7,7 @@ import { ModalButton } from './style';
 const ButtonGroup = styled.div`
   display: flex;
   gap: ${props => props.theme.spacing.md};
+  width: 100%;
 `;
 
 interface TwoButtonModalProps {
