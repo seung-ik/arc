@@ -76,6 +76,7 @@ export default function ProfilePage() {
   const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
+  const [txLoading, setTxLoading] = useState(false);
   const firstPostGuideModal = useModal();
 
   const claimAllAccumulatedTokens = useClaimAllAccumulatedTokens();
@@ -109,6 +110,8 @@ export default function ProfilePage() {
           try {
             const { parseUnits } = await import('ethers');
             const amount = parseUnits(response.data.amount, 18);
+            setTxLoading(true); // 트랜잭션 시작 시 로딩 상태 활성화
+
             const tx = await executeContract(
               DEFAULT_NETWORK,
               response.data.contractAddress,
@@ -124,6 +127,7 @@ export default function ProfilePage() {
               ]
             );
             console.log('Individual harvest contract success:', tx);
+
             // 옵티미스틱 업데이트: 즉시 토큰 증가
             if (userProfile.tokenAmount) {
               const currentAmount = parseFloat(userProfile.tokenAmount);
@@ -136,9 +140,11 @@ export default function ProfilePage() {
                 newAmount,
               });
             }
+            setTxLoading(false); // 트랜잭션 완료 시 로딩 상태 비활성화
           } catch (error: any) {
             console.dir(error);
             alert(error.shortMessage);
+            setTxLoading(false); // 에러 시 로딩 상태 비활성화
             return;
           }
 
@@ -161,6 +167,11 @@ export default function ProfilePage() {
             }
           }, 10000);
         },
+        onError: err => {
+          console.dir(err);
+          alert('수확 가능한 토큰이 없습니다.');
+          setTxLoading(false); // 에러 시 로딩 상태 비활성화
+        },
       }
     );
   };
@@ -174,6 +185,8 @@ export default function ProfilePage() {
           const { parseUnits } = await import('ethers');
           const amount = parseUnits(response.data.amount, 18);
           try {
+            setTxLoading(true); // 트랜잭션 시작 시 로딩 상태 활성화
+
             const tx = await executeContract(
               DEFAULT_NETWORK,
               response.data.contractAddress,
@@ -204,9 +217,11 @@ export default function ProfilePage() {
                 newAmount,
               });
             }
+            setTxLoading(false); // 트랜잭션 완료 시 로딩 상태 비활성화
           } catch (error: any) {
             console.dir(error);
             alert(error.shortMessage);
+            setTxLoading(false); // 에러 시 로딩 상태 비활성화
             return;
           }
 
@@ -228,6 +243,9 @@ export default function ProfilePage() {
               }
             }
           }, 10000);
+        },
+        onError: () => {
+          setTxLoading(false); // 에러 시 로딩 상태 비활성화
         },
       }
     );
@@ -281,55 +299,58 @@ export default function ProfilePage() {
   if (isLoading) return <FullPageLoading />;
 
   return (
-    <Container>
-      <Content>
-        <ProfileTopWrapper>
-          <ProfileLeftCol>
-            <ProfileHeader
-              name={userProfile.nickname || ''}
-              profileImage={userProfile.profileImageUrl || undefined}
-              isMyProfile={true}
-              onNicknameChange={handleNicknameChange}
-            />
-          </ProfileLeftCol>
-          <ProfileRightCol>
-            <TokenDisplay
-              tokens={Number(userProfile.tokenAmount) ?? 0}
-              harvestableTokens={Number(userProfile.availableToken) ?? 0}
-              onHarvestAll={handleHarvestAll}
-              harvestButtonText="수확하기"
-              onViewHistory={handleViewTokenHistory}
-            />
-          </ProfileRightCol>
-        </ProfileTopWrapper>
+    <>
+      {txLoading && <FullPageLoading message="트랜잭션 진행중..." />}
+      <Container>
+        <Content>
+          <ProfileTopWrapper>
+            <ProfileLeftCol>
+              <ProfileHeader
+                name={userProfile.nickname || ''}
+                profileImage={userProfile.profileImageUrl || undefined}
+                isMyProfile={true}
+                onNicknameChange={handleNicknameChange}
+              />
+            </ProfileLeftCol>
+            <ProfileRightCol>
+              <TokenDisplay
+                tokens={Number(userProfile.tokenAmount) ?? 0}
+                harvestableTokens={Number(userProfile.availableToken) ?? 0}
+                onHarvestAll={handleHarvestAll}
+                harvestButtonText="수확하기"
+                onViewHistory={handleViewTokenHistory}
+              />
+            </ProfileRightCol>
+          </ProfileTopWrapper>
 
-        <GameStatsGrid userElos={userElos} />
+          <GameStatsGrid userElos={userElos} />
 
-        <ProfilePostList
-          posts={posts}
-          isMyProfile={true}
-          onHarvest={handleHarvest}
+          <ProfilePostList
+            posts={posts}
+            isMyProfile={true}
+            onHarvest={handleHarvest}
+          />
+        </Content>
+
+        <NicknameChangeModal
+          isOpen={isNicknameModalOpen}
+          onClose={() => setIsNicknameModalOpen(false)}
+          onSubmit={handleNicknameSubmit}
+          currentNickname={userProfile.nickname || ''}
+          userTokens={Number(userProfile.tokenAmount) ?? 0}
         />
-      </Content>
 
-      <NicknameChangeModal
-        isOpen={isNicknameModalOpen}
-        onClose={() => setIsNicknameModalOpen(false)}
-        onSubmit={handleNicknameSubmit}
-        currentNickname={userProfile.nickname || ''}
-        userTokens={Number(userProfile.tokenAmount) ?? 0}
-      />
-
-      <FirstPostGuideModal
-        isOpen={firstPostGuideModal.isOpen}
-        onClose={firstPostGuideModal.closeModal}
-        title="첫 글을 작성해보세요!"
-        description="커뮤니티에 글을 작성하면 EXP를 받을 수 있어요."
-        rewardText="첫 글 작성 시"
-        rewardAmount="3 EXP"
-        localStorageKey="firstPostGuideModal"
-      />
-    </Container>
+        <FirstPostGuideModal
+          isOpen={firstPostGuideModal.isOpen}
+          onClose={firstPostGuideModal.closeModal}
+          title="첫 글을 작성해보세요!"
+          description="커뮤니티에 글을 작성하면 EXP를 받을 수 있어요."
+          rewardText="첫 글 작성 시"
+          rewardAmount="3 EXP"
+          localStorageKey="firstPostGuideModal"
+        />
+      </Container>
+    </>
   );
 }
 
