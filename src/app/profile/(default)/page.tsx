@@ -96,8 +96,6 @@ export default function ProfilePage() {
   const { executeContract } = useWepin();
 
   const handleHarvest = (postId: number) => {
-    console.log('handleHarvest called with postId:', postId);
-
     // useClaimByLikeSignature API 호출
     claimByLikeSignature.mutate(
       {
@@ -107,19 +105,6 @@ export default function ProfilePage() {
       {
         onSuccess: async response => {
           console.log('Claim by like signature response:', response);
-
-          // 옵티미스틱 업데이트: 즉시 토큰 증가
-          if (userProfile.tokenAmount) {
-            const currentAmount = parseFloat(userProfile.tokenAmount);
-            const claimAmount = parseFloat(response.data.amount);
-            const newAmount = (currentAmount + claimAmount).toFixed(8);
-            setTokenAmount(newAmount);
-            console.log('Optimistic update for individual harvest:', {
-              currentAmount,
-              claimAmount,
-              newAmount,
-            });
-          }
 
           try {
             const { parseUnits } = await import('ethers');
@@ -139,30 +124,42 @@ export default function ProfilePage() {
               ]
             );
             console.log('Individual harvest contract success:', tx);
-
-            // 10초 후 실제 값으로 교체
-            setTimeout(async () => {
-              if (userProfile?.id) {
-                try {
-                  const result = await refetchUserTokens();
-
-                  if (result.data?.data?.totalTokens) {
-                    const actualAmount = result.data.data.totalTokens;
-                    const availableAmount = result.data.data.availableTokens;
-                    setTokenAmount(actualAmount);
-                    setAvailableToken(availableAmount);
-                  }
-                } catch (err) {
-                  console.log(err);
-                }
-              }
-            }, 10000);
-          } catch (error) {
-            console.error('Claim by like signature contract error:', error);
+            // 옵티미스틱 업데이트: 즉시 토큰 증가
+            if (userProfile.tokenAmount) {
+              const currentAmount = parseFloat(userProfile.tokenAmount);
+              const claimAmount = parseFloat(response.data.amount);
+              const newAmount = (currentAmount + claimAmount).toFixed(8);
+              setTokenAmount(newAmount);
+              console.log('Optimistic update for individual harvest:', {
+                currentAmount,
+                claimAmount,
+                newAmount,
+              });
+            }
+          } catch (error: any) {
+            console.dir(error);
+            alert(error.shortMessage);
+            return;
           }
-        },
-        onError: error => {
-          console.error('Claim by like signature error:', error);
+
+          // 10초 후 실제 값으로 교체
+          setTimeout(async () => {
+            if (userProfile?.id) {
+              try {
+                const result = await refetchUserTokens();
+
+                if (result.data?.data?.totalTokens) {
+                  const actualAmount = result.data.data.totalTokens;
+                  const availableAmount = result.data.data.availableTokens;
+                  setTokenAmount(actualAmount);
+                  setAvailableToken(availableAmount);
+                }
+              } catch (err: any) {
+                console.dir(err);
+                alert(err.shortMessage);
+              }
+            }
+          }, 10000);
         },
       }
     );
@@ -190,7 +187,7 @@ export default function ProfilePage() {
                 response.data.signature,
               ]
             );
-            console.log('claimAllAccumulatedTokens success', tx);
+            console.log('success tx', tx);
 
             // 옵티미스틱 업데이트: 즉시 토큰 증가
             if (userProfile.tokenAmount) {
@@ -225,8 +222,9 @@ export default function ProfilePage() {
                   setAvailableToken(availableAmount);
                   console.log('Replaced with actual value:', actualAmount);
                 }
-              } catch (error) {
-                console.error('Failed to fetch actual tokens:', error);
+              } catch (error: any) {
+                console.dir(error);
+                alert(error.shortMessage);
               }
             }
           }, 10000);

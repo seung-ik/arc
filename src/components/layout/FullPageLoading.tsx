@@ -5,21 +5,22 @@ import styled from 'styled-components';
 import LoadingIndicator from '../views/LoadingIndicator';
 
 const Container = styled.div`
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(1px);
+  z-index: 9999;
   display: flex;
-  flex-direction: column;
-  background-color: ${props => props.theme.colors.background};
+  justify-content: center;
+  align-items: center;
 `;
 
-const Content = styled.div`
-  flex: 1;
-`;
-
-const FullPageLoading: React.FC = () => (
+const FullPageLoading: React.FC<{ message?: string }> = ({ message }) => (
   <Container>
-    <Content>
-      <LoadingIndicator />
-    </Content>
+    <LoadingIndicator message={message} />
   </Container>
 );
 
