@@ -143,7 +143,7 @@ export default function ProfilePage() {
             setTxLoading(false); // 트랜잭션 완료 시 로딩 상태 비활성화
           } catch (error: any) {
             console.dir(error);
-            alert(error.shortMessage);
+            // alert(error.shortMessage); TODO: 임시
             setTxLoading(false); // 에러 시 로딩 상태 비활성화
             return;
           }
@@ -220,7 +220,7 @@ export default function ProfilePage() {
             setTxLoading(false); // 트랜잭션 완료 시 로딩 상태 비활성화
           } catch (error: any) {
             console.dir(error);
-            alert(error.shortMessage);
+            // alert(error.shortMessage); TODO: 임시
             setTxLoading(false); // 에러 시 로딩 상태 비활성화
             return;
           }
@@ -239,7 +239,7 @@ export default function ProfilePage() {
                 }
               } catch (error: any) {
                 console.dir(error);
-                alert(error.shortMessage);
+                // alert(error.shortMessage); TODO: 임시
               }
             }
           }, 10000);
