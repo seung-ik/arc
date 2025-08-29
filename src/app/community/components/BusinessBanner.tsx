@@ -170,7 +170,7 @@ const mockBusinesses: Business[] = [
   {
     id: 5,
     name: '부산 당구장',
-    image: BUSINESS_IMAGES.EX_5,
+    image: BUSINESS_IMAGES.EX_4,
     category: '당구',
     location: '부산 해운대구',
     description: '바다가 보이는 당구장',
