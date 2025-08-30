@@ -97,13 +97,17 @@ export default function MySummaryCards() {
     if (!currentSport || !userElos || userElos.length === 0) {
       return { eloPoint: '-', tier: '-', percentile: '-' };
     }
-    return userElos.find(el => el.sportCategory.id === currentSport.id);
+
+    const foundElo = userElos.find(
+      el => el.sportCategory.id === currentSport.id
+    );
+
+    if (!foundElo) {
+      return { eloPoint: '-', tier: '-', percentile: '-' };
+    }
+
+    return foundElo;
   }, [currentSport, userElos]);
-
-  console.log(currentTabElo, currentSport);
-
-  // Optionally, remove or comment out the debug log if not needed
-  // console.log(userElos, currentSport);
 
   return (
     <CardsRow>
@@ -113,7 +117,9 @@ export default function MySummaryCards() {
           <CardLabel>현재 ELO</CardLabel>
         </CardHeader>
         <CardValue>{currentTabElo?.eloPoint}</CardValue>
-        <SubText>최근 +12 · 40경기</SubText>
+        <SubText>
+          최근 {currentTabElo?.eloPoint !== '-' ? '+12 · 40경기' : '-'}
+        </SubText>
       </InfoCard>
 
       <InfoCard>
