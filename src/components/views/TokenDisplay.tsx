@@ -1,13 +1,18 @@
 'use client';
 
 import styled from 'styled-components';
+import { useRouter } from 'next/navigation';
+import { useModal } from '@/hooks/useModal';
+import TokenHistoryModal from '@/components/views/TokenHistoryModal';
+import { ROUTES } from '@/constants/routes';
+import Image from 'next/image';
+import { ICONS } from '@/assets';
 
 interface TokenDisplayProps {
   tokens: number;
   harvestableTokens?: number;
   onHarvestAll?: () => void;
   harvestButtonText?: string;
-  onViewHistory?: () => void;
 }
 
 const TokenContainer = styled.div`
@@ -17,7 +22,6 @@ const TokenContainer = styled.div`
   gap: ${props => props.theme.spacing.sm};
   padding: ${props => props.theme.spacing.md};
   border: 2px solid ${props => props.theme.colors.border};
-
   border-radius: ${props => props.theme.borderRadius.md};
   color: ${props => props.theme.colors.textBlack};
 `;
@@ -65,18 +69,16 @@ const HarvestInfo = styled.div`
   gap: 2px;
 `;
 
-const HarvestButton = styled.button`
+const HarvestButton = styled.button<{ disabled: boolean }>`
   background: rgba(255, 255, 255, 0.18);
-
   border-radius: 8px;
   padding: 4px 10px;
   color: ${props => props.theme.colors.textBlack};
   font-size: ${props => props.theme.typography.fontSizes.xs};
   font-weight: ${props => props.theme.typography.fontWeights.medium};
-  cursor: pointer;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s;
   white-space: nowrap;
-
   border: 1px solid ${props => props.theme.colors.border};
 
   &:hover {
@@ -95,7 +97,6 @@ const HarvestButton = styled.button`
 
 const HistoryButton = styled.button`
   background: ${props => props.theme.colors.background};
-  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   padding: 4px 10px;
   color: ${props => props.theme.colors.textBlack};
@@ -104,6 +105,7 @@ const HistoryButton = styled.button`
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  border: 1px solid ${props => props.theme.colors.border};
 
   &:hover {
     background: ${props => props.theme.colors.backgroundGray};
@@ -112,6 +114,11 @@ const HistoryButton = styled.button`
   &:active {
     transform: translateY(1px);
   }
+`;
+
+const HarvestButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 const TokenColumn = styled.div`
@@ -129,8 +136,18 @@ export default function TokenDisplay({
   harvestableTokens = 0,
   onHarvestAll,
   harvestButtonText = '수확하기',
-  onViewHistory,
 }: TokenDisplayProps) {
+  const router = useRouter();
+  const tokenHistoryModal = useModal();
+
+  const handleViewHistory = () => {
+    tokenHistoryModal.openModal();
+  };
+
+  const handleNavigateToTokenHistory = () => {
+    router.push(ROUTES.profile.tokenHistory);
+  };
+
   return (
     <TokenColumn>
       <TokenContainer>
@@ -141,9 +158,9 @@ export default function TokenDisplay({
             {tokens.toLocaleString()}
           </TokenAmount>
         </TokenInfo>
-        {onViewHistory && (
-          <HistoryButton onClick={onViewHistory}>내역보기</HistoryButton>
-        )}
+        <HistoryButton onClick={handleNavigateToTokenHistory}>
+          내역보기
+        </HistoryButton>
       </TokenContainer>
 
       <HarvestSection>
@@ -154,13 +171,24 @@ export default function TokenDisplay({
             {harvestableTokens.toLocaleString()}
           </TokenAmount>
         </HarvestInfo>
-        <HarvestButton
-          onClick={onHarvestAll}
-          disabled={harvestableTokens === 0}
-        >
-          {harvestButtonText}
-        </HarvestButton>
+        <HarvestButtonGroup>
+          <HarvestButton
+            onClick={onHarvestAll}
+            disabled={harvestableTokens === 0}
+          >
+            {harvestButtonText}
+          </HarvestButton>
+          <HistoryButton onClick={handleViewHistory}>
+            <Image src={ICONS.HISTORY} alt="history" />
+          </HistoryButton>
+        </HarvestButtonGroup>
       </HarvestSection>
+
+      {/* 토큰 내역 모달 */}
+      <TokenHistoryModal
+        isOpen={tokenHistoryModal.isOpen}
+        onClose={tokenHistoryModal.closeModal}
+      />
     </TokenColumn>
   );
 }

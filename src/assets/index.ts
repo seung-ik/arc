@@ -21,7 +21,7 @@ import SETTING from '@/assets/images/icons/setting.svg';
 import NO_DATA from '@/assets/images/icons/no_data.svg';
 import INFO from '@/assets/images/icons/info.svg';
 import VERYCHAT from '@/assets/images/icons/verychat.svg';
-
+import HISTORY from '@/assets/images/icons/history.svg';
 // 탭 아이콘들
 import TAB_COMMUNITY from '@/assets/images/icons/tab_community.svg';
 import TAB_USER from '@/assets/images/icons/tab_user.svg';
@@ -75,6 +75,7 @@ export const ICONS = {
   NO_DATA,
   INFO,
   VERYCHAT,
+  HISTORY,
 } as const;
 
 // 탭 아이콘들

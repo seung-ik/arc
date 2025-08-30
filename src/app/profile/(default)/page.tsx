@@ -2,13 +2,11 @@
 
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import ProfileHeader from '@/app/profile/components/ProfileHeader';
 import TokenDisplay from '@/components/views/TokenDisplay';
 import ProfilePostList from '@/app/profile/components/ProfilePostList';
 import NicknameChangeModal from '@/components/modals/NicknameChangeModal';
 import FirstPostGuideModal from '@/components/modals/GuideModal';
-import { ROUTES } from '@/constants/routes';
 import { DEFAULT_NETWORK } from '@/constants/networks';
 import { useAuthStore } from '@/stores/authStore';
 import {
@@ -71,8 +69,6 @@ const ProfileRightCol = styled.div`
 `;
 
 export default function ProfilePage() {
-  const router = useRouter();
-
   const [posts, setPosts] = useState<MyPost[]>([]);
   const [harvestableTokens, setHarvestableTokens] = useState(0);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
@@ -266,10 +262,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleViewTokenHistory = () => {
-    router.push(ROUTES.profile.tokenHistory);
-  };
-
   // 내가 쓴 글 목록 콘솔 출력 및 상태 업데이트
   useEffect(() => {
     if (myPostsData) {
@@ -320,7 +312,6 @@ export default function ProfilePage() {
                 harvestableTokens={Number(userProfile.availableToken) ?? 0}
                 onHarvestAll={handleHarvestAll}
                 harvestButtonText="수확하기"
-                onViewHistory={handleViewTokenHistory}
               />
             </ProfileRightCol>
           </ProfileTopWrapper>
