@@ -288,9 +288,10 @@ export default function ProfilePage() {
   useEffect(() => {
     if (myPostsData?.data?.length === 0 && !isLoading) {
       const today = new Date().toDateString();
-      const hiddenDate = localStorage.getItem('firstPostGuideHidden');
+      const hiddenDate = localStorage.getItem('firstPostGuideModal');
 
-      if (hiddenDate !== today) {
+      // hiddenDate가 없거나 오늘이 아닌 경우에만 모달 표시
+      if (!hiddenDate || hiddenDate !== today) {
         firstPostGuideModal.openModal();
       }
     }

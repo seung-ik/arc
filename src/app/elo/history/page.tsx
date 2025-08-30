@@ -202,7 +202,7 @@ export default function HistoryPage() {
   useEffect(() => {
     if (matches.length === 0 && !isLoading) {
       const today = new Date().toDateString();
-      const hiddenDate = localStorage.getItem('firstMatchGuideHidden');
+      const hiddenDate = localStorage.getItem('firstMatchGuideModal');
 
       if (hiddenDate !== today) {
         firstMatchGuideModal.openModal();
