@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 
 import { ROUTES } from '@/constants/routes';
 import { useWepin } from '@/contexts/WepinContext';
+import { useInfiniteTokenTransactions } from '@/api/useTokenHistory';
+import { useAuthStore } from '@/stores/authStore';
+import InfiniteScrollObserver from '@/components/views/InfiniteScrollObserver';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -138,70 +141,77 @@ const TokenAmount = styled.div<{ $isPositive: boolean }>`
   color: ${props => (props.$isPositive ? '#48bb78' : '#f56565')};
 `;
 
-interface TokenHistoryItem {
-  id: number;
-  title: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: 'earned' | 'spent';
-}
-
-// 목업 데이터
-const mockTokenHistory: TokenHistoryItem[] = [
-  {
-    id: 1,
-    title: '매치 승리(테니스)',
-    description: '',
-    amount: 14,
-    date: '2024-01-15',
-    type: 'earned',
-  },
-  {
-    id: 2,
-    title: '닉네임 변경',
-    description: '',
-    amount: 1,
-    date: '2024-01-15',
-    type: 'spent',
-  },
-  {
-    id: 3,
-    title: '내글 좋아요 수확',
-    description: '',
-    amount: 8,
-    date: '2024-01-14',
-    type: 'earned',
-  },
-  {
-    id: 4,
-    title: '매치 승리(탁구)',
-    description: '',
-    amount: 12,
-    date: '2024-01-14',
-    type: 'earned',
-  },
-  {
-    id: 5,
-    title: '글 프로필 노출',
-    description: '',
-    amount: 1,
-    date: '2024-01-13',
-    type: 'spent',
-  },
-  {
-    id: 6,
-    title: '매치 패배(체스)',
-    description: '',
-    amount: 5,
-    date: '2024-01-13',
-    type: 'spent',
-  },
-];
-
 export default function TokenHistoryPage() {
   const router = useRouter();
   const { isInitialized, isLoggedIn, wepinSDK, loginByWepin } = useWepin();
+  const { userProfile } = useAuthStore();
+
+  // 인피니트 스크롤 훅 사용
+  const {
+    data: tokenTransactions,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteTokenTransactions(20);
+
+  // 날짜별로 그룹화 (실제 API 데이터 사용 - 인피니트 스크롤)
+  const groupedHistory = (() => {
+    const allTransactions =
+      tokenTransactions?.pages?.flatMap(page => page.data.transactions || []) ||
+      [];
+
+    return allTransactions.reduce(
+      (groups: Record<string, any[]>, transaction: any) => {
+        const date = new Date(transaction.processedAt)
+          .toISOString()
+          .split('T')[0];
+        if (!groups[date]) {
+          groups[date] = [];
+        }
+
+        // API 데이터를 UI에 맞는 형태로 변환
+        const historyItem = {
+          id: transaction.id,
+          title: transaction.summary.action,
+          description: transaction.summary.reason,
+          amount: Math.abs(
+            transaction.metadata.balance_after -
+              transaction.metadata.balance_before
+          ),
+          date: date,
+          type: transaction.summary.direction === 'earned' ? 'earned' : 'spent',
+          transaction: transaction, // 원본 데이터도 보관
+        };
+
+        groups[date].push(historyItem);
+        return groups;
+      },
+      {} as Record<string, any[]>
+    );
+  })();
+
+  // 날짜 순으로 정렬
+  const sortedDates = Object.keys(groupedHistory).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return '오늘';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return '어제';
+    } else {
+      return date.toLocaleDateString('ko-KR', {
+        month: 'long',
+        day: 'numeric',
+      });
+    }
+  };
 
   const handleBack = () => {
     router.push(ROUTES.profile.root);
@@ -227,42 +237,6 @@ export default function TokenHistoryPage() {
     }
   };
 
-  // 날짜별로 그룹화
-  const groupedHistory = mockTokenHistory.reduce(
-    (groups, item) => {
-      const date = item.date;
-      if (!groups[date]) {
-        groups[date] = [];
-      }
-      groups[date].push(item);
-      return groups;
-    },
-    {} as Record<string, TokenHistoryItem[]>
-  );
-
-  // 날짜 순으로 정렬
-  const sortedDates = Object.keys(groupedHistory).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  );
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return '오늘';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return '어제';
-    } else {
-      return date.toLocaleDateString('ko-KR', {
-        month: 'long',
-        day: 'numeric',
-      });
-    }
-  };
-
   return (
     <Container>
       <Header>
@@ -273,7 +247,9 @@ export default function TokenHistoryPage() {
       <Content>
         <TokenHeader>
           <CoinTitle>보유 토큰</CoinTitle>
-          <TokenCount>1,250개</TokenCount>
+          <TokenCount>
+            {Number(userProfile?.tokenAmount || 0).toLocaleString()} EXP
+          </TokenCount>
         </TokenHeader>
 
         <ButtonGroup>
@@ -289,17 +265,45 @@ export default function TokenHistoryPage() {
           {sortedDates.map(date => (
             <DateGroup key={date}>
               <DateHeader>{formatDate(date)}</DateHeader>
-              {groupedHistory[date].map(item => (
+              {groupedHistory[date]?.map((item: any) => (
                 <HistoryItem key={item.id}>
-                  <HistoryTitle>{item.title}</HistoryTitle>
-                  <TokenAmount $isPositive={item.type === 'earned'}>
-                    {item.type === 'earned' ? '+' : '-'}
-                    {item.amount}
+                  <div style={{ flex: 1 }}>
+                    <HistoryTitle>
+                      {item.transaction.summary.action}
+                    </HistoryTitle>
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: '#888',
+                        marginTop: '4px',
+                      }}
+                    >
+                      {item.transaction.summary.target} •{' '}
+                      {item.transaction.summary.reason}
+                    </div>
+                  </div>
+                  <TokenAmount
+                    $isPositive={
+                      item.transaction.summary.direction === 'earned'
+                    }
+                  >
+                    {item.transaction.summary.direction === 'earned'
+                      ? '+'
+                      : '-'}
+                    {item.transaction.summary.amount}
                   </TokenAmount>
                 </HistoryItem>
               ))}
             </DateGroup>
           ))}
+
+          {/* 인피니트 스크롤 옵저버 */}
+          <InfiniteScrollObserver
+            onIntersect={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            loadingText="더 많은 토큰 내역을 불러오는 중..."
+          />
         </HistorySection>
       </Content>
     </Container>
