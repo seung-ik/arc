@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import { UserElo } from '@/api/useUser';
 import GameStatCard from './GameStatCard';
+import { SportOption, useCommunityStore } from '@/stores/communityStore';
 
 const GridContainer = styled.div`
   padding: 16px;
@@ -28,33 +29,48 @@ const Grid = styled.div`
 `;
 
 // userElos를 ID를 키로 하는 객체로 변환하는 함수
-const convertUserElosToObject = (userElos: UserElo[]) => {
+const convertUserElosToObject = (
+  userElos: UserElo[],
+  sportOptions: SportOption[]
+) => {
   const userElosObject: Record<
     number,
     {
       name: string;
-      eloPoint: number;
-      percentile: string;
-      tier: string;
+      eloPoint: number | null;
+      percentile: string | null;
+      tier: string | null;
       sportId?: number;
     }
   > = {};
 
-  if (!userElos || userElos.length === 0) {
-    return userElosObject;
-  }
+  console.log(sportOptions);
 
-  userElos.forEach(userElo => {
-    if (userElo && userElo.sportCategory) {
-      userElosObject[userElo.id] = {
-        name: userElo.sportCategory.name,
-        eloPoint: userElo.eloPoint,
-        percentile: userElo.percentile,
-        tier: userElo.tier,
-        sportId: userElo.sportCategory.id,
-      };
-    }
+  // 먼저 sportOptions의 모든 스포츠를 기본값으로 초기화
+  sportOptions.forEach(sportOption => {
+    userElosObject[sportOption.value] = {
+      name: sportOption.label,
+      eloPoint: null,
+      percentile: null,
+      tier: null,
+      sportId: sportOption.value,
+    };
   });
+
+  // userElos에 있는 데이터로 덮어쓰기
+  if (userElos && userElos.length > 0) {
+    userElos.forEach(userElo => {
+      if (userElo && userElo.sportCategory) {
+        userElosObject[userElo.sportCategory.id] = {
+          name: userElo.sportCategory.name,
+          eloPoint: userElo.eloPoint,
+          percentile: userElo.percentile,
+          tier: userElo.tier,
+          sportId: userElo.sportCategory.id,
+        };
+      }
+    });
+  }
 
   return userElosObject;
 };
@@ -64,7 +80,9 @@ interface GameStatsGridProps {
 }
 
 export default function GameStatsGrid({ userElos }: GameStatsGridProps) {
-  const userElosObject = convertUserElosToObject(userElos);
+  const { sportOptions, communityTabs } = useCommunityStore();
+  const userElosObject = convertUserElosToObject(userElos, sportOptions);
+  console.log(sportOptions, communityTabs);
 
   return (
     <GridContainer>

@@ -6,9 +6,9 @@ import { useRouter } from 'next/navigation';
 interface GameStatCardProps {
   data: {
     name: string;
-    eloPoint: number;
-    percentile: string;
-    tier: string;
+    eloPoint: number | null;
+    percentile: string | null;
+    tier: string | null;
     sportId?: number;
   };
 }
@@ -73,6 +73,7 @@ const getGameIcon = (gameName: string): string => {
 export default function GameStatCard({ data }: GameStatCardProps) {
   const router = useRouter();
   const { name, eloPoint, percentile, tier, sportId } = data;
+  const hasData = eloPoint !== null;
 
   const handleClick = () => {
     if (typeof window !== 'undefined') {
@@ -83,14 +84,30 @@ export default function GameStatCard({ data }: GameStatCardProps) {
   };
 
   return (
-    <Card onClick={handleClick}>
+    <Card
+      onClick={handleClick}
+      style={{
+        opacity: hasData ? 1 : 0.6,
+        filter: hasData ? 'none' : 'grayscale(0.3)',
+        borderColor: hasData ? undefined : '#ddd',
+      }}
+    >
       <GameIcon>{getGameIcon(name)}</GameIcon>
       <GameName>{name}</GameName>
 
-      <EloScore>{eloPoint.toLocaleString()}</EloScore>
-      <Percentile>
-        상위 {percentile}% ({tier})
-      </Percentile>
+      {hasData ? (
+        <>
+          <EloScore>{eloPoint.toLocaleString()}</EloScore>
+          <Percentile>
+            상위 {percentile}% ({tier})
+          </Percentile>
+        </>
+      ) : (
+        <>
+          <EloScore style={{ color: '#999' }}>-</EloScore>
+          <Percentile style={{ color: '#999' }}>기록 없음</Percentile>
+        </>
+      )}
     </Card>
   );
 }

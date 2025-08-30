@@ -92,6 +92,7 @@ export default function ProfilePage() {
     userProfile,
     userElos,
   } = useAuthStore();
+
   const { data: myPostsData } = useMyPostsApi();
   const { refetch: refetchUserTokens } = useUserTokensApi(userProfile?.id || 0);
   const { executeContract } = useWepin();

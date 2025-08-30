@@ -113,8 +113,6 @@ export default function MatchCard({ post, onClick }: MatchCardProps) {
     }
   };
 
-  console.log(post);
-
   // 참가자 수 계산
   const currentParticipants = 1; // API에서 제공되지 않는 필드
   const maxParticipants = post.participantCount || 2;
