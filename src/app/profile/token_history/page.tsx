@@ -8,6 +8,8 @@ import { useWepin } from '@/contexts/WepinContext';
 import { useInfiniteTokenTransactions } from '@/api/useTokenHistory';
 import { useAuthStore } from '@/stores/authStore';
 import InfiniteScrollObserver from '@/components/views/InfiniteScrollObserver';
+import OneButtonModal from '@/components/modals/OneButtonModal';
+import { useState } from 'react';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -145,6 +147,7 @@ export default function TokenHistoryPage() {
   const router = useRouter();
   const { isInitialized, isLoggedIn, wepinSDK, loginByWepin } = useWepin();
   const { userProfile } = useAuthStore();
+  const [isLearnMoreModalOpen, setIsLearnMoreModalOpen] = useState(false);
 
   // 인피니트 스크롤 훅 사용
   const {
@@ -218,7 +221,7 @@ export default function TokenHistoryPage() {
   };
 
   const handleLearnMore = () => {
-    // 여기에 자세한 설명 모달이나 페이지로 이동
+    setIsLearnMoreModalOpen(true);
   };
 
   const handleMyWallet = async () => {
@@ -305,6 +308,15 @@ export default function TokenHistoryPage() {
             loadingText="더 많은 토큰 내역을 불러오는 중..."
           />
         </HistorySection>
+
+        {/* 백서 안내 모달 */}
+        <OneButtonModal
+          isOpen={isLearnMoreModalOpen}
+          onClose={() => setIsLearnMoreModalOpen(false)}
+          title="백서 준비 중"
+          content={`자세한 토큰 시스템 설명과 백서를 준비하고 있습니다.\n곧 만나보실 수 있습니다!`}
+          confirmText="확인"
+        />
       </Content>
     </Container>
   );
